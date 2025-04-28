@@ -86,7 +86,7 @@ export default function Login() {
                                                 </div>
                                             </div>
                                             <div>
-                                                <h1 className="text-3xl font-bold text-white">LuxStay</h1>
+                                                <h1 className="text-3xl font-bold text-white">Hotel Tech</h1>
                                                 <p className="text-sm text-amber-200">Premium Hotel Experience</p>
                                             </div>
                                         </div>
@@ -97,9 +97,9 @@ export default function Login() {
                                         <div className="mt-10 space-y-6">
                                             {/* Luxury Experience */}
                                             <div className="border border-amber-500/20 rounded-lg p-6 bg-gradient-to-br from-amber-800/30 to-amber-950/30 backdrop-blur-sm">
-                                                <h3 className="text-xl font-semibold text-amber-300 mb-4">The LuxStay Experience</h3>
+                                                <h3 className="text-xl font-semibold text-amber-300 mb-4">The Hotel Tech Experience</h3>
                                                 <p className="text-amber-100 text-sm mb-4">
-                                                    At LuxStay, we believe luxury is in the details. From personalized check-in to curated room amenities, every moment of your stay is designed to exceed expectations.
+                                                    At Hotel Tech, we believe luxury is in the details. From personalized check-in to curated room amenities, every moment of your stay is designed to exceed expectations.
                                                 </p>
                                                 <div className="grid grid-cols-2 gap-3 mt-4">
                                                     <div className="flex flex-col items-center p-3 bg-amber-900/30 rounded-lg">
@@ -137,7 +137,7 @@ export default function Login() {
                                     
                                     <div className="mt-8 hidden md:block relative z-10 text-center">
                                         <p className="text-xs text-amber-300/70">
-                                            &copy; {new Date().getFullYear()} LuxStay Hotels. All rights reserved.
+                                            &copy; {new Date().getFullYear()} Hotel Tech. All rights reserved.
                                         </p>
                                     </div>
                                     

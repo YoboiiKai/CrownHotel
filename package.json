@@ -28,8 +28,11 @@
         "@fullcalendar/list": "^6.1.15",
         "@fullcalendar/react": "^6.1.15",
         "@fullcalendar/timegrid": "^6.1.15",
+        "core-js": "^3.41.0",
         "date-fns": "^4.1.0",
         "framer-motion": "^12.5.0",
-        "lucide-react": "^0.479.0"
+        "lucide-react": "^0.479.0",
+        "react-toastify": "^11.0.5",
+        "regenerator-runtime": "^0.14.1"
     }
 }

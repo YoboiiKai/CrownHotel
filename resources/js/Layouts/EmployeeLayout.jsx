@@ -201,10 +201,7 @@ export default function EmployeeLayout({ children }) {
       path: "/housekeeping",
       id: "housekeeping",
       submenu: [
-        { name: "Task List", path: "/housekeeping/tasks" },
-        { name: "Task Status", path: "/housekeeping/status" },
-        { name: "Maintenance", path: "/housekeeping/maintenance" },
-        { name: "Track Room Cleanliness", path: "/housekeeping/cleanliness" },
+        { name: "Task List", path: "/employee/tasklist" },
         { name: "Request Assistance", path: "/housekeeping/assistance" },
       ],
     },
@@ -223,7 +220,6 @@ export default function EmployeeLayout({ children }) {
   ]
 
   const managementItems = []
-
   const isSubmenuItemActive = (path) => {
     return url === path
   }
@@ -452,7 +448,6 @@ export default function EmployeeLayout({ children }) {
           </div>
         </div>
       </header>
-
       <aside
         className={`fixed inset-y-0 left-0 z-50 flex w-[85%] xs:w-[75%] sm:w-72 flex-col transition-transform duration-300 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"

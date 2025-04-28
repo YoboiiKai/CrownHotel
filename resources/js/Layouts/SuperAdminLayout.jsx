@@ -21,6 +21,7 @@ import {
   CreditCard,
   Package,
   MessageSquare,
+  Crown
 } from "lucide-react"
 import { usePage, Link } from "@inertiajs/react"
 
@@ -147,6 +148,7 @@ export default function SuperAdminLayout({ children }) {
         { name: "Admins", path: "/SuperAdmin/admin" },
         { name: "Employees", path: "/SuperAdmin/employee" },
         { name: "Clients", path: "/SuperAdmin/client" },
+        { name: "Suppliers", path: "/SuperAdmin/suppliers" },
       ],
     },
     {
@@ -157,7 +159,7 @@ export default function SuperAdminLayout({ children }) {
       submenu: [
         { name: "Add Rooms", path: "/SuperAdmin/rooms" },
         { name: "Bookings", path: "/SuperAdmin/bookings" },
-        { name: "Room Status", path: "/SuperAdmin/roomstatus" },
+        { name: "Booking Calendar", path: "/SuperAdmin/bookingcalendar" },
       ],
     },
     {
@@ -177,6 +179,7 @@ export default function SuperAdminLayout({ children }) {
       id: "restaurant",
       submenu: [
         { name: "Add Menu", path: "/SuperAdmin/menu" },
+        { name: "POS Menu", path: "/SuperAdmin/posmenu" },
         { name: "Manage Orders", path: "/SuperAdmin/orders" },
         { name: "Promotions and Discounts", path: "/restaurant/promotions" },
       ],
@@ -202,12 +205,11 @@ export default function SuperAdminLayout({ children }) {
       id: "housekeeping",
       submenu: [
         { name: "Add Task", path: "/SuperAdmin/task" },
-        { name: "Track Task Status", path: "/SuperAdmin/task/status" },
         { name: "Scheduled Maintenance", path: "/SuperAdmin/task/scheduled" },
       ],
     },
     {
-      name: "Feedback and Support",
+      name: "Feedback & Support",
       icon: <MessageSquare size={20} />,
       path: "/feedback",
       id: "feedback",
@@ -415,15 +417,15 @@ export default function SuperAdminLayout({ children }) {
               <Menu size={isMobile ? 18 : 20} />
             </button>
             <div className="flex items-center gap-2 sm:gap-3">
-              <div className="relative">
+              <div className="relative flex">
                 <div className="absolute inset-0 rounded-xl bg-amber-800 blur-[6px] opacity-20"></div>
                 <div className="relative flex h-7 w-7 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-600 to-amber-900 text-white shadow-lg">
-                  <Coffee size={isMobile ? 14 : 20} />
+                  <Crown size={isMobile ? 14 : 20} />
                 </div>
               </div>
               <div className="flex flex-col">
-                <span className="text-sm sm:text-lg font-bold text-gray-900 leading-tight">Hotel Tech</span>
-                <span className="hidden sm:inline-block text-xs text-amber-600 font-medium">Premium Hotel</span>
+                <span className="text-sm sm:text-lg font-bold text-amber-600 leading-tight font-serif">CROWN of the ORIENT</span>
+                <span className="hidden sm:inline-block text-xs text-amber-600 font-medium">BEACH RESORT</span>
               </div>
             </div>
           </div>
@@ -457,7 +459,7 @@ export default function SuperAdminLayout({ children }) {
             <div className="flex items-center gap-2 md:gap-3 rounded-full border border-gray-200 bg-white px-2 py-1 sm:px-3 sm:py-1.5 hover:border-amber-200 hover:shadow-md transition-all cursor-pointer" onClick={openLogoutModal}>
               <div className="relative">
                 <div className="absolute inset-0 rounded-full bg-amber-800 blur-[5px] opacity-20"></div>
-                <div className="relative h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-gradient-to-br from-amber-600 to-amber-900 flex items-center justify-center text-white shadow-sm">
+                <div className="relative h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-gradient-to-br from-amber-600 to-amber-900 flex items-center justify-center text-white shadow-md">
                   <User size={isMobile ? 14 : 16} />
                 </div>
               </div>
@@ -541,8 +543,8 @@ export default function SuperAdminLayout({ children }) {
         </div>
       </aside>
       
-      <main className="pt-16 sm:pt-20 lg:pt-32 px-2 sm:px-4 lg:pl-80 lg:px-8 pb-4 sm:pb-6 lg:pb-8 transition-all duration-300">
-        <div className="mx-auto max-w-7xl">
+      <main className="pt-16 sm:pt-20 lg:pt-32 px-2 sm:px-4 lg:pl-80 lg:pr-4 pb-4 sm:pb-6 lg:pb-8 transition-all duration-300">
+        <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-4">
           {children}
         </div>
       </main>

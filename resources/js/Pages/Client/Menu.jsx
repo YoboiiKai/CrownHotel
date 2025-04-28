@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ClientLayout from "@/Layouts/ClientLayout";
 import {
   Plus,
@@ -6,83 +6,60 @@ import {
   ShoppingCart,
   X,
   Search,
-  Filter,
-  ChevronDown,
-  DollarSign,
-  Tag,
+  PhilippinePeso,
   Clock,
   Utensils,
   Coffee,
-  Star,
-  Heart,
-  Send,
-  Check
+  Check,
+  Trash2,
+  Filter
 } from "lucide-react";
+import MenuItemDetailsModal from "@/Components/SuperAdmin/MenuItemDetailsModal";
+import OrderConfirmationModal from "@/Components/SuperAdmin/OrderConfirmationModal";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// Custom styles for the scrollbar
+const scrollbarStyles = `
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #d97706;
+    border-radius: 10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #b45309;
+  }
+  
+  .pos-table th,
+  .pos-table td {
+    padding: 0.5rem;
+    text-align: left;
+  }
+  
+  .pos-table tbody tr:hover {
+    background-color: #fef3c7;
+  }
+`;
 
 export default function Menu() {
   // Menu items data
-  const [menuItems, setMenuItems] = useState([
-    {
-      id: 1,
-      name: "Classic Cheeseburger",
-      description: "Juicy beef patty with melted cheese, lettuce, tomato, and special sauce",
-      price: 12.99,
-      category: "main_course",
-      prepTime: "15 min",
-      image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-    },
-    {
-      id: 2,
-      name: "Margherita Pizza",
-      description: "Traditional pizza with tomato sauce, mozzarella, and fresh basil",
-      price: 14.99,
-      category: "main_course",
-      prepTime: "20 min",
-      image: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-    },
-    {
-      id: 3,
-      name: "Chocolate Lava Cake",
-      description: "Warm chocolate cake with a molten chocolate center, served with vanilla ice cream",
-      price: 8.99,
-      category: "dessert",
-      prepTime: "15 min",
-      image: "https://images.unsplash.com/photo-1624353365286-3f8d62daad51?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-    },
-    {
-      id: 4,
-      name: "Caesar Salad",
-      description: "Crisp romaine lettuce, croutons, parmesan cheese, and Caesar dressing",
-      price: 9.99,
-      category: "appetizer",
-      prepTime: "10 min",
-      image: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-    },
-    {
-      id: 5,
-      name: "Iced Coffee",
-      description: "Chilled coffee served with ice, cream, and your choice of flavored syrup",
-      price: 4.99,
-      category: "beverage",
-      prepTime: "5 min",
-      image: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
-    },
-    {
-      id: 6,
-      name: "Seafood Pasta",
-      description: "Linguine pasta with shrimp, mussels, and calamari in a light tomato sauce",
-      price: 18.99,
-      category: "main_course",
-      prepTime: "25 min",
-      image: "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-    }
-  ]);
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // State for UI controls
   const [showMenuItemDetails, setShowMenuItemDetails] = useState(null);
   const [filterCategory, setFilterCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [showCart, setShowCart] = useState(false);
   
   // Cart state
   const [cart, setCart] = useState([]);
@@ -90,6 +67,27 @@ export default function Menu() {
   const [roomNumber, setRoomNumber] = useState("");
   const [showOrderConfirmation, setShowOrderConfirmation] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
+  const [isSeniorCitizen, setIsSeniorCitizen] = useState(false); // Senior citizen discount toggle
+  const [isSubmitting, setIsSubmitting] = useState(false); // Track order submission state
+
+  // Fetch menu items on component mount
+  useEffect(() => {
+    fetchMenuItems();
+  }, []);
+
+  // Fetch menu items from API
+  const fetchMenuItems = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/api/menu?_t=${new Date().getTime()}`);
+      setMenuItems(response.data);
+    } catch (error) {
+      console.error("Error fetching menu items:", error);
+      toast.error("Failed to fetch menu items. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Get category label
   const getCategoryLabel = (category) => {
@@ -104,16 +102,25 @@ export default function Menu() {
 
   // Filter menu items based on category and search query
   const filteredMenuItems = menuItems.filter((item) => {
+    // First check if item exists to prevent errors with undefined items
+    if (!item) return false;
+    
     const matchesCategory = filterCategory === "all" || item.category === filterCategory;
     const matchesSearch =
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      getCategoryLabel(item.category).toLowerCase().includes(searchQuery.toLowerCase());
+      (item.menuname ? item.menuname.toLowerCase().includes(searchQuery.toLowerCase()) : false) ||
+      (item.description ? item.description.toLowerCase().includes(searchQuery.toLowerCase()) : false) ||
+      (item.category ? getCategoryLabel(item.category).toLowerCase().includes(searchQuery.toLowerCase()) : false);
     return matchesCategory && matchesSearch;
   });
 
   // Cart functions
   const addToCart = (item) => {
+    // Check if item is sold out
+    if (item.status === 'sold_out') {
+      toast.error(`${item.menuname} is sold out and cannot be added to cart.`);
+      return;
+    }
+    
     const existingItem = cart.find(cartItem => cartItem.id === item.id);
     
     if (existingItem) {
@@ -125,9 +132,11 @@ export default function Menu() {
             : cartItem
         )
       );
+      toast.success(`Added another ${item.menuname} to cart.`);
     } else {
       // Add new item to cart with quantity 1
       setCart([...cart, { ...item, quantity: 1 }]);
+      toast.success(`${item.menuname} added to cart.`);
     }
   };
 
@@ -157,7 +166,22 @@ export default function Menu() {
 
   // Calculate total price
   const calculateTotal = () => {
+    const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    // Apply 20% senior citizen discount if applicable
+    const discount = isSeniorCitizen ? subtotal * 0.2 : 0;
+    return (subtotal - discount).toFixed(2);
+  };
+
+  // Calculate subtotal (before discount)
+  const calculateSubtotal = () => {
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+  };
+
+  // Calculate discount amount
+  const calculateDiscount = () => {
+    if (!isSeniorCitizen) return 0;
+    const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return (subtotal * 0.2).toFixed(2);
   };
 
   // Handle order submission
@@ -165,386 +189,390 @@ export default function Menu() {
     if (cart.length === 0) return;
     
     if (!roomNumber.trim()) {
-      alert("Please enter your room number to proceed with the order.");
+      toast.error("Please enter a room number to proceed with the order.");
       return;
     }
     
-    // Here you would typically send the order to your backend
-    // For now, we'll just simulate a successful order
+    // Prepare order data with multiple items
+    const orderData = {
+      roomNumber: roomNumber,
+      items: cart.map(item => ({
+        menuItemId: item.id,
+        name: item.menuname,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      subtotal: parseFloat(calculateSubtotal()),
+      discount: parseFloat(calculateDiscount()),
+      total: parseFloat(calculateTotal()),
+      notes: orderNotes,
+      isSeniorCitizen: isSeniorCitizen
+    };
+    
+    setIsSubmitting(true);
     setShowOrderConfirmation(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setOrderSuccess(true);
-      // Reset cart after successful order
-      setTimeout(() => {
-        clearCart();
+    // Send order to backend
+    axios.post('/api/orders', orderData)
+      .then(response => {
+        setOrderSuccess(true);
+        toast.success("Order placed successfully!");
+        
+        // Reset cart after successful order
+        setTimeout(() => {
+          clearCart();
+          setShowOrderConfirmation(false);
+          setOrderSuccess(false);
+        }, 3000);
+      })
+      .catch(error => {
+        console.error("Error placing order:", error);
+        toast.error("Failed to place order. Please try again.");
         setShowOrderConfirmation(false);
-        setOrderSuccess(false);
-        setShowCart(false);
-      }, 3000);
-    }, 1500);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (
     <ClientLayout>
+      {/* Apply custom scrollbar styles */}
+      <style>{scrollbarStyles}</style>
+      
       {/* Menu Item Details Modal */}
-      {showMenuItemDetails && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto">
-            <div className="relative h-64 w-full overflow-hidden">
-              <img
-                src={showMenuItemDetails.image}
-                alt={showMenuItemDetails.name}
-                className="h-full w-full object-cover"
-              />
-              <button
-                onClick={() => setShowMenuItemDetails(null)}
-                className="absolute top-4 right-4 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-all"
-              >
-                <X className="h-5 w-5" />
-              </button>
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                <h2 className="text-2xl font-bold text-white">{showMenuItemDetails.name}</h2>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="px-2 py-1 bg-amber-500/90 rounded-full text-xs font-medium text-white">
-                    {getCategoryLabel(showMenuItemDetails.category)}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-1">
-                  <DollarSign className="h-5 w-5 text-amber-600" />
-                  <span className="text-2xl font-bold text-amber-600">{showMenuItemDetails.price}</span>
-                </div>
-                <div className="flex items-center gap-1 text-gray-600">
-                  <Clock className="h-4 w-4" />
-                  <span className="text-sm">{showMenuItemDetails.prepTime} prep time</span>
-                </div>
-              </div>
-              
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Description</h4>
-                <p className="text-gray-600">{showMenuItemDetails.description}</p>
-              </div>
-              
-              <div className="flex items-center gap-3 pt-4 border-t border-gray-100 mt-6">
-                <button
-                  onClick={() => {
-                    addToCart(showMenuItemDetails);
-                    setShowMenuItemDetails(null);
-                  }}
-                  className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
-                >
-                  <ShoppingCart className="h-4 w-4" />
-                  <span>Add to Cart</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Shopping Cart Sidebar */}
-      {showCart && (
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex justify-end">
-          <div className="bg-white w-full max-w-md h-full flex flex-col shadow-xl">
-            <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900">Your Order</h2>
-              <button 
-                onClick={() => setShowCart(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            
-            <div className="flex-1 overflow-auto p-4">
-              {cart.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full">
-                  <div className="rounded-full bg-amber-100 p-3 mb-4">
-                    <ShoppingCart className="h-6 w-6 text-amber-600" />
-                  </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-1">Your cart is empty</h3>
-                  <p className="text-gray-500 text-center max-w-xs">
-                    Browse our menu and add some delicious items to your cart.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {cart.map((item) => (
-                    <div key={item.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="h-16 w-16 flex-shrink-0 rounded-md overflow-hidden">
-                        <img 
-                          src={item.image} 
-                          alt={item.name} 
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium text-gray-900 truncate">{item.name}</h4>
-                        <div className="flex items-center gap-1 mt-1">
-                          <DollarSign className="h-3 w-3 text-amber-600" />
-                          <span className="text-sm font-medium text-amber-600">{item.price}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button 
-                          onClick={() => removeFromCart(item.id)}
-                          className="p-1 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300"
-                        >
-                          <Minus className="h-4 w-4" />
-                        </button>
-                        <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
-                        <button 
-                          onClick={() => addToCart(item)}
-                          className="p-1 rounded-full bg-amber-100 text-amber-600 hover:bg-amber-200"
-                        >
-                          <Plus className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            
-            {cart.length > 0 && (
-              <div className="border-t border-gray-200 p-4 space-y-4">
-                <div>
-                  <label htmlFor="roomNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                    Room Number
-                  </label>
-                  <input 
-                    type="text" 
-                    id="roomNumber"
-                    value={roomNumber}
-                    onChange={(e) => setRoomNumber(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                    placeholder="Enter your room number"
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="orderNotes" className="block text-sm font-medium text-gray-700 mb-1">
-                    Special Instructions (Optional)
-                  </label>
-                  <textarea 
-                    id="orderNotes"
-                    value={orderNotes}
-                    onChange={(e) => setOrderNotes(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                    placeholder="Any special requests or dietary requirements?"
-                    rows="3"
-                  ></textarea>
-                </div>
-                
-                <div className="flex items-center justify-between py-2 border-t border-b border-gray-200">
-                  <span className="text-base font-medium text-gray-700">Total</span>
-                  <span className="text-lg font-bold text-amber-600">${calculateTotal()}</span>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={clearCart}
-                    className="flex-1 py-2 px-4 border border-gray-300 rounded-lg text-gray-700 text-sm font-medium hover:bg-gray-50"
-                  >
-                    Clear Cart
-                  </button>
-                  <button
-                    onClick={handleOrderSubmit}
-                    className="flex-1 py-2 px-4 bg-gradient-to-r from-amber-600 to-amber-800 rounded-lg text-white text-sm font-medium hover:from-amber-700 hover:to-amber-900"
-                  >
-                    Place Order
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      <MenuItemDetailsModal
+        showMenuItemDetails={showMenuItemDetails}
+        setShowMenuItemDetails={setShowMenuItemDetails}
+        cart={cart}
+        addToCart={addToCart}
+        removeFromCart={removeFromCart}
+        getCategoryLabel={getCategoryLabel}
+      />
 
       {/* Order Confirmation Modal */}
-      {showOrderConfirmation && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 text-center">
-            {!orderSuccess ? (
-              <>
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-600 mx-auto mb-4"></div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Processing Your Order</h3>
-                <p className="text-gray-600">Please wait while we process your order...</p>
-              </>
-            ) : (
-              <>
-                <div className="rounded-full bg-green-100 p-3 mx-auto mb-4 w-16 h-16 flex items-center justify-center">
-                  <Check className="h-8 w-8 text-green-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Order Placed Successfully!</h3>
-                <p className="text-gray-600 mb-6">Your order will be delivered to Room {roomNumber} shortly.</p>
-                <div className="flex justify-center">
-                  <button
-                    onClick={() => {
-                      clearCart();
-                      setShowOrderConfirmation(false);
-                      setOrderSuccess(false);
-                      setShowCart(false);
-                    }}
-                    className="py-2 px-4 bg-gradient-to-r from-amber-600 to-amber-800 rounded-lg text-white text-sm font-medium hover:from-amber-700 hover:to-amber-900"
-                  >
-                    Continue Shopping
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      <OrderConfirmationModal
+        showOrderConfirmation={showOrderConfirmation}
+        orderSuccess={orderSuccess}
+        roomNumber={roomNumber}
+        clearCart={clearCart}
+        setShowOrderConfirmation={setShowOrderConfirmation}
+        setOrderSuccess={setOrderSuccess}
+        isSubmitting={isSubmitting}
+      />
+      
+      {/* Toast Container for notifications */}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={true} />
+      
 
-      <div className="mx-auto max-w-6xl">
-        {/* Action Bar */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="relative flex-1 sm:flex-none sm:w-64">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search menu..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
-              />
+      {/* Main Content with Side-by-Side Layout */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Menu Section - Left Side */}
+        <div className="lg:w-3/4">
+          <div className="mb-6">
+            <div className="flex items-center gap-2 w-full">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search menu..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                />
+              </div>
             </div>
           </div>
-          
-          <button
-            onClick={() => setShowCart(true)}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all w-full sm:w-auto justify-center relative"
-          >
-            <ShoppingCart className="h-4 w-4" />
-            <span>View Cart</span>
-            {cart.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                {cart.reduce((total, item) => total + item.quantity, 0)}
-              </span>
-            )}
-          </button>
-        </div>
 
-        {/* Category Tabs */}
-        <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "all" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("all")}
-          >
-            All Items
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "appetizer" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("appetizer")}
-          >
-            Appetizers
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "main_course" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("main_course")}
-          >
-            Main Courses
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "dessert" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("dessert")}
-          >
-            Desserts
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "beverage" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("beverage")}
-          >
-            Beverages
-          </button>
-        </div>
-
-        {/* Menu Item Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-          {filteredMenuItems.map((item) => (
-            <div
-              key={item.id}
-              className="rounded-lg overflow-hidden border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md"
+          {/* Category Tabs */}
+          <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
+            <button
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "all" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              onClick={() => setFilterCategory("all")}
             >
-              {/* Menu Item Image */}
-              <div 
-                className="relative h-36 w-full overflow-hidden cursor-pointer"
-                onClick={() => setShowMenuItemDetails(item)}
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
-                />
-                <div className="absolute top-2 right-2">
-                  <div className="px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                    {getCategoryLabel(item.category)}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="p-3">
-                {/* Menu Item Info */}
-                <div className="mb-3">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 
-                      className="text-sm font-semibold text-gray-900 truncate cursor-pointer hover:text-amber-600"
-                      onClick={() => setShowMenuItemDetails(item)}
-                    >
-                      {item.name}
-                    </h3>
-                    <div className="flex items-center gap-1">
-                      <DollarSign className="h-3 w-3 text-amber-600" />
-                      <span className="font-medium text-amber-600 text-sm">{item.price}</span>
+              All Items
+            </button>
+            <button
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "appetizer" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              onClick={() => setFilterCategory("appetizer")}
+            >
+              Appetizers
+            </button>
+            <button
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "main_course" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              onClick={() => setFilterCategory("main_course")}
+            >
+              Main Courses
+            </button>
+            <button
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "dessert" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              onClick={() => setFilterCategory("dessert")}
+            >
+              Desserts
+            </button>
+            <button
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "beverage" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              onClick={() => setFilterCategory("beverage")}
+            >
+              Beverages
+            </button>
+          </div>
+
+          {/* Menu Items Container with Fixed Height and Scrolling */}
+          <div className="h-[calc(100vh-220px)] overflow-y-auto pr-2 custom-scrollbar">
+            {/* Menu Item Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+              {filteredMenuItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="rounded-lg overflow-hidden border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md"
+                >
+                  {/* Menu Item Image */}
+                  <div className="relative">
+                    <img
+                      src={item.image ? `/${item.image}` : "https://via.placeholder.com/300x200?text=No+Image"}
+                      alt={item.menuname}
+                      className="h-28 w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    {/* Price moved to top left */}
+                    <div className="absolute top-2 left-2">
+                      <div className="flex items-center gap-1 bg-black/70 px-2 py-1 rounded-full">
+                        <PhilippinePeso className="h-3 w-3 text-amber-600" />
+                        <span className="font-semibold text-white text-sm">{item.price}</span>
+                      </div>
+                    </div>
+                    {/* Status indicator in top right */}
+                    <div className="absolute top-2 right-2">
+                      {item.status === 'sold_out' ? (
+                        <div className="px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-red-100 text-red-800 flex items-center">
+                          <X className="h-2.5 w-2.5 mr-0.5" />
+                          Sold Out
+                        </div>
+                      ) : (
+                        <div className="px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-green-100 text-green-800 flex items-center">
+                          <Check className="h-2.5 w-2.5 mr-0.5" />
+                          Available
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 mb-2">
-                    <Clock className="h-3 w-3 text-gray-400" />
-                    <p className="text-xs text-gray-500">{item.prepTime} prep time</p>
-                  </div>
-                  <p className="text-xs text-gray-600 line-clamp-2">{item.description}</p>
-                </div>
+                  
+                  <div className="p-2">
+                    {/* Category and Prep Time */}
+                    <div className="flex flex-wrap items-center text-xs text-gray-500 mb-2">
+                      <div className="flex items-center mr-2 bg-amber-50 px-2 py-1 rounded-md">
+                        
+                        <span className="font-medium text-amber-700 text-[10px]">{getCategoryLabel(item.category)}</span>
+                      </div>
+                      <div className="flex items-center bg-gray-50 px-2 py-1 rounded-md">
+                        <Clock className="h-2.5 w-2.5 mr-1 text-gray-500" />
+                        <span className="text-[10px]">{item.preperationtime || "15 min"} prep time</span>
+                      </div>
+                    </div>
+                    
+                    {/* Title */}
+                    <h3 className="text-xs font-semibold text-gray-900 mb-1 truncate">{item.menuname}</h3>
+                    
+                    {/* Description */}
+                    <p className="text-[10px] text-gray-600 line-clamp-1 mb-2">{item.description}</p>
 
-                {/* Action Buttons */}
-                <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-                  <button
-                    onClick={() => setShowMenuItemDetails(item)}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-md bg-gray-100 px-2 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-1 transition-all"
-                  >
-                    <Utensils className="h-3 w-3" />
-                    <span>Details</span>
-                  </button>
-                  <button
-                    onClick={() => addToCart(item)}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-md bg-gradient-to-r from-amber-600 to-amber-800 px-2 py-1.5 text-xs font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
-                  >
-                    <ShoppingCart className="h-3 w-3" />
-                    <span>Add to Cart</span>
-                  </button>
+                    {/* Action Buttons */}
+                    <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
+                      <button
+                        onClick={() => setShowMenuItemDetails(item)}
+                        className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-3 py-1.5 text-[10px] font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900"
+                      >
+                        <Utensils className="h-2.5 w-2.5" />
+                        <span>View</span>
+                      </button>
+                      <button
+                        onClick={() => addToCart(item)}
+                        disabled={item.status === 'sold_out'}
+                        className={`flex-1 flex items-center justify-center gap-1 rounded-lg ${
+                          item.status === 'sold_out'
+                            ? 'border border-gray-200 bg-gray-100 px-3 py-1.5 text-[10px] font-medium text-gray-400 cursor-not-allowed'
+                            : 'border border-amber-200 bg-amber-50 px-3 py-1.5 text-[10px] font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all'
+                        }`}
+                      >
+                        <ShoppingCart className={`h-2.5 w-2.5 ${item.status === 'sold_out' ? 'text-gray-400' : ''}`} />
+                        <span>{item.status === 'sold_out' ? 'Sold Out' : 'Add'}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {filteredMenuItems.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-12">
+                <div className="rounded-full bg-amber-100 p-3 mb-4">
+                  <Utensils className="h-6 w-6 text-amber-600" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-1">No menu items found</h3>
+                <p className="text-gray-500 text-center max-w-md">
+                  Try adjusting your search or filter to find what you're looking for.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Cart Section - Right Side */}
+        <div className="lg:w-1/4">
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm sticky top-4 h-[calc(100vh-40px)] flex flex-col">
+            <div className="p-4 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <ShoppingCart className="h-5 w-5 text-amber-600" />
+                Your Order
+                {cart.length > 0 && (
+                  <span className="ml-auto bg-amber-100 text-amber-800 text-xs font-medium rounded-full px-2 py-0.5">
+                    {cart.reduce((total, item) => total + item.quantity, 0)} items
+                  </span>
+                )}
+              </h2>
+            </div>
+            
+            <div className="flex-1 overflow-hidden flex flex-col">
+              {/* Cart Items Section - Scrollable */}
+              <div className="p-4 flex-1 overflow-y-auto custom-scrollbar">
+                {cart.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-[200px] text-center">
+                    <div className="rounded-full bg-gray-100 p-3 mb-3">
+                      <ShoppingCart className="h-6 w-6 text-gray-400" />
+                    </div>
+                    <p className="text-gray-500 text-sm mb-2">Your cart is empty</p>
+                    <p className="text-xs text-gray-400">Add items from the menu to get started</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {cart.map((item) => (
+                      <div key={item.id} className="flex items-center gap-2 pb-2 border-b border-gray-100">
+                        <div className="h-10 w-10 rounded-md overflow-hidden flex-shrink-0">
+                          <img src={item.image ? `/${item.image}` : "https://via.placeholder.com/300x200?text=No+Image"} alt={item.menuname} className="h-full w-full object-cover" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-[10px] font-medium text-gray-900 truncate">{item.menuname}</h3>
+                          <div className="flex items-center justify-between mt-0.5">
+                            <div className="flex items-center gap-0.5">
+                              <PhilippinePeso className="h-2.5 w-2.5 text-amber-600" />
+                              <span className="text-[10px] font-medium text-amber-600">{item.price}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <button 
+                                onClick={() => removeFromCart(item.id)}
+                                className="p-0.5 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200"
+                              >
+                                <Minus className="h-2.5 w-2.5" />
+                              </button>
+                              <span className="text-[10px] font-medium w-4 text-center">{item.quantity}</span>
+                              <button 
+                                onClick={() => addToCart(item)}
+                                className="p-0.5 rounded-full bg-amber-100 text-amber-600 hover:bg-amber-200"
+                              >
+                                <Plus className="h-2.5 w-2.5" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Order Details Section - Always Visible */}
+              <div className="border-t border-gray-200 p-4 bg-gray-50">
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="roomNumber" className="block text-xs font-medium text-gray-700 mb-1">
+                      Room Number
+                    </label>
+                    <input 
+                      type="text" 
+                      id="roomNumber"
+                      value={roomNumber}
+                      onChange={(e) => setRoomNumber(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-xs text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
+                      placeholder="Enter your room number"
+                    />
+                  </div>
+                  
+
+                  
+                  {/* Senior Citizen Discount */}
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="seniorDiscount"
+                      checked={isSeniorCitizen}
+                      onChange={() => setIsSeniorCitizen(!isSeniorCitizen)}
+                      className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="seniorDiscount" className="ml-2 block text-xs text-gray-700">
+                      Apply Senior Citizen Discount (20%)
+                    </label>
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="orderNotes" className="block text-xs font-medium text-gray-700 mb-1">
+                      Special Instructions (Optional)
+                    </label>
+                    <textarea 
+                      id="orderNotes"
+                      value={orderNotes}
+                      onChange={(e) => setOrderNotes(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-xs text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
+                      placeholder="Any special requests or dietary requirements?"
+                      rows="2"
+                    ></textarea>
+                  </div>
+                  
+                  {/* Order Summary */}
+                  <div className="space-y-1 pt-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-600">Subtotal</span>
+                      <span className="font-medium">₱{calculateSubtotal()}</span>
+                    </div>
+                    
+                    {isSeniorCitizen && (
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-green-600">Senior Discount (20%)</span>
+                        <span className="font-medium text-green-600">-₱{calculateDiscount()}</span>
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center justify-between py-2 border-t border-b border-gray-200">
+                      <span className="text-sm font-medium text-gray-700">Total</span>
+                      <span className="text-base font-bold text-amber-600">₱{calculateTotal()}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={clearCart}
+                      className="flex-1 py-2 px-4 border border-gray-300 rounded-lg text-gray-700 text-xs font-medium hover:bg-gray-50"
+                      disabled={cart.length === 0}
+                    >
+                      Clear Cart
+                    </button>
+                    <button
+                      onClick={handleOrderSubmit}
+                      className={`flex-1 py-2 px-4 rounded-lg text-white text-xs font-medium ${
+                        cart.length === 0 || isSubmitting
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-gradient-to-r from-amber-600 to-amber-800 hover:from-amber-700 hover:to-amber-900"
+                      }`}
+                      disabled={cart.length === 0 || isSubmitting}
+                    >
+                      {isSubmitting ? "Processing..." : "Save Order"}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-
-        {filteredMenuItems.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12">
-            <div className="rounded-full bg-amber-100 p-3 mb-4">
-              <Coffee className="h-6 w-6 text-amber-600" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">No menu items found</h3>
-            <p className="text-gray-500 text-center max-w-md">
-              Try adjusting your search or filter to find what you're looking for.
-            </p>
           </div>
-        )}
+        </div>
       </div>
     </ClientLayout>
   );

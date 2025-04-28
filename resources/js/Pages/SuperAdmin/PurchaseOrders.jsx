@@ -15,28 +15,21 @@ import {
   Package,
   DollarSign,
   Tag,
-  Truck
+  Truck,
+  Clock,
+  Calendar,
 } from "lucide-react"
+import AddPurchaseOrderModal from "@/Components/SuperAdmin/AddPurchaseOrderModal"
+import UpdatePurchaseOrderModal from "@/Components/SuperAdmin/UpdatePurchaseOrderModal"
+import PurchaseOrderDetails from "@/Components/SuperAdmin/PurchaseOrderDetails"
 
 export default function PurchaseOrders({ auth }) {
-  const [showNewOrderForm, setShowNewOrderForm] = useState(false)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [showUpdateModal, setShowUpdateModal] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [selectedOrder, setSelectedOrder] = useState(null)
   const [filterStatus, setFilterStatus] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
-  const [showOrderDetails, setShowOrderDetails] = useState(null)
-  
-  // Form state
-  const [formData, setFormData] = useState({
-    orderNumber: "",
-    supplier: "",
-    department: "restaurant", // restaurant or hotel
-    items: [],
-    totalAmount: "",
-    expectedDeliveryDate: "",
-    notes: ""
-  })
-  
-  // Form validation
-  const [errors, setErrors] = useState({})
   
   // Sample purchase orders data
   const [purchaseOrders, setPurchaseOrders] = useState([
@@ -111,6 +104,52 @@ export default function PurchaseOrders({ auth }) {
       style: 'currency',
       currency: 'PHP'
     }).format(amount)
+  }
+
+  // Handle adding a new purchase order
+  const handleAddPurchaseOrder = (newOrder) => {
+    // Generate a new ID (in a real app, this would come from the backend)
+    const newId = Math.max(...purchaseOrders.map(order => order.id)) + 1
+    
+    // Add the new order to the list
+    setPurchaseOrders([
+      ...purchaseOrders,
+      {
+        ...newOrder,
+        id: newId,
+        orderDate: new Date().toISOString(),
+        status: "pending"
+      }
+    ])
+    
+    // Close the modal
+    setShowAddModal(false)
+  }
+
+  // Handle updating an existing purchase order
+  const handleUpdatePurchaseOrder = (updatedOrder) => {
+    // Update the order in the list
+    setPurchaseOrders(
+      purchaseOrders.map(order => 
+        order.id === updatedOrder.id ? updatedOrder : order
+      )
+    )
+    
+    // Close the modal
+    setShowUpdateModal(false)
+    setSelectedOrder(null)
+  }
+
+  // Show the update modal for a specific order
+  const openUpdateModal = (order) => {
+    setSelectedOrder(order)
+    setShowUpdateModal(true)
+  }
+
+  // Show the details modal for a specific order
+  const openDetailsModal = (order) => {
+    setSelectedOrder(order)
+    setShowDetailsModal(true)
   }
 
   // Filter purchase orders
@@ -190,7 +229,7 @@ export default function PurchaseOrders({ auth }) {
             </div>
           </div>
           <button
-            onClick={() => setShowNewOrderForm(true)}
+            onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
           >
             <Plus className="h-4 w-4" />
@@ -239,45 +278,57 @@ export default function PurchaseOrders({ auth }) {
               key={order.id}
               className="rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md"
             >
-              <div className="p-3">
-                <div className="mb-3">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 className="text-sm font-semibold text-gray-900 truncate">{order.orderNumber}</h3>
-                    <div className="flex items-center gap-0.5">
-                      <DollarSign className="h-3 w-3 text-amber-600" />
-                      <span className="font-medium text-xs text-amber-600">{order.totalAmount.toFixed(2)}</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1 mb-1">
-                    <Tag className="h-3 w-3 text-gray-400" />
-                    <p className="text-xs text-gray-500 truncate">{order.supplier}</p>
-                  </div>
-                  <div className="flex items-center gap-1 mb-2">
-                    <Package className="h-3 w-3 text-gray-400" />
-                    <p className="text-xs text-gray-500">
-                      {order.items.length} items {order.status === "pending" && (
-                        <span className="text-amber-600 font-medium">
-                          (Expected: {formatDate(order.expectedDeliveryDate)})
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
+              <div className="p-3 flex flex-col h-full">
+                {/* Order Header with Status on Right */}
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold text-gray-900 truncate">{order.orderNumber}</h3>
                   <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                     {getStatusIcon(order.status)}
                     <span className="capitalize">{order.status}</span>
                   </span>
-                  <div className="flex gap-1">
+                </div>
+                
+                <div className="mb-3 flex-grow">
+                  <div className="flex items-center gap-1 mb-1">
+                    <Tag className="h-3 w-3 text-gray-400" />
+                    <p className="text-xs text-gray-500 truncate">{order.supplier}</p>
+                  </div>
+                  <div className="flex items-center gap-1 mb-1">
+                    <Package className="h-3 w-3 text-gray-400" />
+                    <p className="text-xs text-gray-500">
+                      {order.items.length} items
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1 mb-1">
+                    <DollarSign className="h-3 w-3 text-amber-600" />
+                    <span className="font-medium text-xs text-amber-600">{formatCurrency(order.totalAmount)}</span>
+                  </div>
+                  {order.status === "pending" && (
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-3 w-3 text-gray-400" />
+                      <p className="text-xs text-amber-600 font-medium">
+                        Expected: {formatDate(order.expectedDeliveryDate)}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="mt-auto">
+                  <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
                     <button
-                      onClick={() => setShowOrderDetails(order)}
-                      className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                      onClick={() => openDetailsModal(order)}
+                      className="flex-1 flex items-center justify-center gap-1 rounded-md bg-gradient-to-r from-amber-600 to-amber-800 px-3 py-2 text-xs font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
                     >
-                      <Eye className="w-4 h-4" />
+                      <Eye className="h-4 w-4" />
+                      <span>View</span>
                     </button>
-                    <button className="p-1 text-gray-400 hover:text-gray-600 transition-colors">
-                      <Edit className="w-4 h-4" />
+                    <button 
+                      onClick={() => openUpdateModal(order)}
+                      className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                    >
+                      <Edit className="h-4 w-4" />
+                      <span>Update</span>
                     </button>
                   </div>
                 </div>
@@ -285,202 +336,38 @@ export default function PurchaseOrders({ auth }) {
             </div>
           ))}
         </div>
+        
+        {filteredOrders.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="rounded-full bg-amber-100 p-3 mb-4">
+              <Package className="h-6 w-6 text-amber-600" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-1">No purchase orders found</h3>
+            <p className="text-gray-500 text-center max-w-md">
+              Try adjusting your search or filter to find what you're looking for, or add a new purchase order.
+            </p>
+          </div>
+        )}
       </div>
 
-      {/* Order Details Modal */}
-      {showOrderDetails && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">Order Details</h3>
-                <button onClick={() => setShowOrderDetails(null)} className="text-gray-400 hover:text-gray-600">
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Order Number</p>
-                  <p className="mt-1 text-gray-900">{showOrderDetails.orderNumber}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Supplier</p>
-                  <p className="mt-1 text-gray-900">{showOrderDetails.supplier}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Department</p>
-                  <p className="mt-1 capitalize text-gray-900">{showOrderDetails.department}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Status</p>
-                  <p className="mt-1">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(showOrderDetails.status)}`}>
-                      {getStatusIcon(showOrderDetails.status)}
-                      <span className="ml-1 capitalize">{showOrderDetails.status}</span>
-                    </span>
-                  </p>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-500 mb-2">Items</h4>
-                <div className="bg-gray-50 rounded-lg overflow-hidden">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-100">
-                      <tr>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Item</th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Quantity</th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Unit</th>
-                        <th className="px-4 py-2 text-right text-xs font-medium text-gray-500">Price</th>
-                        <th className="px-4 py-2 text-right text-xs font-medium text-gray-500">Total</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {showOrderDetails.items.map((item, index) => (
-                        <tr key={index} className="bg-white">
-                          <td className="px-4 py-2 text-sm text-gray-900">{item.name}</td>
-                          <td className="px-4 py-2 text-sm text-gray-900">{item.quantity}</td>
-                          <td className="px-4 py-2 text-sm text-gray-900">{item.unit}</td>
-                          <td className="px-4 py-2 text-sm text-gray-900 text-right">{formatCurrency(item.price)}</td>
-                          <td className="px-4 py-2 text-sm text-gray-900 text-right">{formatCurrency(item.quantity * item.price)}</td>
-                        </tr>
-                      ))}
-                      <tr className="bg-gray-50">
-                        <td colSpan="4" className="px-4 py-2 text-sm font-medium text-gray-900 text-right">Total Amount:</td>
-                        <td className="px-4 py-2 text-sm font-medium text-gray-900 text-right">{formatCurrency(showOrderDetails.totalAmount)}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <p className="text-sm font-medium text-gray-500">Notes</p>
-                <p className="mt-1 text-sm text-gray-600">{showOrderDetails.notes}</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Order Date</p>
-                  <p className="mt-1 text-gray-900">{formatDate(showOrderDetails.orderDate)}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Expected Delivery</p>
-                  <p className="mt-1 text-gray-900">{formatDate(showOrderDetails.expectedDeliveryDate)}</p>
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-end gap-4">
-                <button
-                  onClick={() => setShowOrderDetails(null)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  Close
-                </button>
-                <button
-                  className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-amber-600 to-amber-800 rounded-lg hover:from-amber-700 hover:to-amber-900 transition-colors"
-                >
-                  Update Status
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* New Order Form Modal */}
-      {showNewOrderForm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">New Purchase Order</h3>
-                <button onClick={() => setShowNewOrderForm(false)} className="text-gray-400 hover:text-gray-600">
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="orderNumber" className="block text-sm font-medium text-gray-700">Order Number</label>
-                    <input
-                      type="text"
-                      id="orderNumber"
-                      name="orderNumber"
-                      className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                      placeholder="Enter order number"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="supplier" className="block text-sm font-medium text-gray-700">Supplier</label>
-                    <input
-                      type="text"
-                      id="supplier"
-                      name="supplier"
-                      className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                      placeholder="Enter supplier name"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="department" className="block text-sm font-medium text-gray-700">Department</label>
-                    <select
-                      id="department"
-                      name="department"
-                      className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                    >
-                      <option value="restaurant">Restaurant</option>
-                      <option value="hotel">Hotel</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="expectedDeliveryDate" className="block text-sm font-medium text-gray-700">Expected Delivery Date</label>
-                    <input
-                      type="datetime-local"
-                      id="expectedDeliveryDate"
-                      name="expectedDeliveryDate"
-                      className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Items</label>
-                  {/* Add items form here */}
-                </div>
-
-                <div>
-                  <label htmlFor="notes" className="block text-sm font-medium text-gray-700">Notes</label>
-                  <textarea
-                    id="notes"
-                    name="notes"
-                    rows="3"
-                    className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                    placeholder="Enter any additional notes"
-                  ></textarea>
-                </div>
-
-                <div className="flex justify-end gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowNewOrderForm(false)}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-amber-600 to-amber-800 rounded-lg hover:from-amber-700 hover:to-amber-900 transition-colors"
-                  >
-                    Create Order
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Modals */}
+      <AddPurchaseOrderModal 
+        show={showAddModal} 
+        onClose={() => setShowAddModal(false)} 
+        onSubmit={handleAddPurchaseOrder} 
+      />
+      
+      <UpdatePurchaseOrderModal 
+        show={showUpdateModal} 
+        onClose={() => setShowUpdateModal(false)} 
+        order={selectedOrder}
+      />
+      
+      <PurchaseOrderDetails 
+        show={showDetailsModal} 
+        onClose={() => setShowDetailsModal(false)} 
+        order={selectedOrder}
+      />
     </SuperAdminLayout>
   )
 }

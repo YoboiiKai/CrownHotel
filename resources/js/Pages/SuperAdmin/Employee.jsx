@@ -1,171 +1,90 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import SuperAdminLayout from "@/Layouts/SuperAdminLayout"
 import {
   Users,
   User,
   Mail,
   Phone,
-  Calendar,
-  CheckCircle,
   X,
   Plus,
   Search,
-  Filter,
-  ChevronDown,
   Briefcase,
-  MapPin,
-  DollarSign,
+  Edit,
+  Trash,
+  CheckCircle
 } from "lucide-react"
+import AddEmployeeModal from "@/Components/SuperAdmin/AddEmployeeModal"
+import UpdateEmployeeModal from "@/Components/SuperAdmin/UpdateEmployeeModal"
+import EmployeeDetailsModal from "@/Components/SuperAdmin/EmployeeDetailsModal"
+import axios from "axios"
+import { toast, ToastContainer } from "react-toastify"
 
 export default function Employee() {
   const [showNewEmployeeForm, setShowNewEmployeeForm] = useState(false)
+  const [showUpdateEmployeeForm, setShowUpdateEmployeeForm] = useState(false)
+  const [showEmployeeDetails, setShowEmployeeDetails] = useState(false)
+  const [selectedEmployee, setSelectedEmployee] = useState(null)
   const [filterStatus, setFilterStatus] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
-  const [showEmployeeDetails, setShowEmployeeDetails] = useState(null)
+  const [employees, setEmployees] = useState([])
 
-  // Sample employee data
-  const [employees, setEmployees] = useState([
-    {
-      id: 1,
-      name: "John Smith",
-      email: "john.smith@example.com",
-      phone: "+1 (555) 123-4567",
-      position: "Front Desk Manager",
-      department: "Front Office",
-      joinDate: "2022-05-15",
-      status: "active",
-      salary: 4500,
-      address: "123 Main St, Anytown, USA",
-      createdAt: "2022-05-10T14:30:00",
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      email: "sarah.j@example.com",
-      phone: "+1 (555) 987-6543",
-      position: "Housekeeping Supervisor",
-      department: "Housekeeping",
-      joinDate: "2022-03-10",
-      status: "active",
-      salary: 3800,
-      address: "456 Oak Ave, Somewhere, USA",
-      createdAt: "2022-03-05T09:15:00",
-    },
-    {
-      id: 3,
-      name: "Michael Chen",
-      email: "michael.chen@example.com",
-      phone: "+1 (555) 456-7890",
-      position: "Chef de Cuisine",
-      department: "Food & Beverage",
-      joinDate: "2021-11-20",
-      status: "active",
-      salary: 5200,
-      address: "789 Pine Rd, Elsewhere, USA",
-      createdAt: "2021-11-15T11:45:00",
-    },
-    {
-      id: 4,
-      name: "Emily Rodriguez",
-      email: "emily.r@example.com",
-      phone: "+1 (555) 222-3333",
-      position: "Concierge",
-      department: "Guest Services",
-      joinDate: "2023-01-05",
-      status: "active",
-      salary: 3600,
-      address: "101 Elm St, Nowhere, USA",
-      createdAt: "2022-12-28T16:20:00",
-    },
-    {
-      id: 5,
-      name: "David Wilson",
-      email: "david.w@example.com",
-      phone: "+1 (555) 777-8888",
-      position: "Maintenance Technician",
-      department: "Maintenance",
-      joinDate: "2022-08-12",
-      status: "inactive",
-      salary: 3400,
-      address: "202 Cedar Ln, Anyplace, USA",
-      createdAt: "2022-08-05T10:30:00",
-    },
-  ])
+  // Load employees from API on component mount
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
 
-  // Department details for reference
-  const departments = {
-    "Front Office": {
-      description: "Manages guest check-in/check-out, reservations, and front desk operations.",
-      positions: ["Front Desk Manager", "Receptionist", "Reservations Agent", "Front Desk Clerk"],
-    },
-    "Housekeeping": {
-      description: "Responsible for cleanliness and maintenance of guest rooms and public areas.",
-      positions: ["Housekeeping Supervisor", "Room Attendant", "Public Area Cleaner", "Laundry Attendant"],
-    },
-    "Food & Beverage": {
-      description: "Oversees all restaurant, bar, and catering operations within the hotel.",
-      positions: ["F&B Manager", "Chef de Cuisine", "Sous Chef", "Bartender", "Server", "Host/Hostess"],
-    },
-    "Maintenance": {
-      description: "Handles repairs, preventative maintenance, and facility upkeep.",
-      positions: ["Maintenance Manager", "Maintenance Technician", "Engineer"],
-    },
-    "Guest Services": {
-      description: "Provides additional services to enhance guest experience.",
-      positions: ["Guest Services Manager", "Concierge", "Bell Person", "Valet"],
-    },
-    "Administration": {
-      description: "Manages overall hotel operations, finances, and human resources.",
-      positions: ["General Manager", "Assistant Manager", "HR Manager", "Accountant"],
-    },
-  }
+  // Fetch employees from API
+  const fetchEmployees = async () => {
+    try {
+      const response = await axios.get(`/api/employees?_t=${new Date().getTime()}`);
+      setEmployees(response.data);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+      toast.error("Failed to fetch employees. Please try again later.");
+    }
+  };
 
-  // Format date to display in a more readable format
-  const formatDate = (dateString) => {
-    const options = { weekday: "short", month: "short", day: "numeric", year: "numeric" }
-    return new Date(dateString).toLocaleDateString("en-US", options)
-  }
+  // Handle employee status change
+  const handleEmployeeStatusChange = async (updatedEmployee) => {
+    try {
+      await fetchEmployees(); // Refresh the entire employee list
+      setShowEmployeeDetails(false); // Close the details modal after status change
+    } catch (error) {
+      console.error("Error handling employee status change:", error);
+      toast.error("Failed to handle employee status change. Please try again later.");
+    }
+  };
 
-  // Calculate years of service
-  const calculateYearsOfService = (joinDate) => {
-    const start = new Date(joinDate)
-    const today = new Date()
-    const diffTime = Math.abs(today - start)
-    const diffYears = diffTime / (1000 * 60 * 60 * 24 * 365.25)
-    return diffYears < 1 
-      ? "< 1 year" 
-      : `${Math.floor(diffYears)} ${Math.floor(diffYears) === 1 ? "year" : "years"}`
-  }
-
-  // Handle employee activation
-  const activateEmployee = (id) => {
-    setEmployees(employees.map((employee) => (employee.id === id ? { ...employee, status: "active" } : employee)))
-  }
-
-  // Handle employee deactivation
-  const deactivateEmployee = (id) => {
-    setEmployees(employees.map((employee) => (employee.id === id ? { ...employee, status: "inactive" } : employee)))
-  }
-
-  // Delete employee
-  const deleteEmployee = (id) => {
-    setEmployees(employees.filter((employee) => employee.id !== id))
-  }
+  // Handle employee deletion
+  const deleteEmployee = async (id) => {
+    try {
+      await axios.delete(`/api/employees/${id}`);
+      await fetchEmployees(); // Ensure data is refreshed before updating UI
+      toast.success("Employee deleted successfully!");
+      setShowEmployeeDetails(false); // Close the details modal after deletion
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+      toast.error("Failed to delete employee. Please try again.");
+    }
+  };
 
   // Filter employees based on status and search query
   const filteredEmployees = employees.filter((employee) => {
-    const matchesStatus = filterStatus === "all" || employee.status === filterStatus
+    const matchesStatus = filterStatus === "all" || employee.status === filterStatus;
     const matchesSearch =
       employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      employee.position.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      employee.department.toLowerCase().includes(searchQuery.toLowerCase())
-    return matchesStatus && matchesSearch
-  })
+      employee.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.jobtitle?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.department?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.phonenumber?.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesStatus && matchesSearch;
+  });
 
   return (
     <SuperAdminLayout>
+      <ToastContainer position="top-right" hideProgressBar />
       <div className="mx-auto max-w-6xl">
 
         {/* Action Bar */}
@@ -181,35 +100,7 @@ export default function Employee() {
                 className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
               />
             </div>
-            <div className="relative">
-              <button className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all">
-                <Filter className="h-4 w-4 text-gray-400" />
-                <span>Filter</span>
-                <ChevronDown className="h-4 w-4 text-gray-400" />
-              </button>
-              <div className="absolute right-0 mt-2 w-48 rounded-lg border border-gray-100 bg-white shadow-lg z-10 hidden">
-                <div className="p-2">
-                  <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
-                    onClick={() => setFilterStatus("all")}
-                  >
-                    All Employees
-                  </button>
-                  <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
-                    onClick={() => setFilterStatus("active")}
-                  >
-                    Active
-                  </button>
-                  <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
-                    onClick={() => setFilterStatus("inactive")}
-                  >
-                    Inactive
-                  </button>
-                </div>
-              </div>
-            </div>
+            
           </div>
           <button
             onClick={() => setShowNewEmployeeForm(true)}
@@ -247,40 +138,91 @@ export default function Employee() {
           {filteredEmployees.map((employee) => (
             <div
               key={employee.id}
-              className="rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md"
+              className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all overflow-hidden group relative transform hover:-translate-y-1 duration-300"
             >
+              <button
+                onClick={() => deleteEmployee(employee.id)}
+                className="absolute top-3 right-3 h-7 w-7 flex items-center justify-center rounded-lg bg-red-100 text-red-600 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-all z-10 opacity-80 hover:opacity-100"
+                title="Delete Employee"
+              >
+                <Trash className="h-3.5 w-3.5" />
+              </button>
               <div className="p-5">
-                {/* Employee Name and Avatar */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex-shrink-0 h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-semibold text-lg">
-                    {employee.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-semibold text-gray-900 truncate">{employee.name}</h3>
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-3 w-3 text-gray-400" />
-                      <p className="text-sm text-gray-500 truncate">{employee.email}</p>
+                {/* Employee Header with Image and Status */}
+                <div className="flex items-center gap-4 mb-4">
+                  {employee.image ? (
+                    <div className="h-14 w-14 rounded-full overflow-hidden flex-shrink-0 border-2 border-amber-100 group-hover:border-amber-300 transition-all shadow-sm">
+                      <img 
+                        src={`/${employee.image}`}
+                        alt={employee.name}
+                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-14 w-14 rounded-full bg-gradient-to-r from-amber-50 to-amber-100 flex items-center justify-center text-amber-700 font-semibold text-lg flex-shrink-0 border-2 border-amber-100 group-hover:border-amber-300 transition-all shadow-sm">
+                      {employee.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-base font-semibold text-gray-900 truncate group-hover:text-amber-700 transition-colors">
+                        {employee.name}
+                      </h3>
+                    </div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="flex items-center gap-1 bg-amber-50 px-2 py-0.5 rounded-md">
+                        <Briefcase className="h-3 w-3 text-amber-600" />
+                        <span className="text-xs text-amber-600 font-medium">{employee.jobtitle || "STAFF"}</span>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded-md text-xs font-medium flex items-center ${
+                        employee?.status === "active"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}>
+                        {employee?.status === "active" ? (
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                        ) : (
+                          <X className="h-3 w-3 mr-1" />
+                        )}
+                        {employee?.status ? employee.status.charAt(0).toUpperCase() + employee.status.slice(1) : "Inactive"}
+                      </span>
                     </div>
                   </div>
-                  <div
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      employee.status === "active"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}
+                </div>
+
+                {/* Contact Information */}
+                <div className="space-y-1.5 mb-4 bg-gray-50 p-3 rounded-lg">
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <Mail className="h-4 w-4 text-amber-500 flex-shrink-0" />
+                    <p className="text-sm truncate">{employee.email || "No email provided"}</p>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <Phone className="h-4 w-4 text-amber-500 flex-shrink-0" />
+                    <p className="text-sm">{employee.phonenumber || "No phone number"}</p>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
                   <button
-                    onClick={() => setShowEmployeeDetails(employee)}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-3 py-2 text-xs font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                    onClick={() => {
+                      setSelectedEmployee(employee)
+                      setShowEmployeeDetails(true)
+                    }}
+                    className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-3 py-2.5 text-xs font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
                   >
                     <User className="h-4 w-4" />
                     <span>View Details</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedEmployee(employee)
+                      setShowUpdateEmployeeForm(true)
+                    }}
+                    className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                  >
+                    <Edit className="h-4 w-4" />
+                    <span>Update Employee</span>
                   </button>
                 </div>
               </div>
@@ -308,301 +250,28 @@ export default function Employee() {
         )}
       </div>
 
-      {/* New Employee Form Modal */}
-      {showNewEmployeeForm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">Add New Employee</h3>
-                <button onClick={() => setShowNewEmployeeForm(false)} className="text-gray-400 hover:text-gray-600">
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
+      {/* Modals */}
+      <AddEmployeeModal
+        show={showNewEmployeeForm}
+        onClose={() => setShowNewEmployeeForm(false)}
+        onSubmit={fetchEmployees} // Pass fetchEmployees to refresh the employee list
+      />
 
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                      placeholder="Enter full name"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                      placeholder="Enter email address"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                      placeholder="Enter phone number"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="department" className="block text-sm font-medium text-gray-700 mb-1">
-                      Department
-                    </label>
-                    <select
-                      id="department"
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                    >
-                      <option value="">Select department</option>
-                      {Object.keys(departments).map((dept) => (
-                        <option key={dept} value={dept}>
-                          {dept}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
-                      Position
-                    </label>
-                    <input
-                      type="text"
-                      id="position"
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                      placeholder="Enter position"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="joinDate" className="block text-sm font-medium text-gray-700 mb-1">
-                      Join Date
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="date"
-                        id="joinDate"
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                      />
-                      <Calendar className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                    </div>
-                  </div>
-                  <div>
-                    <label htmlFor="salary" className="block text-sm font-medium text-gray-700 mb-1">
-                      Salary ($/month)
-                    </label>
-                    <input
-                      type="number"
-                      id="salary"
-                      min="0"
-                      step="100"
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                      placeholder="Enter monthly salary"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
-                      Status
-                    </label>
-                    <select
-                      id="status"
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                    >
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
-                    </select>
-                  </div>
-                </div>
+      <UpdateEmployeeModal
+        show={showUpdateEmployeeForm}
+        onClose={() => setShowUpdateEmployeeForm(false)}
+        onUpdateEmployee={fetchEmployees} 
+        employee={selectedEmployee}
+      />
 
-                <div>
-                  <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                    Address
-                  </label>
-                  <textarea
-                    id="address"
-                    rows="3"
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-200"
-                    placeholder="Enter employee address"
-                  ></textarea>
-                </div>
-
-                <div className="flex items-center justify-end gap-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowNewEmployeeForm(false)}
-                    className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-200 focus:ring-offset-2 transition-all"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      // Here you would normally handle form submission
-                      // For demo purposes, we'll just close the form
-                      setShowNewEmployeeForm(false)
-                    }}
-                    className="rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all"
-                  >
-                    Add Employee
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {/* Employee Details Modal */}
-      {showEmployeeDetails && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">Employee Details</h3>
-                <button onClick={() => setShowEmployeeDetails(null)} className="text-gray-400 hover:text-gray-600">
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="space-y-6">
-                {/* Employee Header */}
-                <div className="flex items-center gap-4">
-                  <div className="h-16 w-16 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-semibold text-xl">
-                    {showEmployeeDetails.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-900">{showEmployeeDetails.name}</h2>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Mail className="h-4 w-4 text-gray-400" />
-                      <p className="text-sm text-gray-600">{showEmployeeDetails.email}</p>
-                    </div>
-                    <div
-                      className={`mt-2 px-3 py-1 rounded-full text-xs font-medium inline-block ${
-                        showEmployeeDetails.status === "active"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {showEmployeeDetails.status.charAt(0).toUpperCase() + showEmployeeDetails.status.slice(1)}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Employee Details */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
-                      <Briefcase className="h-5 w-5 text-amber-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Position</p>
-                      <p className="text-sm font-medium text-gray-900">{showEmployeeDetails.position}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
-                      <Users className="h-5 w-5 text-amber-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Department</p>
-                      <p className="text-sm font-medium text-gray-900">{showEmployeeDetails.department}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
-                      <Calendar className="h-5 w-5 text-amber-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Join Date</p>
-                      <div className="flex items-center gap-1">
-                        <p className="text-sm font-medium text-gray-900">{formatDate(showEmployeeDetails.joinDate)}</p>
-                        <span className="text-xs text-amber-600">({calculateYearsOfService(showEmployeeDetails.joinDate)})</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
-                      <DollarSign className="h-5 w-5 text-amber-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Salary</p>
-                      <p className="text-sm font-medium text-gray-900">${showEmployeeDetails.salary.toLocaleString()}/month</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
-                      <Phone className="h-5 w-5 text-amber-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Contact</p>
-                      <p className="text-sm font-medium text-gray-900">{showEmployeeDetails.phone}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
-                      <MapPin className="h-5 w-5 text-amber-600" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Address</p>
-                      <p className="text-sm font-medium text-gray-900">{showEmployeeDetails.address}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex items-center gap-3 pt-4 border-t border-gray-100 mt-6">
-                  {showEmployeeDetails.status === "inactive" ? (
-                    <button
-                      onClick={() => {
-                        activateEmployee(showEmployeeDetails.id)
-                        setShowEmployeeDetails(null)
-                      }}
-                      className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-green-600 to-green-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-all"
-                    >
-                      <CheckCircle className="h-4 w-4" />
-                      <span>Activate</span>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        deactivateEmployee(showEmployeeDetails.id)
-                        setShowEmployeeDetails(null)
-                      }}
-                      className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-white border border-red-200 px-4 py-2 text-sm font-medium text-red-600 shadow-sm hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-200 focus:ring-offset-1 transition-all"
-                    >
-                      <X className="h-4 w-4" />
-                      <span>Deactivate</span>
-                    </button>
-                  )}
-                  <button
-                    onClick={() => {
-                      deleteEmployee(showEmployeeDetails.id)
-                      setShowEmployeeDetails(null)
-                    }}
-                    className="flex items-center justify-center gap-1 rounded-lg bg-white border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-1 transition-all"
-                  >
-                    <X className="h-4 w-4" />
-                    <span>Delete</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <EmployeeDetailsModal
+        show={showEmployeeDetails}
+        onClose={() => setShowEmployeeDetails(false)}
+        employee={selectedEmployee}
+        onStatusChange={(updatedEmployee) => {
+          handleEmployeeStatusChange(updatedEmployee);
+        }}
+      />
     </SuperAdminLayout>
   )
 }

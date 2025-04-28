@@ -34,7 +34,8 @@ import {
   MessageSquare,
   ClipboardCheck
 } from "lucide-react"
-
+import axios from 'axios';
+import { toast, ToastContainer } from "react-toastify"
 export default function Rooms() {
   // Filter and search state
   const [filterType, setFilterType] = useState("all")
@@ -58,168 +59,78 @@ export default function Rooms() {
     specialRequests: ""
   })
   const [bookingErrors, setBookingErrors] = useState({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
   
-  // Sample room data
-  const [rooms, setRooms] = useState([
-    {
-      id: 1,
-      number: "101",
-      type: "Deluxe Suite",
-      description: "Spacious suite with ocean view, king-sized bed, and luxury amenities.",
-      price: 250,
-      capacity: 2,
-      size: 45, // in square meters
-      beds: "1 King",
-      bathroom: "En-suite marble bathroom with rainfall shower",
-      available: true,
-      images: [
-        "/images/rooms/deluxe-suite-1.jpg",
-        "/images/rooms/deluxe-suite-2.jpg",
-        "/images/rooms/deluxe-suite-3.jpg"
-      ],
-      amenities: [
-        "Free Wi-Fi",
-        "Breakfast Included",
-        "Air Conditioning",
-        "Flat-screen TV",
-        "Mini Bar",
-        "Coffee Machine",
-        "Safe",
-        "Bathrobes & Slippers"
-      ],
-      rating: 4.8,
-      reviews: 124
-    },
-    {
-      id: 2,
-      number: "205",
-      type: "Executive Room",
-      description: "Modern executive room with city view, work desk, and premium amenities.",
-      price: 180,
-      capacity: 1,
-      size: 35, // in square meters
-      beds: "1 Queen",
-      bathroom: "Private bathroom with shower",
-      available: true,
-      images: [
-        "/images/rooms/executive-room-1.jpg",
-        "/images/rooms/executive-room-2.jpg"
-      ],
-      amenities: [
-        "Free Wi-Fi",
-        "Breakfast Included",
-        "Air Conditioning",
-        "Flat-screen TV",
-        "Work Desk",
-        "Coffee Machine",
-        "Safe"
-      ],
-      rating: 4.6,
-      reviews: 98
-    },
-    {
-      id: 3,
-      number: "310",
-      type: "Family Suite",
-      description: "Spacious family suite with separate living area, perfect for families with children.",
-      price: 350,
-      capacity: 4,
-      size: 65, // in square meters
-      beds: "1 King + 2 Singles",
-      bathroom: "En-suite bathroom with bathtub and shower",
-      available: true,
-      images: [
-        "/images/rooms/family-suite-1.jpg",
-        "/images/rooms/family-suite-2.jpg",
-        "/images/rooms/family-suite-3.jpg"
-      ],
-      amenities: [
-        "Free Wi-Fi",
-        "Breakfast Included",
-        "Air Conditioning",
-        "Flat-screen TV",
-        "Mini Bar",
-        "Coffee Machine",
-        "Safe",
-        "Kitchenette",
-        "Kids Welcome Pack"
-      ],
-      rating: 4.9,
-      reviews: 87
-    },
-    {
-      id: 4,
-      number: "422",
-      type: "Penthouse Suite",
-      description: "Luxurious penthouse suite with panoramic views, private terrace, and butler service.",
-      price: 650,
-      capacity: 2,
-      size: 90, // in square meters
-      beds: "1 King",
-      bathroom: "Marble bathroom with jacuzzi and separate rainfall shower",
-      available: true,
-      images: [
-        "/images/rooms/penthouse-suite-1.jpg",
-        "/images/rooms/penthouse-suite-2.jpg",
-        "/images/rooms/penthouse-suite-3.jpg"
-      ],
-      amenities: [
-        "Free Wi-Fi",
-        "Breakfast Included",
-        "Air Conditioning",
-        "Flat-screen TV",
-        "Mini Bar",
-        "Espresso Machine",
-        "Safe",
-        "Bathrobes & Slippers",
-        "Private Terrace",
-        "Butler Service",
-        "Complimentary Minibar"
-      ],
-      rating: 5.0,
-      reviews: 56
-    },
-    {
-      id: 5,
-      number: "118",
-      type: "Standard Room",
-      description: "Comfortable standard room with all essential amenities for a pleasant stay.",
-      price: 120,
-      capacity: 2,
-      size: 28, // in square meters
-      beds: "2 Singles or 1 Queen",
-      bathroom: "Private bathroom with shower",
-      available: true,
-      images: [
-        "/images/rooms/standard-room-1.jpg",
-        "/images/rooms/standard-room-2.jpg"
-      ],
-      amenities: [
-        "Free Wi-Fi",
-        "Air Conditioning",
-        "Flat-screen TV",
-        "Safe",
-        "Tea & Coffee Facilities"
-      ],
-      rating: 4.3,
-      reviews: 152
+  // Room data state
+  const [rooms, setRooms] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [roomTypes, setRoomTypes] = useState([])
+  const [maxPrice, setMaxPrice] = useState(1000)
+
+  // Fetch rooms data when component mounts
+  useEffect(() => {
+    fetchRooms()
+  }, [])
+
+  // Fetch rooms data from the API
+  const fetchRooms = async () => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await axios.get(`/api/rooms?_t=${new Date().getTime()}`)
+      if (response.data) {
+        setRooms(response.data)
+        
+        // Extract unique room types for filter dropdown
+        const types = [...new Set(response.data.map(room => room.roomType))]
+        setRoomTypes(types.map(type => type.charAt(0).toUpperCase() + type.slice(1)))
+        
+        // Find the maximum price for the price range filter
+        const highestPrice = Math.max(...response.data.map(room => room.price))
+        setMaxPrice(Math.ceil(highestPrice / 100) * 100) // Round up to nearest hundred
+        setPriceRange([0, Math.ceil(highestPrice / 100) * 100])
+      }
+    } catch (error) {
+      console.error("Error fetching rooms:", error)
+      setError("Failed to load rooms. Please try again later.")
+    } finally {
+      setIsLoading(false)
     }
-  ])
-  
-  // Filter rooms based on filters and search query
-  const filteredRooms = rooms.filter((room) => {
-    const matchesType = filterType === "all" || room.type.toLowerCase().includes(filterType.toLowerCase())
-    const matchesSearch = 
-      room.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      room.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      room.number.includes(searchQuery)
-    const matchesPrice = room.price >= priceRange[0] && room.price <= priceRange[1]
-    const matchesCapacity = room.capacity >= capacity
-    const isAvailable = room.available
+  }
+
+  // Filter rooms based on search and filter criteria
+  const filteredRooms = rooms.filter(room => {
+    // Filter by room type
+    if (filterType !== "all" && room.roomType.toLowerCase() !== filterType.toLowerCase()) {
+      return false
+    }
     
-    return matchesType && matchesSearch && matchesPrice && matchesCapacity && isAvailable
+    // Filter by search query
+    if (searchQuery && !room.roomType.toLowerCase().includes(searchQuery.toLowerCase()) && 
+        !room.description.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        !room.amenities.some(amenity => amenity.toLowerCase().includes(searchQuery.toLowerCase()))) {
+      return false
+    }
+    
+    // Filter by price range
+    if (room.price < priceRange[0] || room.price > priceRange[1]) {
+      return false
+    }
+    
+    // Filter by capacity
+    if (room.capacity < capacity) {
+      return false
+    }
+    
+    // Filter by availability
+    if (room.status !== 'available') {
+      return false
+    }
+    
+    return true
   })
-  
+
   // Handle booking form submission
   const handleBookingSubmit = (e) => {
     e.preventDefault()
@@ -238,46 +149,70 @@ export default function Rooms() {
       return
     }
     
-    // Process booking (in a real app, this would send data to the server)
-    alert(`Booking submitted for ${selectedRoom.type}!`)
+    // Set loading state
+    setIsSubmitting(true)
     
-    // Reset form
-    setBookingDates({ checkIn: "", checkOut: "" })
-    setGuestInfo({
-      name: "",
-      email: "",
-      phone: "",
-      guests: 1,
-      specialRequests: ""
-    })
-    setBookingErrors({})
-    setShowBookingForm(false)
-    setSelectedRoom(null)
-  }
-  
-  // Calculate number of nights between check-in and check-out
-  const calculateNights = () => {
-    if (!bookingDates.checkIn || !bookingDates.checkOut) return 0
+    // Prepare form data
+    const formData = new FormData()
+    formData.append("roomId", selectedRoom.id)
+    formData.append("checkInDate", bookingDates.checkIn)
+    formData.append("checkOutDate", bookingDates.checkOut)
+    formData.append("guestName", guestInfo.name)
+    formData.append("email", guestInfo.email)
+    formData.append("phone", guestInfo.phone)
+    formData.append("guests", guestInfo.guests)
+    formData.append("specialRequests", guestInfo.specialRequests)
     
-    const checkIn = new Date(bookingDates.checkIn)
-    const checkOut = new Date(bookingDates.checkOut)
-    const diffTime = Math.abs(checkOut - checkIn)
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    
-    return diffDays
-  }
-  
-  // Calculate total price
-  const calculateTotalPrice = () => {
-    if (!selectedRoom) return 0
-    
-    const nights = calculateNights()
-    return selectedRoom.price * nights
+    // Submit booking to the server
+    axios.post('/api/bookings', formData)
+      .then(response => {
+        toast.success("Booking confirmed successfully!")
+        
+        // Reset form
+        setBookingDates({ checkIn: "", checkOut: "" })
+        setGuestInfo({
+          name: "",
+          email: "",
+          phone: "",
+          guests: 1,
+          specialRequests: ""
+        })
+        setBookingErrors({})
+        setShowBookingForm(false)
+        setSelectedRoom(null)
+        
+        // Refresh rooms data to update availability
+        fetchRooms()
+      })
+      .catch(error => {
+        console.error("Booking error:", error)
+        
+        if (error.response && error.response.data && error.response.data.errors) {
+          setBookingErrors(error.response.data.errors)
+        } else {
+          toast.error("Failed to complete booking. Please try again.")
+        }
+      })
+      .finally(() => {
+        setIsSubmitting(false)
+      })
   }
 
   return (
     <ClientLayout>
       <Head title="Rooms & Suites" />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         
         {/* Hero Section */}
@@ -345,61 +280,19 @@ export default function Rooms() {
                       All Room Types
                     </button>
                   </li>
-                  <li>
-                    <button
-                      className="block w-full px-4 py-2 text-left hover:bg-amber-50"
-                      onClick={() => {
-                        setFilterType("Deluxe Suite")
-                        document.getElementById("type-dropdown").classList.add("hidden")
-                      }}
-                    >
-                      Deluxe Suite
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      className="block w-full px-4 py-2 text-left hover:bg-amber-50"
-                      onClick={() => {
-                        setFilterType("Executive Room")
-                        document.getElementById("type-dropdown").classList.add("hidden")
-                      }}
-                    >
-                      Executive Room
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      className="block w-full px-4 py-2 text-left hover:bg-amber-50"
-                      onClick={() => {
-                        setFilterType("Family Suite")
-                        document.getElementById("type-dropdown").classList.add("hidden")
-                      }}
-                    >
-                      Family Suite
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      className="block w-full px-4 py-2 text-left hover:bg-amber-50"
-                      onClick={() => {
-                        setFilterType("Penthouse Suite")
-                        document.getElementById("type-dropdown").classList.add("hidden")
-                      }}
-                    >
-                      Penthouse Suite
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      className="block w-full px-4 py-2 text-left hover:bg-amber-50"
-                      onClick={() => {
-                        setFilterType("Standard Room")
-                        document.getElementById("type-dropdown").classList.add("hidden")
-                      }}
-                    >
-                      Standard Room
-                    </button>
-                  </li>
+                  {roomTypes.map((type, index) => (
+                    <li key={index}>
+                      <button
+                        className="block w-full px-4 py-2 text-left hover:bg-amber-50"
+                        onClick={() => {
+                          setFilterType(type)
+                          document.getElementById("type-dropdown").classList.add("hidden")
+                        }}
+                      >
+                        {type}
+                      </button>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -425,18 +318,18 @@ export default function Rooms() {
                 <div className="flex flex-col">
                   <div className="mb-2 flex items-center justify-between">
                     <span className="text-xs text-gray-500">$0</span>
-                    <span className="text-xs text-gray-500">$1000</span>
+                    <span className="text-xs text-gray-500">${maxPrice}</span>
                   </div>
                   <input
                     type="range"
                     min="0"
-                    max="1000"
-                    step="50"
+                    max={maxPrice}
+                    step={Math.ceil(maxPrice / 20)}
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
                     className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200"
                     style={{
-                      background: `linear-gradient(to right, #d97706 0%, #d97706 ${priceRange[1] / 10}%, #e5e7eb ${priceRange[1] / 10}%, #e5e7eb 100%)`
+                      background: `linear-gradient(to right, #d97706 0%, #d97706 ${(priceRange[1] / maxPrice) * 100}%, #e5e7eb ${(priceRange[1] / maxPrice) * 100}%, #e5e7eb 100%)`
                     }}
                   />
                   <div className="mt-2 text-center">
@@ -477,7 +370,7 @@ export default function Rooms() {
                   onClick={() => {
                     setFilterType("all")
                     setSearchQuery("")
-                    setPriceRange([0, 1000])
+                    setPriceRange([0, maxPrice])
                     setCapacity(1)
                   }}
                 >
@@ -489,26 +382,67 @@ export default function Rooms() {
           </div>
         )}
         
-        {/* Room Listings */}
-        <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {filteredRooms.length > 0 ? (
+        {/* Room Grid */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {isLoading ? (
+            // Loading skeleton
+            Array.from({ length: 8 }).map((_, index) => (
+              <div key={index} className="rounded-xl bg-white shadow-lg overflow-hidden animate-pulse">
+                <div className="h-48 bg-gray-200"></div>
+                <div className="p-5 space-y-3">
+                  <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-full"></div>
+                  <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                  </div>
+                  <div className="flex justify-between pt-2">
+                    <div className="h-8 bg-gray-200 rounded w-24"></div>
+                    <div className="h-8 bg-gray-200 rounded w-24"></div>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : error ? (
+            // Error state
+            <div className="col-span-full flex flex-col items-center justify-center rounded-xl bg-white p-10 text-center shadow-lg">
+              <div className="mb-4 rounded-full bg-red-50 p-4">
+                <AlertCircle className="h-12 w-12 text-red-500" />
+              </div>
+              <h3 className="mb-2 text-xl font-medium text-gray-900">Error Loading Rooms</h3>
+              <p className="mb-6 max-w-md text-gray-500">{error}</p>
+              <button
+                className="rounded-lg bg-amber-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-amber-700"
+                onClick={fetchRooms}
+              >
+                <RefreshCw className="mr-2 inline h-4 w-4" />
+                Try Again
+              </button>
+            </div>
+          ) : filteredRooms.length > 0 ? (
+            // Room cards
             filteredRooms.map((room) => (
-              <div key={room.id} className="group overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:shadow-xl">
+              <div key={room.id} className="group overflow-hidden rounded-xl bg-white shadow-lg transition-all hover:shadow-xl">
                 {/* Room Image */}
-                <div className="relative h-56 w-full overflow-hidden">
+                <div className="relative h-48 overflow-hidden">
                   <img
-                    src={room.images[0]}
-                    alt={room.type}
+                    src={room.image ? `/storage/${room.image}` : "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80"}
+                    alt={room.roomType}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-80"></div>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent opacity-80"></div>
                   <div className="absolute bottom-0 left-0 right-0 p-5">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-xl font-bold text-white drop-shadow-sm">{room.type}</h3>
-                      <div className="flex items-center rounded-full bg-amber-500 px-2.5 py-1">
-                        <Star className="mr-1 h-3.5 w-3.5 fill-white text-white" />
-                        <span className="text-xs font-medium text-white">{room.rating}</span>
-                      </div>
+                      <h3 className="text-xl font-bold text-white drop-shadow-sm">{room.roomType.charAt(0).toUpperCase() + room.roomType.slice(1)}</h3>
+                      {room.rating && (
+                        <div className="flex items-center rounded-full bg-amber-500 px-2.5 py-1">
+                          <Star className="mr-1 h-3.5 w-3.5 fill-white text-white" />
+                          <span className="text-xs font-medium text-white">{room.rating}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="absolute right-4 top-4">
@@ -523,7 +457,7 @@ export default function Rooms() {
                   <div className="mb-3 flex items-center justify-between">
                     <div className="flex items-center text-sm text-gray-500">
                       <MapPin className="mr-1 h-3.5 w-3.5 text-amber-500" />
-                      <span>Room {room.number}</span>
+                      <span>Room {room.roomNumber}</span>
                     </div>
                   </div>
                   
@@ -533,7 +467,7 @@ export default function Rooms() {
                   <div className="mb-5 grid grid-cols-2 gap-3 text-xs text-gray-500">
                     <div className="flex items-center">
                       <Bed className="mr-1.5 h-4 w-4 text-amber-500" />
-                      <span>{room.beds}</span>
+                      <span>{room.beds || `${room.capacity} Bed${room.capacity !== 1 ? 's' : ''}`}</span>
                     </div>
                     <div className="flex items-center">
                       <Users className="mr-1.5 h-4 w-4 text-amber-500" />
@@ -584,7 +518,7 @@ export default function Rooms() {
                 onClick={() => {
                   setFilterType("all")
                   setSearchQuery("")
-                  setPriceRange([0, 1000])
+                  setPriceRange([0, maxPrice])
                   setCapacity(1)
                 }}
               >
@@ -600,7 +534,7 @@ export default function Rooms() {
           <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black/60 backdrop-blur-sm p-4">
             <div className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl bg-white shadow-xl">
               <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white/95 p-5 backdrop-blur-sm">
-                <h3 className="text-xl font-semibold text-gray-900">{selectedRoom.type} - Room {selectedRoom.number}</h3>
+                <h3 className="text-xl font-semibold text-gray-900">{selectedRoom.roomType.charAt(0).toUpperCase() + selectedRoom.roomType.slice(1)} - Room {selectedRoom.roomNumber}</h3>
                 <button
                   onClick={() => setSelectedRoom(null)}
                   className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-900"
@@ -614,11 +548,12 @@ export default function Rooms() {
                 <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-4">
                   <div className="relative sm:col-span-4 h-64 sm:h-80 overflow-hidden rounded-xl">
                     <img
-                      src={selectedRoom.images[0]}
-                      alt={`${selectedRoom.type} - Main Image`}
+                      src={selectedRoom.image ? `/storage/${selectedRoom.image}` : "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80"}
+                      alt={selectedRoom.roomType}
                       className="h-full w-full object-cover"
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-5">
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent opacity-80"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-5">
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="flex items-center">
@@ -633,11 +568,11 @@ export default function Rooms() {
                       </div>
                     </div>
                   </div>
-                  {selectedRoom.images.slice(1).map((image, index) => (
+                  {selectedRoom.images && selectedRoom.images.slice(1).map((image, index) => (
                     <div key={index} className="relative h-20 overflow-hidden rounded-lg">
                       <img
-                        src={image}
-                        alt={`${selectedRoom.type} - Image ${index + 2}`}
+                        src={`/storage/${image}`}
+                        alt={`${selectedRoom.roomType} - Image ${index + 2}`}
                         className="h-full w-full object-cover transition-all hover:opacity-90"
                       />
                     </div>
@@ -671,13 +606,13 @@ export default function Rooms() {
                         <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-amber-50">
                           <Bed className="h-4 w-4 text-amber-600" />
                         </div>
-                        <span>Beds: {selectedRoom.beds}</span>
+                        <span>Beds: {selectedRoom.beds || `${selectedRoom.capacity} Bed${selectedRoom.capacity !== 1 ? 's' : ''}`}</span>
                       </li>
                       <li className="flex items-center">
                         <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-amber-50">
                           <Bath className="h-4 w-4 text-amber-600" />
                         </div>
-                        <span>Bathroom: {selectedRoom.bathroom}</span>
+                        <span>Bathroom: Private bathroom</span>
                       </li>
                       <li className="flex items-center">
                         <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-amber-50">
@@ -694,14 +629,68 @@ export default function Rooms() {
                       Amenities
                     </h4>
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      {selectedRoom.amenities.map((amenity, index) => (
-                        <div key={index} className="flex items-center">
-                          <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-green-50">
-                            <Check className="h-4 w-4 text-green-600" />
+                      {selectedRoom.amenities ? (
+                        typeof selectedRoom.amenities === 'string' ? (
+                          // Try to parse JSON string
+                          (() => {
+                            try {
+                              const parsedAmenities = JSON.parse(selectedRoom.amenities);
+                              return Array.isArray(parsedAmenities) ? 
+                                parsedAmenities.map((amenity, index) => (
+                                  <div key={index} className="flex items-center">
+                                    <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-green-50">
+                                      <Check className="h-4 w-4 text-green-600" />
+                                    </div>
+                                    <span className="text-gray-700">{amenity}</span>
+                                  </div>
+                                )) : (
+                                  <div className="flex items-center col-span-2">
+                                    <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-amber-50">
+                                      <Info className="h-4 w-4 text-amber-600" />
+                                    </div>
+                                    <span className="text-gray-700">Amenities information available</span>
+                                  </div>
+                                );
+                            } catch (e) {
+                              // If JSON parsing fails, display the string as a single amenity
+                              return (
+                                <div className="flex items-center">
+                                  <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-green-50">
+                                    <Check className="h-4 w-4 text-green-600" />
+                                  </div>
+                                  <span className="text-gray-700">{selectedRoom.amenities}</span>
+                                </div>
+                              );
+                            }
+                          })()
+                        ) : Array.isArray(selectedRoom.amenities) ? (
+                          // Handle array format
+                          selectedRoom.amenities.map((amenity, index) => (
+                            <div key={index} className="flex items-center">
+                              <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-green-50">
+                                <Check className="h-4 w-4 text-green-600" />
+                              </div>
+                              <span className="text-gray-700">{amenity}</span>
+                            </div>
+                          ))
+                        ) : (
+                          // Handle object or other formats
+                          <div className="flex items-center col-span-2">
+                            <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-amber-50">
+                              <Info className="h-4 w-4 text-amber-600" />
+                            </div>
+                            <span className="text-gray-700">Amenities information available</span>
                           </div>
-                          <span className="text-gray-700">{amenity}</span>
+                        )
+                      ) : (
+                        // Handle null or undefined
+                        <div className="flex items-center col-span-2">
+                          <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-amber-50">
+                            <Info className="h-4 w-4 text-amber-600" />
+                          </div>
+                          <span className="text-gray-700">No amenities information available</span>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
                 </div>
@@ -731,7 +720,7 @@ export default function Rooms() {
           <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black/60 backdrop-blur-sm p-4">
             <div className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-xl bg-white shadow-xl">
               <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white/95 p-5 backdrop-blur-sm">
-                <h3 className="text-xl font-semibold text-gray-900">Book {selectedRoom.type} - Room {selectedRoom.number}</h3>
+                <h3 className="text-xl font-semibold text-gray-900">Book {selectedRoom.roomType.charAt(0).toUpperCase() + selectedRoom.roomType.slice(1)} - Room {selectedRoom.roomNumber}</h3>
                 <button
                   onClick={() => {
                     setShowBookingForm(false)
@@ -756,17 +745,17 @@ export default function Rooms() {
                       
                       <div className="mb-4 overflow-hidden rounded-lg shadow-sm">
                         <img
-                          src={selectedRoom.images[0]}
-                          alt={selectedRoom.type}
+                          src={selectedRoom.image ? `/storage/${selectedRoom.image}` : "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80"}
+                          alt={selectedRoom.roomType}
                           className="h-full w-full object-cover"
                         />
                       </div>
                       
                       <div className="mb-4">
-                        <h5 className="text-lg font-medium text-amber-900">{selectedRoom.type}</h5>
+                        <h5 className="text-lg font-medium text-amber-900">{selectedRoom.roomType.charAt(0).toUpperCase() + selectedRoom.roomType.slice(1)}</h5>
                         <div className="flex items-center text-sm text-amber-700">
                           <MapPin className="mr-1 h-3.5 w-3.5" />
-                          <span>Room {selectedRoom.number}</span>
+                          <span>Room {selectedRoom.roomNumber}</span>
                         </div>
                       </div>
                       
@@ -781,7 +770,7 @@ export default function Rooms() {
                           <div className="mr-2 flex h-6 w-6 items-center justify-center rounded-full bg-amber-200/50">
                             <Bed className="h-3.5 w-3.5 text-amber-700" />
                           </div>
-                          <span>{selectedRoom.beds}</span>
+                          <span>{selectedRoom.beds || `${selectedRoom.capacity} Bed${selectedRoom.capacity !== 1 ? 's' : ''}`}</span>
                         </div>
                       </div>
                       
@@ -1061,7 +1050,7 @@ export default function Rooms() {
                             <div className="flex items-center justify-between">
                               <span className="text-gray-600">Length of stay</span>
                               <span className="font-medium text-gray-900">
-                                {calculateNights()} {calculateNights() === 1 ? 'night' : 'nights'}
+                                {(new Date(bookingDates.checkOut).getTime() - new Date(bookingDates.checkIn).getTime()) / (1000 * 60 * 60 * 24)} {((new Date(bookingDates.checkOut).getTime() - new Date(bookingDates.checkIn).getTime()) / (1000 * 60 * 60 * 24)) === 1 ? 'night' : 'nights'}
                               </span>
                             </div>
                             <div className="flex items-center justify-between border-t border-gray-200 pt-3">
@@ -1070,7 +1059,7 @@ export default function Rooms() {
                             </div>
                             <div className="flex items-center justify-between">
                               <span className="text-gray-600">Total</span>
-                              <span className="text-xl font-bold text-amber-600">${calculateTotalPrice()}</span>
+                              <span className="text-xl font-bold text-amber-600">${selectedRoom.price * ((new Date(bookingDates.checkOut).getTime() - new Date(bookingDates.checkIn).getTime()) / (1000 * 60 * 60 * 24))}</span>
                             </div>
                           </div>
                         </div>

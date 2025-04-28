@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import SuperAdminLayout from '@/Layouts/SuperAdminLayout';
 import { Head } from '@inertiajs/react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { 
     CheckCircle, 
     Clock, 
@@ -17,8 +19,11 @@ import {
     ClipboardList,
     Flag,
     MoreHorizontal,
-    Tag
+    Tag,
+    AlignLeft
 } from 'lucide-react';
+import AddTaskModal from '@/Components/SuperAdmin/AddTaskModal';
+import UpdateTaskModal from '@/Components/SuperAdmin/UpdateTaskModal';
 
 export default function Task() {
     // State for task data and UI controls
@@ -26,6 +31,8 @@ export default function Task() {
     const [activeTab, setActiveTab] = useState("all");
     const [searchQuery, setSearchQuery] = useState("");
     const [showModal, setShowModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [selectedTask, setSelectedTask] = useState(null);
     const [showFilterDropdown, setShowFilterDropdown] = useState(false);
     const [showEmployeeDropdown, setShowEmployeeDropdown] = useState(false);
     const [filterPriority, setFilterPriority] = useState("all");
@@ -44,7 +51,46 @@ export default function Task() {
         notes: ""
     });
 
-    // Mock task data
+    // State for tasks from API
+    const [tasks, setTasks] = useState([]);
+    
+    // Fetch tasks from API
+    const fetchTasks = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.get(`/api/tasks?_t=${new Date().getTime()}`);
+            if (response.data.status === 'success') {
+                setTasks(response.data.tasks);
+            } else {
+                toast.error("Failed to fetch tasks. Please try again later.");
+            }
+        } catch (error) {
+            console.error("Error fetching tasks:", error);
+            toast.error("Failed to fetch tasks. Please try again later.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Fetch employees from API
+    const fetchEmployees = async () => {
+        try {
+            const response = await axios.get('/api/task-employees');
+            if (response.data.status === 'success') {
+                setEmployeeData(response.data.employees);
+            }
+        } catch (error) {
+            console.error("Error fetching employees:", error);
+        }
+    };
+    
+    // Load data on component mount
+    useEffect(() => {
+        fetchTasks();
+        fetchEmployees();
+    }, []);
+    
+    // Mock task data for fallback
     const taskData = [
         {
             id: 1,
@@ -160,8 +206,8 @@ export default function Task() {
         }
     ];
 
-    // Mock employee data
-    const employeeData = [
+    // State for employee data
+    const [employeeData, setEmployeeData] = useState([
         { id: 103, name: "Maria Rodriguez", department: "Housekeeping" },
         { id: 107, name: "James Wilson", department: "Food & Beverage" },
         { id: 112, name: "Robert Johnson", department: "Maintenance" },
@@ -172,42 +218,81 @@ export default function Task() {
         { id: 133, name: "Olivia Kim", department: "Food & Beverage" },
         { id: 142, name: "William Taylor", department: "Security" },
         { id: 145, name: "Jennifer Garcia", department: "Spa & Wellness" }
-    ];
+    ]);
 
-    // Fetch data effect
+    // Auto-refresh data every 30 seconds
     useEffect(() => {
-        // Simulate loading data
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 1000);
+        const intervalId = setInterval(() => {
+            fetchTasks();
+        }, 30000); // 30 seconds
         
-        return () => clearTimeout(timer);
+        return () => clearInterval(intervalId);
     }, []);
 
     // Filter tasks based on active tab, search query, and filters
-    const filteredTasks = taskData.filter(task => {
+    const filteredTasks = tasks.filter(task => {
         const matchesTab = 
             activeTab === "all" || 
             (activeTab === "pending" && task.status === "pending") || 
-            (activeTab === "completed" && task.status === "completed") ||
-            (activeTab === "overdue" && task.status === "overdue");
+            (activeTab === "completed" && task.status === "completed");
         
         const matchesSearch = 
-            task.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-            task.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            task.assignedTo.toLowerCase().includes(searchQuery.toLowerCase());
+            (task.title?.toLowerCase() || '').includes(searchQuery.toLowerCase()) || 
+            (task.description?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+            (task.employee?.name?.toLowerCase() || '').includes(searchQuery.toLowerCase());
         
         const matchesPriority = filterPriority === "all" || task.priority === filterPriority;
         
-        const matchesEmployee = filterEmployee === "all" || task.employeeId.toString() === filterEmployee;
+        const matchesEmployee = filterEmployee === "all" || (task.employee_id && task.employee_id.toString() === filterEmployee);
         
         return matchesTab && matchesSearch && matchesPriority && matchesEmployee;
     });
 
     // Helper function to format date
     const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return new Date(dateString).toLocaleDateString('en-US', options);
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        });
+    };
+    
+    // Helper function to format time ago
+    const formatTimeAgo = (dateString) => {
+        if (!dateString) return "N/A";
+        
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInSeconds = Math.floor((now - date) / 1000);
+        
+        if (diffInSeconds < 60) {
+            return `${diffInSeconds} second${diffInSeconds !== 1 ? 's' : ''} ago`;
+        }
+        
+        const diffInMinutes = Math.floor(diffInSeconds / 60);
+        if (diffInMinutes < 60) {
+            return `${diffInMinutes} minute${diffInMinutes !== 1 ? 's' : ''} ago`;
+        }
+        
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        if (diffInHours < 24) {
+            return `${diffInHours} hour${diffInHours !== 1 ? 's' : ''} ago`;
+        }
+        
+        const diffInDays = Math.floor(diffInHours / 24);
+        if (diffInDays < 30) {
+            return `${diffInDays} day${diffInDays !== 1 ? 's' : ''} ago`;
+        }
+        
+        const diffInMonths = Math.floor(diffInDays / 30);
+        if (diffInMonths < 12) {
+            return `${diffInMonths} month${diffInMonths !== 1 ? 's' : ''} ago`;
+        }
+        
+        const diffInYears = Math.floor(diffInMonths / 12);
+        return `${diffInYears} year${diffInYears !== 1 ? 's' : ''} ago`;
     };
 
     // Helper function to calculate days remaining or overdue
@@ -239,8 +324,8 @@ export default function Task() {
     const getStatusColor = (status) => {
         switch (status) {
             case "completed": return "text-green-600 bg-green-100";
-            case "pending": return "text-blue-600 bg-blue-100";
-            case "overdue": return "text-red-600 bg-red-100";
+            case "pending": return "text-amber-600 bg-amber-100";
+            case "inprogress": return "text-blue-600 bg-blue-100";
             default: return "text-gray-600 bg-gray-100";
         }
     };
@@ -277,19 +362,60 @@ export default function Task() {
             notes: ""
         });
         setShowModal(false);
+        fetchTasks(); // Refresh tasks after submission
     };
 
     // Handle task status change
     const handleStatusChange = (taskId, newStatus) => {
-        // In a real app, you would update this in your backend
-        console.log(`Task ${taskId} status changed to ${newStatus}`);
+        axios.put(`/api/tasks/${taskId}/status`, { status: newStatus })
+            .then(response => {
+                if (response.data.status === 'success') {
+                    toast.success(`Task marked as ${newStatus}`);
+                    fetchTasks(); // Refresh tasks after status change
+                } else {
+                    toast.error("Failed to update task status");
+                }
+            })
+            .catch(error => {
+                console.error("Error updating task status:", error);
+                toast.error("Failed to update task status");
+            });
     };
 
     // Handle task deletion
     const handleDeleteTask = (taskId) => {
-        // In a real app, you would delete this from your backend
-        console.log(`Task ${taskId} deleted`);
+        if (window.confirm("Are you sure you want to delete this task?")) {
+            axios.delete(`/api/tasks/${taskId}`)
+                .then(response => {
+                    if (response.data.status === 'success') {
+                        toast.success("Task deleted successfully");
+                        fetchTasks(); // Refresh tasks after deletion
+                        if (expandedTaskId === taskId) {
+                            setExpandedTaskId(null);
+                        }
+                    } else {
+                        toast.error("Failed to delete task");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error deleting task:", error);
+                    toast.error("Failed to delete task");
+                });
+        }
     };
+
+    // Handle task update
+    const handleUpdateTask = (task) => {
+        setSelectedTask(task);
+        setShowUpdateModal(true);
+    };
+    
+    // This section was removed to fix the duplicate fetchTasks declaration
+    
+    // Fetch tasks on component mount
+    useEffect(() => {
+        fetchTasks();
+    }, []);
 
     return (
         <SuperAdminLayout
@@ -304,6 +430,7 @@ export default function Task() {
                 </div>
             }
         >
+            <ToastContainer position="top-right" hideProgressBar />
             <Head title="Task Management" />
                 <div className="mx-auto max-w-6xl">
                     {/* Task Controls */}
@@ -446,37 +573,32 @@ export default function Task() {
                             >
                                 Completed
                             </button>
-                            <button
-                                className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeTab === "overdue" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
-                                onClick={() => setActiveTab("overdue")}
-                            >
-                                Overdue
-                            </button>
                         </div>
                     </div>
 
                     {/* Task Summary Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
                         {/* Total Tasks Card */}
-                        <div className="rounded-xl overflow-hidden border border-gray-200 bg-white shadow-md hover:shadow-lg transition-all duration-300">
+                        <div className="rounded-xl overflow-hidden bg-white shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                            <div className="h-2 bg-gradient-to-r from-blue-500 to-blue-600"></div>
                             <div className="p-6">
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                                            <ClipboardList className="h-5 w-5 text-blue-600" />
+                                        <div className="p-2.5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg shadow-md">
+                                            <ClipboardList className="h-5 w-5 text-white" />
                                         </div>
                                         <h3 className="text-base font-semibold text-gray-900">Total Tasks</h3>
                                     </div>
                                 </div>
-                                <div className="mt-4 flex items-baseline">
-                                    <p className="text-3xl font-bold text-gray-900">{taskData.length}</p>
+                                <div className="flex items-baseline">
+                                    <p className="text-3xl font-bold text-gray-900">{tasks.length}</p>
                                     <span className="ml-2 text-sm text-gray-500">tasks</span>
                                 </div>
-                                <div className="mt-4">
+                                <div className="mt-4 pt-4 border-t border-gray-100">
                                     <div className="flex items-center justify-between">
                                         <p className="text-sm text-gray-500">Active</p>
-                                        <p className="text-sm font-medium text-gray-900">
-                                            {taskData.filter(task => task.status !== "completed").length}
+                                        <p className="text-sm font-medium text-blue-600">
+                                            {tasks.filter(task => task.status !== "completed").length}
                                         </p>
                                     </div>
                                 </div>
@@ -484,84 +606,64 @@ export default function Task() {
                         </div>
 
                         {/* Pending Tasks Card */}
-                        <div className="rounded-xl overflow-hidden border border-gray-200 bg-white shadow-md hover:shadow-lg transition-all duration-300">
+                        <div className="rounded-xl overflow-hidden bg-white shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                            <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600"></div>
                             <div className="p-6">
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100">
-                                            <Clock className="h-5 w-5 text-amber-600" />
+                                        <div className="p-2.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-lg shadow-md">
+                                            <Clock className="h-5 w-5 text-white" />
                                         </div>
                                         <h3 className="text-base font-semibold text-gray-900">Pending Tasks</h3>
                                     </div>
                                 </div>
-                                <div className="mt-4 flex items-baseline">
+                                <div className="flex items-baseline">
                                     <p className="text-3xl font-bold text-gray-900">
-                                        {taskData.filter(task => task.status === "pending").length}
+                                        {tasks.filter(task => task.status === "pending").length}
                                     </p>
                                     <span className="ml-2 text-sm text-gray-500">tasks</span>
                                 </div>
-                                <div className="mt-4">
+                                <div className="mt-4 pt-4 border-t border-gray-100">
                                     <div className="flex items-center justify-between">
                                         <p className="text-sm text-gray-500">High Priority</p>
-                                        <p className="text-sm font-medium text-red-600">
-                                            {taskData.filter(task => task.status === "pending" && task.priority === "high").length}
-                                        </p>
+                                        <div className="flex items-center">
+                                            <span className="h-2 w-2 rounded-full bg-red-500 mr-1.5"></span>
+                                            <p className="text-sm font-medium text-red-600">
+                                                {tasks.filter(task => task.status === "pending" && task.priority === "high").length}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Completed Tasks Card */}
-                        <div className="rounded-xl overflow-hidden border border-gray-200 bg-white shadow-md hover:shadow-lg transition-all duration-300">
+                        <div className="rounded-xl overflow-hidden bg-white shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
+                            <div className="h-2 bg-gradient-to-r from-green-500 to-green-600"></div>
                             <div className="p-6">
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
-                                            <CheckCircle className="h-5 w-5 text-green-600" />
+                                        <div className="p-2.5 bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-md">
+                                            <CheckCircle className="h-5 w-5 text-white" />
                                         </div>
                                         <h3 className="text-base font-semibold text-gray-900">Completed Tasks</h3>
                                     </div>
                                 </div>
-                                <div className="mt-4 flex items-baseline">
+                                <div className="flex items-baseline">
                                     <p className="text-3xl font-bold text-gray-900">
-                                        {taskData.filter(task => task.status === "completed").length}
+                                        {tasks.filter(task => task.status === "completed").length}
                                     </p>
                                     <span className="ml-2 text-sm text-gray-500">tasks</span>
                                 </div>
-                                <div className="mt-4">
+                                <div className="mt-4 pt-4 border-t border-gray-100">
                                     <div className="flex items-center justify-between">
                                         <p className="text-sm text-gray-500">Completion Rate</p>
-                                        <p className="text-sm font-medium text-green-600">
-                                            {Math.round((taskData.filter(task => task.status === "completed").length / taskData.length) * 100)}%
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Overdue Tasks Card */}
-                        <div className="rounded-xl overflow-hidden border border-gray-200 bg-white shadow-md hover:shadow-lg transition-all duration-300">
-                            <div className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-                                            <AlertTriangle className="h-5 w-5 text-red-600" />
+                                        <div className="flex items-center">
+                                            <span className="h-2 w-2 rounded-full bg-green-500 mr-1.5"></span>
+                                            <p className="text-sm font-medium text-green-600">
+                                                {tasks.length > 0 ? Math.round((tasks.filter(task => task.status === "completed").length / tasks.length) * 100) : 0}%
+                                            </p>
                                         </div>
-                                        <h3 className="text-base font-semibold text-gray-900">Overdue Tasks</h3>
-                                    </div>
-                                </div>
-                                <div className="mt-4 flex items-baseline">
-                                    <p className="text-3xl font-bold text-gray-900">
-                                        {taskData.filter(task => task.status === "overdue").length}
-                                    </p>
-                                    <span className="ml-2 text-sm text-gray-500">tasks</span>
-                                </div>
-                                <div className="mt-4">
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-sm text-gray-500">Needs Attention</p>
-                                        <p className="text-sm font-medium text-red-600">
-                                            {taskData.filter(task => task.status === "overdue" && task.priority === "high").length} high priority
-                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -572,151 +674,198 @@ export default function Task() {
                     {isLoading ? (
                         <LoadingState />
                     ) : filteredTasks.length === 0 ? (
-                        <div className="bg-white rounded-xl shadow-sm p-8 text-center border border-gray-100">
-                            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
+                        <div className="flex flex-col items-center justify-center py-12 bg-white rounded-xl shadow-lg border border-gray-100">
+                            <div className="rounded-full bg-amber-100 p-3 mb-4">
                                 <ClipboardList className="h-6 w-6 text-amber-600" />
                             </div>
-                            <h3 className="mt-3 text-lg font-medium text-gray-900">No tasks found</h3>
-                            <p className="mt-2 text-sm text-gray-500">
-                                {searchQuery ? "Try adjusting your search or filters" : "Get started by adding a new task"}
+                            <h3 className="text-lg font-medium text-gray-900 mb-1">No tasks found</h3>
+                            <p className="text-sm text-gray-500 mb-4">
+                                {searchQuery || filterPriority !== "all" || filterEmployee !== "all" 
+                                    ? "There are no tasks matching your current filters."
+                                    : "Get started by adding a new task."}
                             </p>
-                            <div className="mt-6">
+                            {(searchQuery || filterPriority !== "all" || filterEmployee !== "all" || activeTab !== "all") ? (
+                                <button
+                                    onClick={() => {
+                                        setFilterPriority("all");
+                                        setFilterEmployee("all");
+                                        setSearchQuery("");
+                                        setActiveTab("all");
+                                    }}
+                                    className="text-sm font-medium text-amber-600 hover:text-amber-800"
+                                >
+                                    Clear filters
+                                </button>
+                            ) : (
                                 <button
                                     onClick={() => setShowModal(true)}
-                                    className="inline-flex items-center rounded-md bg-amber-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
+                                    className="inline-flex items-center rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2.5 text-sm font-medium text-white shadow-md hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all"
                                 >
-                                    <Plus className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
+                                    <Plus className="mr-2 h-5 w-5" aria-hidden="true" />
                                     Add New Task
                                 </button>
-                            </div>
+                            )}
                         </div>
                     ) : (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                            <ul className="divide-y divide-gray-200">
+                        <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                            <ul className="divide-y divide-gray-100">
                                 {filteredTasks.map((task) => (
                                     <li key={task.id} className="relative">
                                         <div 
-                                            className={`px-4 py-4 sm:px-6 hover:bg-gray-50 transition-colors duration-150 ${
+                                            className={`px-6 py-5 transition-colors duration-200 ${
                                                 expandedTaskId === task.id ? 'bg-gray-50' : ''
                                             }`}
                                         >
                                             <div className="flex items-center justify-between">
-                                                <div className="flex items-center">
-                                                    <div className="min-w-0 flex-1 sm:flex sm:items-center sm:justify-between">
-                                                        <div>
+                                                <div className="flex items-center flex-1 min-w-0">
+                                                    <div className="flex flex-col h-full justify-center space-y-1 mr-4">
+                                                        {/* Priority indicator */}
+                                                        <div className={`w-2.5 h-5 rounded-full ${
+                                                            task.priority === 'high' ? 'bg-red-500' : 
+                                                            task.priority === 'medium' ? 'bg-amber-500' : 'bg-green-500'
+                                                        }`}></div>
+                                                        {/* Status indicator */}
+                                                        <div className={`w-2.5 h-5 rounded-full ${
+                                                            task.status === 'completed' ? 'bg-green-500' : 
+                                                            task.status === 'inprogress' ? 'bg-blue-500' : 
+                                                            task.status === 'pending' ? 'bg-amber-500' : 'bg-gray-500'
+                                                        }`}></div>
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="flex items-center flex-wrap gap-2">
+                                                            <h3 className="font-medium text-gray-900 truncate">{task.title}</h3>
+                                                            <span 
+                                                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}
+                                                            >
+                                                                {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                                                            </span>
+                                                            <span 
+                                                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}
+                                                            >
+                                                                {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
+                                                            </span>
+                                                        </div>
+                                                        <div className="mt-1 flex items-center text-sm text-gray-500">
                                                             <div className="flex items-center">
-                                                                <p className="font-medium text-gray-900 truncate">{task.title}</p>
-                                                                <span 
-                                                                    className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}
-                                                                >
-                                                                    {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-                                                                </span>
-                                                                <span 
-                                                                    className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}
-                                                                >
-                                                                    {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
-                                                                </span>
+                                                                <User className="h-3.5 w-3.5 text-gray-400 mr-1" />
+                                                                <span className="font-medium text-gray-700 truncate">{task.employee ? task.employee.name : 'Unassigned'}</span>
                                                             </div>
-                                                            <div className="mt-1 flex items-center">
-                                                                <p className="text-sm text-gray-500 truncate">
-                                                                    <span className="font-medium text-gray-700">
-                                                                        <User className="inline-block h-3.5 w-3.5 mr-1" />
-                                                                        {task.assignedTo}
-                                                                    </span>
-                                                                    <span className="ml-2 text-gray-400">•</span>
-                                                                    <span className="ml-2">
-                                                                        <Tag className="inline-block h-3.5 w-3.5 mr-1" />
-                                                                        {task.department}
-                                                                    </span>
-                                                                </p>
+                                                            <span className="mx-2 text-gray-300">•</span>
+                                                            <div className="flex items-center">
+                                                                <Clock className="h-3.5 w-3.5 text-gray-400 mr-1" />
+                                                                <span className="truncate">{formatTimeAgo(task.created_at)}</span>
                                                             </div>
+                                                            {task.completed_at && (
+                                                                <>
+                                                                    <span className="mx-2 text-gray-300">•</span>
+                                                                    <div className="flex items-center">
+                                                                        <CheckCircle className="h-3.5 w-3.5 text-green-500 mr-1" />
+                                                                        <span className="text-green-600">{formatTimeAgo(task.completed_at)}</span>
+                                                                    </div>
+                                                                </>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center space-x-2 ml-4">
-                                                    <div className="flex items-center text-sm text-gray-500">
-                                                        <Calendar className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" />
-                                                        <span>{formatDate(task.dueDate)}</span>
-                                                    </div>
-                                                    <div className="flex items-center">
-                                                        <button
-                                                            onClick={() => setExpandedTaskId(expandedTaskId === task.id ? null : task.id)}
-                                                            className="ml-2 p-1 rounded-full text-gray-400 hover:text-amber-600 hover:bg-amber-50 focus:outline-none"
-                                                        >
-                                                            <ChevronDown 
-                                                                className={`h-5 w-5 transform transition-transform duration-200 ${
-                                                                    expandedTaskId === task.id ? 'rotate-180' : ''
-                                                                }`} 
-                                                            />
-                                                        </button>
-                                                    </div>
+                                                <div className="ml-4">
+                                                    <button
+                                                        onClick={() => setExpandedTaskId(expandedTaskId === task.id ? null : task.id)}
+                                                        className="p-1.5 rounded-full text-gray-400 hover:text-amber-600 hover:bg-amber-50 focus:outline-none transition-colors"
+                                                    >
+                                                        <ChevronDown 
+                                                            className={`h-5 w-5 transform transition-transform duration-200 ${
+                                                                expandedTaskId === task.id ? 'rotate-180' : ''
+                                                            }`} 
+                                                        />
+                                                    </button>
                                                 </div>
                                             </div>
                                             
                                             {/* Expanded Task Details */}
                                             {expandedTaskId === task.id && (
-                                                <div className="mt-4 border-t border-gray-100 pt-4 pb-2 text-sm">
-                                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                        <div className="col-span-2">
-                                                            <h4 className="font-medium text-gray-900 mb-2">Description</h4>
-                                                            <p className="text-gray-700 mb-4">{task.description}</p>
-                                                            
-                                                            {task.notes && (
-                                                                <>
-                                                                    <h4 className="font-medium text-gray-900 mb-2">Notes</h4>
-                                                                    <p className="text-gray-700 mb-4">{task.notes}</p>
-                                                                </>
-                                                            )}
-                                                        </div>
-                                                        <div>
-                                                            <h4 className="font-medium text-gray-900 mb-2">Timeline</h4>
-                                                            <div className="space-y-2">
-                                                                <div className="flex justify-between">
-                                                                    <span className="text-gray-500">Created:</span>
-                                                                    <span className="text-gray-700">{formatDate(task.createdAt)}</span>
-                                                                </div>
-                                                                <div className="flex justify-between">
-                                                                    <span className="text-gray-500">Due:</span>
-                                                                    <span className="text-gray-700">{formatDate(task.dueDate)}</span>
-                                                                </div>
-                                                                {task.completedAt && (
-                                                                    <div className="flex justify-between">
-                                                                        <span className="text-gray-500">Completed:</span>
-                                                                        <span className="text-gray-700">{formatDate(task.completedAt)}</span>
-                                                                    </div>
-                                                                )}
-                                                                <div className="flex justify-between">
-                                                                    <span className="text-gray-500">Status:</span>
-                                                                    <span className={`font-medium ${
-                                                                        task.status === 'completed' ? 'text-green-600' : 
-                                                                        task.status === 'overdue' ? 'text-red-600' : 'text-blue-600'
-                                                                    }`}>
-                                                                        {getDaysRemaining(task.dueDate, task.status)}
-                                                                    </span>
+                                                <div className="mt-4 pt-4 border-t border-gray-100 text-sm">
+                                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                        <div className="md:col-span-2 space-y-4">
+                                                            <div>
+                                                                <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center">
+                                                                    <AlignLeft className="h-4 w-4 text-amber-500 mr-2" />
+                                                                    Description
+                                                                </h4>
+                                                                <div className="bg-gray-50 p-3 rounded-lg text-gray-700">
+                                                                    {task.description}
                                                                 </div>
                                                             </div>
                                                             
-                                                            <div className="mt-4 flex flex-wrap gap-2">
+                                                            {task.notes && (
+                                                                <div>
+                                                                    <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center">
+                                                                        <Clock className="h-4 w-4 text-amber-500 mr-2" />
+                                                                        Notes
+                                                                    </h4>
+                                                                    <div className="bg-gray-50 p-3 rounded-lg text-gray-700">
+                                                                        {task.notes}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="space-y-4">
+                                                            <div>
+                                                                <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center">
+                                                                    <Clock className="h-4 w-4 text-amber-500 mr-2" />
+                                                                    Timeline
+                                                                </h4>
+                                                                <div className="bg-gray-50 p-3 rounded-lg">
+                                                                    <div className="space-y-2">
+                                                                        <div className="flex justify-between">
+                                                                            <span className="text-gray-500">Created:</span>
+                                                                            <span className="text-gray-700 font-medium">{formatDate(task.created_at)}</span>
+                                                                        </div>
+                                                                        <div className="flex justify-between">
+                                                                            <span className="text-gray-500">Updated:</span>
+                                                                            <span className="text-gray-700 font-medium">{formatDate(task.updated_at)}</span>
+                                                                        </div>
+                                                                        {task.completed_at && (
+                                                                            <div className="flex justify-between">
+                                                                                <span className="text-gray-500">Completed:</span>
+                                                                                <span className="text-green-600 font-medium">{formatDate(task.completed_at)}</span>
+                                                                            </div>
+                                                                        )}
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {task.status === "pending" && (
+                                                                    <button
+                                                                        onClick={() => handleStatusChange(task.id, "inprogress")}
+                                                                        className="inline-flex items-center px-3 py-2 text-xs font-medium rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-sm transition-all"
+                                                                    >
+                                                                        <Clock className="mr-1.5 h-3.5 w-3.5" />
+                                                                        Start Progress
+                                                                    </button>
+                                                                )}
                                                                 {task.status !== "completed" && (
                                                                     <button
                                                                         onClick={() => handleStatusChange(task.id, "completed")}
-                                                                        className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md bg-green-50 text-green-700 hover:bg-green-100"
+                                                                        className="inline-flex items-center px-3 py-2 text-xs font-medium rounded-lg bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700 shadow-sm transition-all"
                                                                     >
-                                                                        <CheckCircle className="mr-1 h-3.5 w-3.5" />
+                                                                        <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
                                                                         Mark Complete
                                                                     </button>
                                                                 )}
                                                                 <button
-                                                                    className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md bg-amber-50 text-amber-700 hover:bg-amber-100"
+                                                                    onClick={() => handleUpdateTask(task)}
+                                                                    className="inline-flex items-center px-3 py-2 text-xs font-medium rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-white hover:from-amber-600 hover:to-amber-700 shadow-sm transition-all"
                                                                 >
-                                                                    <Edit className="mr-1 h-3.5 w-3.5" />
+                                                                    <Edit className="mr-1.5 h-3.5 w-3.5" />
                                                                     Edit
                                                                 </button>
                                                                 <button
                                                                     onClick={() => handleDeleteTask(task.id)}
-                                                                    className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md bg-red-50 text-red-700 hover:bg-red-100"
+                                                                    className="inline-flex items-center px-3 py-2 text-xs font-medium rounded-lg bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-sm transition-all"
                                                                 >
-                                                                    <Trash2 className="mr-1 h-3.5 w-3.5" />
+                                                                    <Trash2 className="mr-1.5 h-3.5 w-3.5" />
                                                                     Delete
                                                                 </button>
                                                             </div>
@@ -731,194 +880,27 @@ export default function Task() {
                         </div>
                     )}
                 </div>
-            {/* Task Creation Modal */}
-            {showModal && (
-                <div className="fixed inset-0 z-50 overflow-y-auto">
-                    <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={() => setShowModal(false)}></div>
-                        <span className="hidden sm:inline-block sm:h-screen sm:align-middle" aria-hidden="true">&#8203;</span>
-                        <div className="relative inline-block transform overflow-hidden rounded-lg bg-white text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-                            <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                <div className="sm:flex sm:items-start">
-                                    <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 sm:mx-0 sm:h-10 sm:w-10">
-                                        <Plus className="h-6 w-6 text-amber-600" aria-hidden="true" />
-                                    </div>
-                                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                        <h3 className="text-lg font-medium leading-6 text-gray-900">Create New Task</h3>
-                                        <div className="mt-2">
-                                            <p className="text-sm text-gray-500">
-                                                Fill in the details below to create a new task for hotel staff.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="mt-5">
-                                    <form onSubmit={handleSubmitTask}>
-                                        <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                                            {/* Task Title */}
-                                            <div className="sm:col-span-6">
-                                                <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                                                    Task Title <span className="text-red-500">*</span>
-                                                </label>
-                                                <div className="mt-1">
-                                                    <input
-                                                        type="text"
-                                                        name="title"
-                                                        id="title"
-                                                        required
-                                                        value={newTask.title}
-                                                        onChange={handleInputChange}
-                                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {/* Task Description */}
-                                            <div className="sm:col-span-6">
-                                                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                                                    Description <span className="text-red-500">*</span>
-                                                </label>
-                                                <div className="mt-1">
-                                                    <textarea
-                                                        id="description"
-                                                        name="description"
-                                                        rows={3}
-                                                        required
-                                                        value={newTask.description}
-                                                        onChange={handleInputChange}
-                                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {/* Assigned Employee */}
-                                            <div className="sm:col-span-3">
-                                                <label htmlFor="employeeId" className="block text-sm font-medium text-gray-700">
-                                                    Assigned To <span className="text-red-500">*</span>
-                                                </label>
-                                                <div className="mt-1">
-                                                    <select
-                                                        id="employeeId"
-                                                        name="employeeId"
-                                                        required
-                                                        value={newTask.employeeId}
-                                                        onChange={(e) => {
-                                                            const selectedEmployee = employeeData.find(emp => emp.id.toString() === e.target.value);
-                                                            setNewTask(prev => ({
-                                                                ...prev,
-                                                                employeeId: e.target.value,
-                                                                assignedTo: selectedEmployee ? selectedEmployee.name : "",
-                                                                department: selectedEmployee ? selectedEmployee.department : ""
-                                                            }));
-                                                        }}
-                                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
-                                                    >
-                                                        <option value="">Select an employee</option>
-                                                        {employeeData.map((employee) => (
-                                                            <option key={employee.id} value={employee.id}>
-                                                                {employee.name} - {employee.department}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            {/* Department (Auto-filled) */}
-                                            <div className="sm:col-span-3">
-                                                <label htmlFor="department" className="block text-sm font-medium text-gray-700">
-                                                    Department
-                                                </label>
-                                                <div className="mt-1">
-                                                    <input
-                                                        type="text"
-                                                        name="department"
-                                                        id="department"
-                                                        value={newTask.department}
-                                                        readOnly
-                                                        className="block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {/* Priority */}
-                                            <div className="sm:col-span-3">
-                                                <label htmlFor="priority" className="block text-sm font-medium text-gray-700">
-                                                    Priority <span className="text-red-500">*</span>
-                                                </label>
-                                                <div className="mt-1">
-                                                    <select
-                                                        id="priority"
-                                                        name="priority"
-                                                        required
-                                                        value={newTask.priority}
-                                                        onChange={handleInputChange}
-                                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
-                                                    >
-                                                        <option value="low">Low</option>
-                                                        <option value="medium">Medium</option>
-                                                        <option value="high">High</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            {/* Due Date */}
-                                            <div className="sm:col-span-3">
-                                                <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700">
-                                                    Due Date <span className="text-red-500">*</span>
-                                                </label>
-                                                <div className="mt-1">
-                                                    <input
-                                                        type="date"
-                                                        name="dueDate"
-                                                        id="dueDate"
-                                                        required
-                                                        value={newTask.dueDate}
-                                                        onChange={handleInputChange}
-                                                        min={new Date().toISOString().split('T')[0]}
-                                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {/* Notes */}
-                                            <div className="sm:col-span-6">
-                                                <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-                                                    Additional Notes
-                                                </label>
-                                                <div className="mt-1">
-                                                    <textarea
-                                                        id="notes"
-                                                        name="notes"
-                                                        rows={2}
-                                                        value={newTask.notes}
-                                                        onChange={handleInputChange}
-                                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                                            <button
-                                                type="submit"
-                                                className="inline-flex w-full justify-center rounded-md border border-transparent bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:from-amber-600 hover:to-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
-                                            >
-                                                Create Task
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
-                                                onClick={() => setShowModal(false)}
-                                            >
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Task Modals */}
+            <AddTaskModal 
+                show={showModal} 
+                onClose={() => {
+                    setShowModal(false);
+                    fetchTasks(); // Refresh tasks after adding
+                }} 
+                fetchTasks={fetchTasks}
+                employeeData={employeeData} 
+            />
+            
+            <UpdateTaskModal 
+                show={showUpdateModal} 
+                onClose={() => {
+                    setShowUpdateModal(false);
+                    fetchTasks(); // Refresh tasks after updating
+                }} 
+                task={selectedTask}
+                fetchTasks={fetchTasks}
+                employeeData={employeeData}
+            />
         </SuperAdminLayout>
     );
 }

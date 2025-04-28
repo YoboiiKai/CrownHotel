@@ -222,7 +222,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     onClick={() => scrollToSection("testimonials")}
                                     className={`text-sm font-medium transition-colors ${activeSection === "testimonials" ? "text-amber-700" : "text-gray-600 hover:text-amber-700"}`}
                                 >
-                                    Testimonials
+                                    Feedback
                                 </button>
                                 <button 
                                     onClick={() => scrollToSection("rooms")}
@@ -1333,7 +1333,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     </div>
                                 </div>
                                 <div>
-                                    <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-400">LuxStay</h1>
+                                    <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-400">Hotel Tech</h1>
                                 </div>
                             </div>
                             
@@ -1361,7 +1361,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                             {/* Company Info */}
                             <div>
                                 <h4 className="text-lg font-bold mb-6 text-amber-200 relative inline-block">
-                                    About LuxStay
+                                    About Hotel Tech
                                     <span className="absolute -bottom-2 left-0 w-12 h-1 bg-gradient-to-r from-amber-400/0 via-amber-400 to-amber-400/0 rounded-full"></span>
                                 </h4>
                                 <p className="text-amber-300/80 mb-6 leading-relaxed">
@@ -1495,7 +1495,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         {/* Bottom footer */}
                         <div className="pt-8 border-t border-amber-700/30 flex flex-col md:flex-row justify-between items-center">
                             <p className="text-amber-300/70 text-sm mb-4 md:mb-0">
-                                &copy; {new Date().getFullYear()} LuxStay. All rights reserved.
+                                &copy; {new Date().getFullYear()} Hotel Tech. All rights reserved.
                             </p>
                             
                             <div className="flex flex-wrap justify-center gap-6">
