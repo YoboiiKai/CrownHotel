@@ -1,360 +1,1585 @@
-import { Head, Link } from '@inertiajs/react';
+import { useState, useEffect, useRef } from "react";
+import { Head, Link } from "@inertiajs/react";
+import { Building2, ChevronRight, Users, BarChart3, Calendar, Utensils, Shield, Star, X } from "lucide-react";
 
 export default function Welcome({ auth, laravelVersion, phpVersion }) {
-    const handleImageError = () => {
-        document
-            .getElementById('screenshot-container')
-            ?.classList.add('!hidden');
-        document.getElementById('docs-card')?.classList.add('!row-span-1');
-        document
-            .getElementById('docs-card-content')
-            ?.classList.add('!flex-row');
-        document.getElementById('background')?.classList.add('!hidden');
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [activeSection, setActiveSection] = useState("home");
+    const [scrollY, setScrollY] = useState(0);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedRoom, setSelectedRoom] = useState(null);
+    
+    // Sample room data
+    const roomsData = [
+        {
+            id: 1,
+            name: "Deluxe Ocean View Suite",
+            description: "Experience unparalleled luxury with our premium suite offering breathtaking ocean views and world-class amenities.",
+            price: "$450",
+            size: "850 sq ft / 79 sq m",
+            occupancy: "Up to 4 guests (2 adults, 2 children)",
+            rating: 5,
+            reviews: 128,
+            mainImage: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+            images: [
+                {
+                    url: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                    title: "Luxury Bathroom",
+                    subtitle: "Marble finishes with soaking tub"
+                },
+                {
+                    url: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                    title: "King Bedroom",
+                    subtitle: "Premium linens and ocean views"
+                },
+                {
+                    url: "https://images.unsplash.com/photo-1615874959474-d609969a20ed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                    title: "Living Area",
+                    subtitle: "Spacious seating with private balcony"
+                }
+            ],
+            amenities: [
+                "Private balcony with ocean view",
+                "King-size bed with premium linens",
+                "Marble bathroom with soaking tub",
+                "Smart TV with streaming services",
+                "Complimentary high-speed WiFi",
+                "24-hour room service"
+            ]
+        },
+        {
+            id: 2,
+            name: "Executive Mountain Suite",
+            description: "A spacious retreat with panoramic mountain views, perfect for both business and leisure travelers.",
+            price: "$380",
+            size: "750 sq ft / 70 sq m",
+            occupancy: "Up to 3 guests (2 adults, 1 child)",
+            rating: 4.8,
+            reviews: 96,
+            mainImage: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+            images: [
+                {
+                    url: "https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                    title: "Modern Bathroom",
+                    subtitle: "Walk-in shower with mountain views"
+                },
+                {
+                    url: "https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+                    title: "Executive Workspace",
+                    subtitle: "Ergonomic desk with panoramic views"
+                },
+                {
+                    url: "https://images.unsplash.com/photo-1566195992011-5f6b21e539aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+                    title: "Queen Bedroom",
+                    subtitle: "Luxury bedding with mountain views"
+                }
+            ],
+            amenities: [
+                "Dedicated workspace with ergonomic chair",
+                "Queen-size bed with premium linens",
+                "Walk-in shower with rainfall showerhead",
+                "Smart TV with streaming services",
+                "Complimentary high-speed WiFi",
+                "Mini bar with local selections"
+            ]
+        },
+        {
+            id: 3,
+            name: "Luxury Garden Villa",
+            description: "An exclusive villa surrounded by lush tropical gardens with private pool and outdoor dining area.",
+            price: "$650",
+            size: "1200 sq ft / 111 sq m",
+            occupancy: "Up to 6 guests (4 adults, 2 children)",
+            rating: 4.9,
+            reviews: 74,
+            mainImage: "https://images.unsplash.com/photo-1540541338287-37acb0bfb8f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+            images: [
+                {
+                    url: "https://images.unsplash.com/photo-1613553507747-5f8d62ad5904?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                    title: "Private Pool",
+                    subtitle: "Surrounded by tropical gardens"
+                },
+                {
+                    url: "https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1332&q=80",
+                    title: "Master Bedroom",
+                    subtitle: "King bed with garden views"
+                },
+                {
+                    url: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                    title: "Outdoor Dining",
+                    subtitle: "Al fresco dining for six guests"
+                }
+            ],
+            amenities: [
+                "Private swimming pool",
+                "Outdoor dining and lounge area",
+                "Two bedrooms with king-size beds",
+                "Full kitchen with premium appliances",
+                "Complimentary high-speed WiFi",
+                "Private garden with tropical plants"
+            ]
+        },
+        {
+            id: 4,
+            name: "Penthouse City Suite",
+            description: "A luxurious top-floor suite offering panoramic city views, modern design, and exclusive amenities.",
+            price: "$550",
+            size: "950 sq ft / 88 sq m",
+            occupancy: "Up to 4 guests (2 adults, 2 children)",
+            rating: 4.7,
+            reviews: 103,
+            mainImage: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+            images: [
+                {
+                    url: "https://images.unsplash.com/photo-1630699144867-37acb0bfb8f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                    title: "Luxury Bathroom",
+                    subtitle: "Freestanding tub with city views"
+                },
+                {
+                    url: "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+                    title: "Modern Living Room",
+                    subtitle: "Stylish seating with panoramic views"
+                },
+                {
+                    url: "https://images.unsplash.com/photo-1582582621959-48d27397dc69?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80",
+                    title: "Gourmet Kitchen",
+                    subtitle: "Fully equipped with premium appliances"
+                }
+            ],
+            amenities: [
+                "Panoramic city views",
+                "King-size bed with luxury linens",
+                "Freestanding bathtub and walk-in shower",
+                "Fully equipped gourmet kitchen",
+                "Smart home technology throughout",
+                "Access to exclusive rooftop lounge"
+            ]
+        }
+    ];
+
+    // Function to open modal with selected room
+    const openRoomModal = (room) => {
+        setSelectedRoom(room);
+        setIsModalOpen(true);
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+    };
+
+    // Function to close modal
+    const closeModal = () => {
+        setIsModalOpen(false);
+        document.body.style.overflow = 'auto'; // Re-enable scrolling
     };
 
     return (
         <>
-            <Head title="Welcome" />
-            <div className="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
-                <img
-                    id="background"
-                    className="absolute -left-20 top-0 max-w-[877px]"
-                    src="https://laravel.com/assets/img/welcome/background.svg"
-                />
-                <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
-                    <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
-                        <header className="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
-                            <div className="flex lg:col-start-2 lg:justify-center">
-                                <svg
-                                    className="h-12 w-auto text-white lg:h-16 lg:text-[#FF2D20]"
-                                    viewBox="0 0 62 65"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z"
-                                        fill="currentColor"
-                                    />
-                                </svg>
+            <Head title="LuxStay - Hotel & Restaurant Management System" />
+            
+            {/* Main container with gradient background */}
+            <div className="relative min-h-screen w-full overflow-x-hidden bg-gradient-to-br from-amber-50 via-white to-amber-50">
+                {/* Subtle light effects */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-amber-400 opacity-5 blur-[120px] rounded-full"></div>
+                <div className="absolute bottom-0 left-1/4 w-[400px] h-[200px] bg-amber-600 opacity-5 blur-[80px] rounded-full"></div>
+                <div className="absolute top-1/4 right-1/4 w-[300px] h-[300px] bg-amber-300 opacity-5 blur-[80px] rounded-full"></div>
+                
+                {/* Navigation */}
+                <header className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-80 backdrop-blur-md shadow-md">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex justify-between items-center py-4">
+                            {/* Logo */}
+                            <div className="flex items-center space-x-2">
+                                <div className="relative">
+                                    <div className="absolute inset-0 rounded-xl bg-amber-400 blur-[8px] opacity-40"></div>
+                                    <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 text-white shadow-lg">
+                                        <Building2 size={24} className="animate-float" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-700 to-amber-900">Hotel Tech</h1>
+                                </div>
                             </div>
-                            <nav className="-mx-3 flex flex-1 justify-end">
+                            
+                            {/* Desktop Navigation */}
+                            <nav className="hidden md:flex space-x-8">
+                                <button 
+                                    onClick={() => scrollToSection("home")}
+                                    className={`text-sm font-medium transition-colors ${activeSection === "home" ? "text-amber-700" : "text-gray-600 hover:text-amber-700"}`}
+                                >
+                                    Home
+                                </button>
+                                <button 
+                                    onClick={() => scrollToSection("features")}
+                                    className={`text-sm font-medium transition-colors ${activeSection === "features" ? "text-amber-700" : "text-gray-600 hover:text-amber-700"}`}
+                                >
+                                    Features
+                                </button>
+                                <button 
+                                    onClick={() => scrollToSection("benefits")}
+                                    className={`text-sm font-medium transition-colors ${activeSection === "benefits" ? "text-amber-700" : "text-gray-600 hover:text-amber-700"}`}
+                                >
+                                    Benefits
+                                </button>
+                                <button 
+                                    onClick={() => scrollToSection("testimonials")}
+                                    className={`text-sm font-medium transition-colors ${activeSection === "testimonials" ? "text-amber-700" : "text-gray-600 hover:text-amber-700"}`}
+                                >
+                                    Testimonials
+                                </button>
+                                <button 
+                                    onClick={() => scrollToSection("rooms")}
+                                    className={`text-sm font-medium transition-colors ${activeSection === "rooms" ? "text-amber-700" : "text-gray-600 hover:text-amber-700"}`}
+                                >
+                                    Rooms
+                                </button>
+                            </nav>
+                            
+                            {/* Auth Buttons */}
+                            <div className="hidden md:flex items-center space-x-4">
                                 {auth.user ? (
                                     <Link
-                                        href={route('dashboard')}
-                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                        href={route("dashboard")}
+                                        className="px-4 py-2 rounded-md bg-gradient-to-r from-amber-600 to-amber-700 text-white text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200"
                                     >
                                         Dashboard
                                     </Link>
                                 ) : (
                                     <>
                                         <Link
-                                            href={route('login')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                            href={route("login")}
+                                            className="px-4 py-2 rounded-md text-amber-700 text-sm font-medium hover:bg-amber-50 transition-colors"
                                         >
                                             Log in
                                         </Link>
                                         <Link
-                                            href={route('register')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                            href={route("register")}
+                                            className="px-4 py-2 rounded-md bg-gradient-to-r from-amber-600 to-amber-700 text-white text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200"
                                         >
                                             Register
                                         </Link>
                                     </>
                                 )}
-                            </nav>
-                        </header>
-
-                        <main className="mt-6">
-                            <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
-                                <a
-                                    href="https://laravel.com/docs"
-                                    id="docs-card"
-                                    className="flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] md:row-span-3 lg:p-10 lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                                >
-                                    <div
-                                        id="screenshot-container"
-                                        className="relative flex w-full flex-1 items-stretch"
+                            </div>
+                            
+                            {/* Mobile menu button */}
+                            <button 
+                                className="md:hidden rounded-md p-2 text-gray-600 hover:bg-amber-50 hover:text-amber-700 focus:outline-none"
+                                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            >
+                                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    {isMenuOpen ? (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    ) : (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                    )}
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        {/* Mobile Navigation */}
+                        {isMenuOpen && (
+                            <div className="md:hidden py-4 border-t border-gray-200">
+                                <div className="flex flex-col space-y-3">
+                                    <button 
+                                        onClick={() => scrollToSection("home")}
+                                        className={`px-4 py-2 rounded-md text-sm font-medium ${activeSection === "home" ? "bg-amber-50 text-amber-700" : "text-gray-600 hover:bg-amber-50 hover:text-amber-700"}`}
                                     >
-                                        <img
-                                            src="https://laravel.com/assets/img/welcome/docs-light.svg"
-                                            alt="Laravel documentation screenshot"
-                                            className="aspect-video h-full w-full flex-1 rounded-[10px] object-cover object-top drop-shadow-[0px_4px_34px_rgba(0,0,0,0.06)] dark:hidden"
-                                            onError={handleImageError}
-                                        />
-                                        <img
-                                            src="https://laravel.com/assets/img/welcome/docs-dark.svg"
-                                            alt="Laravel documentation screenshot"
-                                            className="hidden aspect-video h-full w-full flex-1 rounded-[10px] object-cover object-top drop-shadow-[0px_4px_34px_rgba(0,0,0,0.25)] dark:block"
-                                        />
-                                        <div className="absolute -bottom-16 -left-16 h-40 w-[calc(100%+8rem)] bg-gradient-to-b from-transparent via-white to-white dark:via-zinc-900 dark:to-zinc-900"></div>
-                                    </div>
-
-                                    <div className="relative flex items-center gap-6 lg:items-end">
-                                        <div
-                                            id="docs-card-content"
-                                            className="flex items-start gap-6 lg:flex-col"
-                                        >
-                                            <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                                <svg
-                                                    className="size-5 sm:size-6"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
+                                        Home
+                                    </button>
+                                    <button 
+                                        onClick={() => scrollToSection("features")}
+                                        className={`px-4 py-2 rounded-md text-sm font-medium ${activeSection === "features" ? "bg-amber-50 text-amber-700" : "text-gray-600 hover:bg-amber-50 hover:text-amber-700"}`}
+                                    >
+                                        Features
+                                    </button>
+                                    <button 
+                                        onClick={() => scrollToSection("benefits")}
+                                        className={`px-4 py-2 rounded-md text-sm font-medium ${activeSection === "benefits" ? "bg-amber-50 text-amber-700" : "text-gray-600 hover:bg-amber-50 hover:text-amber-700"}`}
+                                    >
+                                        Benefits
+                                    </button>
+                                    <button 
+                                        onClick={() => scrollToSection("testimonials")}
+                                        className={`px-4 py-2 rounded-md text-sm font-medium ${activeSection === "testimonials" ? "bg-amber-50 text-amber-700" : "text-gray-600 hover:bg-amber-50 hover:text-amber-700"}`}
+                                    >
+                                        Testimonials
+                                    </button>
+                                    <button 
+                                        onClick={() => scrollToSection("rooms")}
+                                        className={`px-4 py-2 rounded-md text-sm font-medium ${activeSection === "rooms" ? "bg-amber-50 text-amber-700" : "text-gray-600 hover:bg-amber-50 hover:text-amber-700"}`}
+                                    >
+                                        Rooms
+                                    </button>
+                                    
+                                    {/* Auth Buttons for Mobile */}
+                                    <div className="pt-4 border-t border-gray-200 flex flex-col space-y-3">
+                                        {auth.user ? (
+                                            <Link
+                                                href={route("dashboard")}
+                                                className="px-4 py-2 rounded-md bg-gradient-to-r from-amber-600 to-amber-700 text-white text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200 text-center"
+                                            >
+                                                Dashboard
+                                            </Link>
+                                        ) : (
+                                            <>
+                                                <Link
+                                                    href={route("login")}
+                                                    className="px-4 py-2 rounded-md text-amber-700 text-sm font-medium hover:bg-amber-50 transition-colors text-center"
                                                 >
-                                                    <path
-                                                        fill="#FF2D20"
-                                                        d="M23 4a1 1 0 0 0-1.447-.894L12.224 7.77a.5.5 0 0 1-.448 0L2.447 3.106A1 1 0 0 0 1 4v13.382a1.99 1.99 0 0 0 1.105 1.79l9.448 4.728c.14.065.293.1.447.1.154-.005.306-.04.447-.105l9.453-4.724a1.99 1.99 0 0 0 1.1-1.789V4ZM3 6.023a.25.25 0 0 1 .362-.223l7.5 3.75a.251.251 0 0 1 .138.223v11.2a.25.25 0 0 1-.362.224l-7.5-3.75a.25.25 0 0 1-.138-.22V6.023Zm18 11.2a.25.25 0 0 1-.138.224l-7.5 3.75a.249.249 0 0 1-.329-.099.249.249 0 0 1-.033-.12V9.772a.251.251 0 0 1 .138-.224l7.5-3.75a.25.25 0 0 1 .362.224v11.2Z"
-                                                    />
-                                                    <path
-                                                        fill="#FF2D20"
-                                                        d="m3.55 1.893 8 4.048a1.008 1.008 0 0 0 .9 0l8-4.048a1 1 0 0 0-.9-1.785l-7.322 3.706a.506.506 0 0 1-.452 0L4.454.108a1 1 0 0 0-.9 1.785H3.55Z"
-                                                    />
-                                                </svg>
+                                                    Log in
+                                                </Link>
+                                                <Link
+                                                    href={route("register")}
+                                                    className="px-4 py-2 rounded-md bg-gradient-to-r from-amber-600 to-amber-700 text-white text-sm font-medium shadow-md hover:shadow-lg transition-all duration-200 text-center"
+                                                >
+                                                    Register
+                                                </Link>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </header>
+                
+                {/* Hero Section */}
+                <section id="home" className="relative pt-24 pb-16 md:pt-32 md:pb-24 overflow-hidden bg-gradient-to-b from-amber-50/50 to-white">
+                    {/* Background decorative elements */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        {/* Animated background elements */}
+                        <div className="absolute top-20 left-10 w-72 h-72 bg-amber-200 rounded-full mix-blend-multiply opacity-15 animate-blob"></div>
+                        <div className="absolute top-40 right-10 w-80 h-80 bg-amber-400 rounded-full mix-blend-multiply opacity-15 animate-blob animation-delay-2000"></div>
+                        <div className="absolute -bottom-20 left-1/3 w-80 h-80 bg-amber-300 rounded-full mix-blend-multiply opacity-15 animate-blob animation-delay-4000"></div>
+                        
+                        {/* Subtle pattern overlay */}
+                        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+                        
+                        {/* Subtle diagonal lines */}
+                        <div className="absolute inset-0" style={{ 
+                            backgroundImage: 'linear-gradient(45deg, rgba(251, 191, 36, 0.03) 25%, transparent 25%, transparent 50%, rgba(251, 191, 36, 0.03) 50%, rgba(251, 191, 36, 0.03) 75%, transparent 75%, transparent)',
+                            backgroundSize: '100px 100px'
+                        }}></div>
+                        
+                        {/* Top decorative line */}
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-300/0 via-amber-500/50 to-amber-300/0"></div>
+                    </div>
+                    
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+                            {/* Hero Content */}
+                            <div className="lg:w-1/2 space-y-8 text-center lg:text-left">
+                                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                                    <span className="relative inline-block">
+                                        <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-amber-700 via-amber-800 to-amber-600 animate-gradient">
+                                            Elevate Your Hospitality Experience
+                                        </span>
+                                        <span className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-amber-400/0 via-amber-400 to-amber-400/0 rounded-full"></span>
+                                    </span>
+                                </h1>
+                                
+                                <p className="text-lg md:text-xl text-gray-600 max-w-xl mx-auto lg:mx-0 animate-fadeIn animation-delay-500 leading-relaxed">
+                                    A comprehensive ERP solution designed specifically for luxury hotels and fine dining restaurants, crafted to enhance guest satisfaction and operational excellence.
+                                </p>
+                                
+                                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fadeIn animation-delay-1000">
+                                    <Link
+                                        href={route("register")}
+                                        className="px-8 py-4 rounded-full bg-gradient-to-r from-amber-600 to-amber-700 text-white font-medium shadow-lg hover:shadow-amber-200/50 hover:scale-105 transition-all duration-300 flex items-center justify-center group"
+                                    >
+                                        <span className="relative z-10">Get Started</span>
+                                        <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                                        <span className="absolute inset-0 rounded-full bg-white/20 blur-sm -z-10 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                                    </Link>
+                                    <button
+                                        onClick={() => scrollToSection("features")}
+                                        className="px-8 py-4 rounded-full border-2 border-amber-200 bg-white/80 backdrop-blur-sm text-amber-700 font-medium hover:bg-amber-50 hover:border-amber-300 transition-all duration-300 group"
+                                    >
+                                        <span>Explore Features</span>
+                                        <span className="absolute inset-0 rounded-full bg-amber-100/50 blur-sm -z-10 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            {/* Hero Image */}
+                            <div className="lg:w-1/2 relative mt-12 lg:mt-0 animate-fadeIn animation-delay-500">
+                                {/* Main image with effects */}
+                                <div className="relative mx-auto max-w-lg lg:max-w-none">
+                                    {/* Glow effect */}
+                                    <div className="absolute inset-0 bg-amber-400 rounded-2xl blur-[30px] opacity-20 transform rotate-3"></div>
+                                    
+                                    {/* Image container with frame */}
+                                    <div className="relative rounded-2xl overflow-hidden border-[10px] border-white shadow-2xl">
+                                        <img 
+                                            src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" 
+                                            alt="Luxury Hotel" 
+                                            className="relative object-cover h-[500px] w-full transform transition-transform hover:scale-105 duration-700"
+                                        />
+                                        
+                                        {/* Overlay gradient */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-amber-900/50 via-amber-900/20 to-transparent"></div>
+                                        
+                                        {/* Decorative corner elements */}
+                                        <div className="absolute top-4 left-4 w-12 h-12 border-t-2 border-l-2 border-white/40 rounded-tl-lg"></div>
+                                        <div className="absolute top-4 right-4 w-12 h-12 border-t-2 border-r-2 border-white/40 rounded-tr-lg"></div>
+                                        <div className="absolute bottom-4 left-4 w-12 h-12 border-b-2 border-l-2 border-white/40 rounded-bl-lg"></div>
+                                        <div className="absolute bottom-4 right-4 w-12 h-12 border-b-2 border-r-2 border-white/40 rounded-br-lg"></div>
+                                        
+                                        {/* Hotel info overlay */}
+                                        <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+                                            <div className="flex flex-col space-y-4">
+                                                <div className="flex items-center justify-between">
+                                                    <div>
+                                                        <h3 className="text-2xl font-bold">Grand LuxStay Hotel</h3>
+                                                        <div className="flex items-center mt-1">
+                                                            {[...Array(5)].map((_, i) => (
+                                                                <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
+                                                            ))}
+                                                            <span className="ml-2 text-sm">Luxury Experience</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="bg-white/20 backdrop-blur-md rounded-full px-4 py-1.5 text-sm font-bold">
+                                                        Managed with LuxStay
+                                                    </div>
+                                                </div>
+                                                
+                                                {/* Hotel stats */}
+                                                <div className="flex justify-between mt-4 pt-4 border-t border-white/20">
+                                                    <div className="text-center">
+                                                        <p className="text-amber-200 text-sm">Rooms</p>
+                                                        <p className="text-xl font-bold">120+</p>
+                                                    </div>
+                                                    <div className="text-center">
+                                                        <p className="text-amber-200 text-sm">Restaurants</p>
+                                                        <p className="text-xl font-bold">4</p>
+                                                    </div>
+                                                    <div className="text-center">
+                                                        <p className="text-amber-200 text-sm">Rating</p>
+                                                        <p className="text-xl font-bold">5.0</p>
+                                                    </div>
+                                                </div>
                                             </div>
-
-                                            <div className="pt-3 sm:pt-5 lg:pt-0">
-                                                <h2 className="text-xl font-semibold text-black dark:text-white">
-                                                    Documentation
-                                                </h2>
-
-                                                <p className="mt-4 text-sm/relaxed">
-                                                    Laravel has wonderful
-                                                    documentation covering every
-                                                    aspect of the framework.
-                                                    Whether you are a newcomer
-                                                    or have prior experience
-                                                    with Laravel, we recommend
-                                                    reading our documentation
-                                                    from beginning to end.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* Bottom wave decoration */}
+                    <div className="absolute bottom-0 left-0 right-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" className="text-amber-700 w-full h-auto">
+                            <path fill="currentColor" fillOpacity="0.05" d="M0,32L60,42.7C120,53,240,75,360,74.7C480,75,600,53,720,48C840,43,960,53,1080,58.7C1200,64,1320,64,1380,64L1440,64L1440,100L1380,100C1320,100,1200,100,1080,100C960,100,840,100,720,100C600,100,480,100,360,100C240,100,120,100,60,100L0,100Z"></path>
+                        </svg>
+                    </div>
+                </section>
+                
+                {/* Stats Section */}
+                <section className="relative py-16 bg-gradient-to-r from-amber-800 to-amber-950 text-white overflow-hidden">
+                    {/* Decorative elements */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-300/0 via-amber-400/50 to-amber-300/0"></div>
+                        <div className="absolute -top-40 -left-40 w-80 h-80 bg-amber-600/20 rounded-full mix-blend-overlay blur-3xl"></div>
+                        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-amber-500/20 rounded-full mix-blend-overlay blur-3xl"></div>
+                        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMSI+PHBhdGggZD0iTTM2IDM0aDR2MWgtNHYtMXptMC0yaDF2NGgtMXYtNHptLTUgMmg0djFoLTR2LTF6bTAtMmgxdjRoLTF2LTR6bS01IDJoNHYxaC00di0xem0wLTJoMXY0aC0xdi00em0tNSAyaDR2MWgtNHYtMXptMC0yaDF2NGgtMXYtNHptLTUgMmg0djFoLTR2LTF6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
+                    </div>
+                    
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                        <div className="text-center mb-10">
+                            <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-200 to-amber-100">
+                                    Trusted by Industry Leaders
+                                </span>
+                            </h2>
+                            <div className="w-20 h-0.5 bg-gradient-to-r from-amber-400/0 via-amber-400 to-amber-400/0 mx-auto"></div>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {/* Luxury Hotels Stat */}
+                            <div className="group relative">
+                                {/* Card background with hover effect */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-amber-700/50 to-amber-900/50 rounded-xl transform transition-all duration-500 group-hover:scale-105"></div>
+                                <div className="absolute inset-0 bg-black/20 backdrop-blur-sm rounded-xl border border-amber-600/20 transform transition-all duration-500 group-hover:border-amber-500/30"></div>
+                                
+                                {/* Card content */}
+                                <div className="relative p-6 text-center">
+                                    {/* Icon */}
+                                    <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center shadow-lg transform transition-transform group-hover:scale-110 group-hover:rotate-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                        </svg>
+                                    </div>
+                                    
+                                    {/* Counter with animated counting */}
+                                    <div className="relative">
+                                        <h3 className="text-4xl font-bold mb-1 bg-clip-text text-transparent bg-gradient-to-r from-amber-200 to-white">
+                                            500+
+                                        </h3>
+                                        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-10 h-0.5 bg-gradient-to-r from-amber-400/0 via-amber-400 to-amber-400/0"></div>
+                                    </div>
+                                    
+                                    <p className="text-base font-medium text-amber-200 mt-2">Luxury Hotels</p>
+                                    <p className="text-xs text-amber-200/70 mt-1">Worldwide partnerships</p>
+                                    
+                                    {/* Decorative elements */}
+                                    <div className="absolute top-3 right-3 w-6 h-6 border-t-2 border-r-2 border-amber-500/30 rounded-tr-lg"></div>
+                                    <div className="absolute bottom-3 left-3 w-6 h-6 border-b-2 border-l-2 border-amber-500/30 rounded-bl-lg"></div>
+                                </div>
+                            </div>
+                            
+                            {/* Fine Restaurants Stat */}
+                            <div className="group relative">
+                                {/* Card background with hover effect */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-amber-700/50 to-amber-900/50 rounded-xl transform transition-all duration-500 group-hover:scale-105"></div>
+                                <div className="absolute inset-0 bg-black/20 backdrop-blur-sm rounded-xl border border-amber-600/20 transform transition-all duration-500 group-hover:border-amber-500/30"></div>
+                                
+                                {/* Card content */}
+                                <div className="relative p-6 text-center">
+                                    {/* Icon */}
+                                    <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center shadow-lg transform transition-transform group-hover:scale-110 group-hover:rotate-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 15.9999V7.9999C21 6.8999 20.1 5.9999 19 5.9999H13C11.9 5.9999 11 6.8999 11 7.9999V10.9999M21 15.9999V18.9999C21 20.0999 20.1 20.9999 19 20.9999H5C3.9 20.9999 3 20.0999 3 18.9999V10.9999C3 9.8999 3.9 8.9999 5 8.9999H11M21 15.9999H11M11 15.9999V10.9999M8 15.9999H14M7 12.9999H15" />
+                                        </svg>
+                                    </div>
+                                    
+                                    {/* Counter with animated counting */}
+                                    <div className="relative">
+                                        <h3 className="text-4xl font-bold mb-1 bg-clip-text text-transparent bg-gradient-to-r from-amber-200 to-white">
+                                            200+
+                                        </h3>
+                                        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-10 h-0.5 bg-gradient-to-r from-amber-400/0 via-amber-400 to-amber-400/0"></div>
+                                    </div>
+                                    
+                                    <p className="text-base font-medium text-amber-200 mt-2">Fine Restaurants</p>
+                                    <p className="text-xs text-amber-200/70 mt-1">Culinary excellence</p>
+                                    
+                                    {/* Decorative elements */}
+                                    <div className="absolute top-3 right-3 w-6 h-6 border-t-2 border-r-2 border-amber-500/30 rounded-tr-lg"></div>
+                                    <div className="absolute bottom-3 left-3 w-6 h-6 border-b-2 border-l-2 border-amber-500/30 rounded-bl-lg"></div>
+                                </div>
+                            </div>
+                            
+                            {/* Happy Users Stat */}
+                            <div className="group relative">
+                                {/* Card background with hover effect */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-amber-700/50 to-amber-900/50 rounded-xl transform transition-all duration-500 group-hover:scale-105"></div>
+                                <div className="absolute inset-0 bg-black/20 backdrop-blur-sm rounded-xl border border-amber-600/20 transform transition-all duration-500 group-hover:border-amber-500/30"></div>
+                                
+                                {/* Card content */}
+                                <div className="relative p-6 text-center">
+                                    {/* Icon */}
+                                    <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center shadow-lg transform transition-transform group-hover:scale-110 group-hover:rotate-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    
+                                    {/* Counter with animated counting */}
+                                    <div className="relative">
+                                        <h3 className="text-4xl font-bold mb-1 bg-clip-text text-transparent bg-gradient-to-r from-amber-200 to-white">
+                                            10,000+
+                                        </h3>
+                                        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-10 h-0.5 bg-gradient-to-r from-amber-400/0 via-amber-400 to-amber-400/0"></div>
+                                    </div>
+                                    
+                                    <p className="text-base font-medium text-amber-200 mt-2">Happy Users</p>
+                                    <p className="text-xs text-amber-200/70 mt-1">Satisfaction guaranteed</p>
+                                    
+                                    {/* Decorative elements */}
+                                    <div className="absolute top-3 right-3 w-6 h-6 border-t-2 border-r-2 border-amber-500/30 rounded-tr-lg"></div>
+                                    <div className="absolute bottom-3 left-3 w-6 h-6 border-b-2 border-l-2 border-amber-500/30 rounded-bl-lg"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                {/* Benefits Section */}
+                <section id="benefits" className="py-14 bg-gradient-to-b from-amber-50 to-amber-100/30">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-10">
+                            <div className="inline-block mb-3">
+                                <div className="flex items-center justify-center space-x-2">
+                                    <div className="h-px w-8 bg-gradient-to-r from-transparent to-amber-500"></div>
+                                    <div className="text-amber-600 font-medium text-sm uppercase tracking-wider">Why Choose Us</div>
+                                    <div className="h-px w-8 bg-gradient-to-l from-transparent to-amber-500"></div>
+                                </div>
+                            </div>
+                            <h2 className="text-3xl md:text-4xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-amber-700 to-amber-900">
+                                Why Choose LuxStay?
+                            </h2>
+                            <p className="text-base text-gray-600 max-w-2xl mx-auto">
+                                Our system is designed specifically for luxury hospitality businesses, offering unique advantages that set us apart.
+                            </p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-center">
+                            <div className="order-2 lg:order-1 lg:col-span-3">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* Benefit 1 */}
+                                    <div className="group bg-white rounded-lg p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-amber-100 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full -mt-10 -mr-10"></div>
+                                        <div className="flex items-start space-x-3">
+                                            <div className="flex-shrink-0">
+                                                <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                                                    <span className="font-bold text-sm">1</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h3 className="text-lg font-bold mb-1 text-amber-900">Tailored for Luxury</h3>
+                                                <p className="text-sm text-gray-600 leading-relaxed">
+                                                    Specifically designed for high-end hotels and restaurants with features for luxury hospitality.
                                                 </p>
                                             </div>
                                         </div>
-
-                                        <svg
-                                            className="size-6 shrink-0 stroke-[#FF2D20]"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth="1.5"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                                            />
-                                        </svg>
                                     </div>
-                                </a>
-
-                                <a
-                                    href="https://laracasts.com"
-                                    className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                                >
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                        <svg
-                                            className="size-5 sm:size-6"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <g fill="#FF2D20">
-                                                <path d="M24 8.25a.5.5 0 0 0-.5-.5H.5a.5.5 0 0 0-.5.5v12a2.5 2.5 0 0 0 2.5 2.5h19a2.5 2.5 0 0 0 2.5-2.5v-12Zm-7.765 5.868a1.221 1.221 0 0 1 0 2.264l-6.626 2.776A1.153 1.153 0 0 1 8 18.123v-5.746a1.151 1.151 0 0 1 1.609-1.035l6.626 2.776ZM19.564 1.677a.25.25 0 0 0-.177-.427H15.6a.106.106 0 0 0-.072.03l-4.54 4.543a.25.25 0 0 0 .177.427h3.783c.027 0 .054-.01.073-.03l4.543-4.543ZM22.071 1.318a.047.047 0 0 0-.045.013l-4.492 4.492a.249.249 0 0 0 .038.385.25.25 0 0 0 .14.042h5.784a.5.5 0 0 0 .5-.5v-2a2.5 2.5 0 0 0-1.925-2.432ZM13.014 1.677a.25.25 0 0 0-.178-.427H9.101a.106.106 0 0 0-.073.03l-4.54 4.543a.25.25 0 0 0 .177.427H8.4a.106.106 0 0 0 .073-.03l4.54-4.543ZM6.513 1.677a.25.25 0 0 0-.177-.427H2.5A2.5 2.5 0 0 0 0 3.75v2a.5.5 0 0 0 .5.5h1.4a.106.106 0 0 0 .073-.03l4.54-4.543Z" />
-                                            </g>
-                                        </svg>
+                                    
+                                    {/* Benefit 2 */}
+                                    <div className="group bg-white rounded-lg p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-amber-100 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full -mt-10 -mr-10"></div>
+                                        <div className="flex items-start space-x-3">
+                                            <div className="flex-shrink-0">
+                                                <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                                                    <span className="font-bold text-sm">2</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h3 className="text-lg font-bold mb-1 text-amber-900">All-in-One Solution</h3>
+                                                <p className="text-sm text-gray-600 leading-relaxed">
+                                                    Manage hotel and restaurant operations in a single integrated platform.
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <div className="pt-3 sm:pt-5">
-                                        <h2 className="text-xl font-semibold text-black dark:text-white">
-                                            Laracasts
-                                        </h2>
-
-                                        <p className="mt-4 text-sm/relaxed">
-                                            Laracasts offers thousands of video
-                                            tutorials on Laravel, PHP, and
-                                            JavaScript development. Check them
-                                            out, see for yourself, and massively
-                                            level up your development skills in
-                                            the process.
-                                        </p>
+                                    
+                                    {/* Benefit 3 */}
+                                    <div className="group bg-white rounded-lg p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-amber-100 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full -mt-10 -mr-10"></div>
+                                        <div className="flex items-start space-x-3">
+                                            <div className="flex-shrink-0">
+                                                <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                                                    <span className="font-bold text-sm">3</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h3 className="text-lg font-bold mb-1 text-amber-900">Enhanced Guest Experience</h3>
+                                                <p className="text-sm text-gray-600 leading-relaxed">
+                                                    Personalized service with detailed guest profiles and preference tracking.
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <svg
-                                        className="size-6 shrink-0 self-center stroke-[#FF2D20]"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                                        />
-                                    </svg>
-                                </a>
-
-                                <a
-                                    href="https://laravel-news.com"
-                                    className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                                >
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                        <svg
-                                            className="size-5 sm:size-6"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <g fill="#FF2D20">
-                                                <path d="M8.75 4.5H5.5c-.69 0-1.25.56-1.25 1.25v4.75c0 .69.56 1.25 1.25 1.25h3.25c.69 0 1.25-.56 1.25-1.25V5.75c0-.69-.56-1.25-1.25-1.25Z" />
-                                                <path d="M24 10a3 3 0 0 0-3-3h-2V2.5a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2V20a3.5 3.5 0 0 0 3.5 3.5h17A3.5 3.5 0 0 0 24 20V10ZM3.5 21.5A1.5 1.5 0 0 1 2 20V3a.5.5 0 0 1 .5-.5h14a.5.5 0 0 1 .5.5v17c0 .295.037.588.11.874a.5.5 0 0 1-.484.625L3.5 21.5ZM22 20a1.5 1.5 0 1 1-3 0V9.5a.5.5 0 0 1 .5-.5H21a1 1 0 0 1 1 1v10Z" />
-                                                <path d="M12.751 6.047h2a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-2A.75.75 0 0 1 12 7.3v-.5a.75.75 0 0 1 .751-.753ZM12.751 10.047h2a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-2A.75.75 0 0 1 12 11.3v-.5a.75.75 0 0 1 .751-.753ZM4.751 14.047h10a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-10A.75.75 0 0 1 4 15.3v-.5a.75.75 0 0 1 .751-.753ZM4.75 18.047h7.5a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-7.5A.75.75 0 0 1 4 19.3v-.5a.75.75 0 0 1 .75-.753Z" />
-                                            </g>
-                                        </svg>
+                                    
+                                    {/* Benefit 4 */}
+                                    <div className="group bg-white rounded-lg p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-amber-100 relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full -mt-10 -mr-10"></div>
+                                        <div className="flex items-start space-x-3">
+                                            <div className="flex-shrink-0">
+                                                <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                                                    <span className="font-bold text-sm">4</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h3 className="text-lg font-bold mb-1 text-amber-900">Data-Driven Insights</h3>
+                                                <p className="text-sm text-gray-600 leading-relaxed">
+                                                    Advanced analytics and reporting tools designed for hospitality industry.
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <div className="pt-3 sm:pt-5">
-                                        <h2 className="text-xl font-semibold text-black dark:text-white">
-                                            Laravel News
-                                        </h2>
-
-                                        <p className="mt-4 text-sm/relaxed">
-                                            Laravel News is a community driven
-                                            portal and newsletter aggregating
-                                            all of the latest and most important
-                                            news in the Laravel ecosystem,
-                                            including new package releases and
-                                            tutorials.
-                                        </p>
+                                </div>
+                            </div>
+                            
+                            <div className="order-1 lg:order-2 lg:col-span-2 relative">
+                                <div className="absolute inset-0 bg-amber-400 rounded-lg blur-[10px] opacity-20 transform -rotate-2"></div>
+                                <div className="relative overflow-hidden rounded-lg shadow-xl">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-amber-900/70 to-transparent z-10"></div>
+                                    <img 
+                                        src="https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80" 
+                                        alt="Luxury Hotel Lobby" 
+                                        className="object-cover h-[350px] w-full transition-transform duration-700 hover:scale-110"
+                                    />
+                                    <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+                                        <div className="flex flex-col space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <h3 className="text-2xl font-bold">Grand LuxStay Hotel</h3>
+                                                    <div className="flex items-center mt-1">
+                                                        {[...Array(5)].map((_, i) => (
+                                                            <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
+                                                        ))}
+                                                        <span className="ml-2 text-sm">Luxury Experience</span>
+                                                    </div>
+                                                </div>
+                                                <div className="bg-white/20 backdrop-blur-md rounded-full px-4 py-1.5 text-sm font-bold">
+                                                    Managed with LuxStay
+                                                </div>
+                                            </div>
+                                            
+                                            {/* Hotel stats */}
+                                            <div className="flex justify-between mt-4 pt-4 border-t border-white/20">
+                                                <div className="text-center">
+                                                    <p className="text-amber-200 text-sm">Rooms</p>
+                                                    <p className="text-xl font-bold">120+</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-amber-200 text-sm">Restaurants</p>
+                                                    <p className="text-xl font-bold">4</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-amber-200 text-sm">Rating</p>
+                                                    <p className="text-xl font-bold">5.0</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <svg
-                                        className="size-6 shrink-0 self-center stroke-[#FF2D20]"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                                        />
-                                    </svg>
-                                </a>
-
-                                <div className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800">
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                        <svg
-                                            className="size-5 sm:size-6"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <g fill="#FF2D20">
-                                                <path d="M16.597 12.635a.247.247 0 0 0-.08-.237 2.234 2.234 0 0 1-.769-1.68c.001-.195.03-.39.084-.578a.25.25 0 0 0-.09-.267 8.8 8.8 0 0 0-4.826-1.66.25.25 0 0 0-.268.181 2.5 2.5 0 0 1-2.4 1.824.045.045 0 0 0-.045.037 12.255 12.255 0 0 0-.093 3.86.251.251 0 0 0 .208.214c2.22.366 4.367 1.08 6.362 2.118a.252.252 0 0 0 .32-.079 10.09 10.09 0 0 0 1.597-3.733ZM13.616 17.968a.25.25 0 0 0-.063-.407A19.697 19.697 0 0 0 8.91 15.98a.25.25 0 0 0-.287.325c.151.455.334.898.548 1.328.437.827.981 1.594 1.619 2.28a.249.249 0 0 0 .32.044 29.13 29.13 0 0 0 2.506-1.99ZM6.303 14.105a.25.25 0 0 0 .265-.274 13.048 13.048 0 0 1 .205-4.045.062.062 0 0 0-.022-.07 2.5 2.5 0 0 1-.777-.982.25.25 0 0 0-.271-.149 11 11 0 0 0-5.6 2.815.255.255 0 0 0-.075.163c-.008.135-.02.27-.02.406.002.8.084 1.598.246 2.381a.25.25 0 0 0 .303.193 19.924 19.924 0 0 1 5.746-.438ZM9.228 20.914a.25.25 0 0 0 .1-.393 11.53 11.53 0 0 1-1.5-2.22 12.238 12.238 0 0 1-.91-2.465.248.248 0 0 0-.22-.187 18.876 18.876 0 0 0-5.69.33.249.249 0 0 0-.179.336c.838 2.142 2.272 4 4.132 5.353a.254.254 0 0 0 .15.048c1.41-.01 2.807-.282 4.117-.802ZM18.93 12.957l-.005-.008a.25.25 0 0 0-.268-.082 2.21 2.21 0 0 1-.41.081.25.25 0 0 0-.217.2c-.582 2.66-2.127 5.35-5.75 7.843a.248.248 0 0 0-.09.299.25.25 0 0 0 .065.091 28.703 28.703 0 0 0 2.662 2.12.246.246 0 0 0 .209.037c2.579-.701 4.85-2.242 6.456-4.378a.25.25 0 0 0 .048-.189 13.51 13.51 0 0 0-2.7-6.014ZM5.702 7.058a.254.254 0 0 0 .2-.165A2.488 2.488 0 0 1 7.98 5.245a.093.093 0 0 0 .078-.062 19.734 19.734 0 0 1 3.055-4.74.25.25 0 0 0-.21-.41 12.009 12.009 0 0 0-10.4 8.558.25.25 0 0 0 .373.281 12.912 12.912 0 0 1 4.826-1.814ZM10.773 22.052a.25.25 0 0 0-.28-.046c-.758.356-1.55.635-2.365.833a.25.25 0 0 0-.022.48c1.252.43 2.568.65 3.893.65.1 0 .2 0 .3-.008a.25.25 0 0 0 .147-.444c-.526-.424-1.1-.917-1.673-1.465ZM18.744 8.436a.249.249 0 0 0 .15.228 2.246 2.246 0 0 1 1.352 2.054c0 .337-.08.67-.23.972a.25.25 0 0 0 .042.28l.007.009a15.016 15.016 0 0 1 2.52 4.6.25.25 0 0 0 .37.132.25.25 0 0 0 .096-.114c.623-1.464.944-3.039.945-4.63a12.005 12.005 0 0 0-5.78-10.258.25.25 0 0 0-.373.274c.547 2.109.85 4.274.901 6.453ZM9.61 5.38a.25.25 0 0 0 .08.31c.34.24.616.561.8.935a.25.25 0 0 0 .3.127.631.631 0 0 1 .206-.034c2.054.078 4.036.772 5.69 1.991a.251.251 0 0 0 .267.024c.046-.024.093-.047.141-.067a.25.25 0 0 0 .151-.23A29.98 29.98 0 0 0 15.957.764a.25.25 0 0 0-.16-.164 11.924 11.924 0 0 0-2.21-.518.252.252 0 0 0-.215.076A22.456 22.456 0 0 0 9.61 5.38Z" />
-                                            </g>
-                                        </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                {/* Features Section */}
+                <section id="features" className="py-16 bg-white">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-10">
+                            <div className="inline-block mb-3">
+                                <div className="flex items-center justify-center space-x-2">
+                                    <div className="h-px w-8 bg-gradient-to-r from-transparent to-amber-500"></div>
+                                    <div className="text-amber-600 font-medium text-sm uppercase tracking-wider">Our Solutions</div>
+                                    <div className="h-px w-8 bg-gradient-to-l from-transparent to-amber-500"></div>
+                                </div>
+                            </div>
+                            <h2 className="text-3xl md:text-4xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-amber-700 to-amber-900">
+                                Powerful Features
+                            </h2>
+                            <p className="text-base text-gray-600 max-w-2xl mx-auto">
+                                Our comprehensive ERP system offers everything you need to manage your hotel and restaurant operations efficiently.
+                            </p>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+                            {/* Feature 1 */}
+                            <div className="group relative overflow-hidden rounded-lg p-5 bg-gradient-to-br from-amber-50 to-amber-100/50 hover:from-amber-100 hover:to-amber-50 transition-all duration-300 border border-amber-100 shadow-sm hover:shadow-md">
+                                <div className="absolute top-0 right-0 w-16 h-16 -mt-8 -mr-8 bg-amber-500/10 rounded-full"></div>
+                                <div className="flex items-start space-x-3">
+                                    <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg w-10 h-10 flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 transition-transform">
+                                        <Calendar className="h-5 w-5" />
                                     </div>
-
-                                    <div className="pt-3 sm:pt-5">
-                                        <h2 className="text-xl font-semibold text-black dark:text-white">
-                                            Vibrant Ecosystem
-                                        </h2>
-
-                                        <p className="mt-4 text-sm/relaxed">
-                                            Laravel's robust library of
-                                            first-party tools and libraries,
-                                            such as{' '}
-                                            <a
-                                                href="https://forge.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]"
-                                            >
-                                                Forge
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://vapor.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Vapor
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://nova.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Nova
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://envoyer.io"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Envoyer
-                                            </a>
-                                            , and{' '}
-                                            <a
-                                                href="https://herd.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Herd
-                                            </a>{' '}
-                                            help you take your projects to the
-                                            next level. Pair them with powerful
-                                            open source libraries like{' '}
-                                            <a
-                                                href="https://laravel.com/docs/billing"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Cashier
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/dusk"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Dusk
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/broadcasting"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Echo
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/horizon"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Horizon
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/sanctum"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Sanctum
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/telescope"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Telescope
-                                            </a>
-                                            , and more.
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-1 text-amber-900">Reservation Management</h3>
+                                        <p className="text-sm text-gray-600 leading-relaxed">
+                                            Streamline bookings with our intuitive system for room availability and automated confirmations.
                                         </p>
                                     </div>
                                 </div>
                             </div>
-                        </main>
-
-                        <footer className="py-16 text-center text-sm text-black dark:text-white/70">
-                            Laravel v{laravelVersion} (PHP v{phpVersion})
-                        </footer>
+                            
+                            {/* Feature 2 */}
+                            <div className="group relative overflow-hidden rounded-lg p-5 bg-gradient-to-br from-amber-50 to-amber-100/50 hover:from-amber-100 hover:to-amber-50 transition-all duration-300 border border-amber-100 shadow-sm hover:shadow-md">
+                                <div className="absolute top-0 right-0 w-16 h-16 -mt-8 -mr-8 bg-amber-500/10 rounded-full"></div>
+                                <div className="flex items-start space-x-3">
+                                    <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg w-10 h-10 flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 transition-transform">
+                                        <Users className="h-5 w-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-1 text-amber-900">Guest Management</h3>
+                                        <p className="text-sm text-gray-600 leading-relaxed">
+                                            Track guest preferences and history to personalize their experience with your brand.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Feature 3 */}
+                            <div className="group relative overflow-hidden rounded-lg p-5 bg-gradient-to-br from-amber-50 to-amber-100/50 hover:from-amber-100 hover:to-amber-50 transition-all duration-300 border border-amber-100 shadow-sm hover:shadow-md">
+                                <div className="absolute top-0 right-0 w-16 h-16 -mt-8 -mr-8 bg-amber-500/10 rounded-full"></div>
+                                <div className="flex items-start space-x-3">
+                                    <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg w-10 h-10 flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 transition-transform">
+                                        <Utensils className="h-5 w-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-1 text-amber-900">Restaurant POS</h3>
+                                        <p className="text-sm text-gray-600 leading-relaxed">
+                                            Manage orders, track inventory, and process payments with our integrated system.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Feature 4 */}
+                            <div className="group relative overflow-hidden rounded-lg p-5 bg-gradient-to-br from-amber-50 to-amber-100/50 hover:from-amber-100 hover:to-amber-50 transition-all duration-300 border border-amber-100 shadow-sm hover:shadow-md">
+                                <div className="absolute top-0 right-0 w-16 h-16 -mt-8 -mr-8 bg-amber-500/10 rounded-full"></div>
+                                <div className="flex items-start space-x-3">
+                                    <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg w-10 h-10 flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 transition-transform">
+                                        <BarChart3 className="h-5 w-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-1 text-amber-900">Analytics & Reporting</h3>
+                                        <p className="text-sm text-gray-600 leading-relaxed">
+                                            Gain insights with comprehensive dashboards tracking all key performance indicators.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Feature 5 */}
+                            <div className="group relative overflow-hidden rounded-lg p-5 bg-gradient-to-br from-amber-50 to-amber-100/50 hover:from-amber-100 hover:to-amber-50 transition-all duration-300 border border-amber-100 shadow-sm hover:shadow-md">
+                                <div className="absolute top-0 right-0 w-16 h-16 -mt-8 -mr-8 bg-amber-500/10 rounded-full"></div>
+                                <div className="flex items-start space-x-3">
+                                    <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg w-10 h-10 flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 transition-transform">
+                                        <Building2 className="h-5 w-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-1 text-amber-900">Property Management</h3>
+                                        <p className="text-sm text-gray-600 leading-relaxed">
+                                            Monitor room status, maintenance, and housekeeping to maintain perfect conditions.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* Feature 6 */}
+                            <div className="group relative overflow-hidden rounded-lg p-5 bg-gradient-to-br from-amber-50 to-amber-100/50 hover:from-amber-100 hover:to-amber-50 transition-all duration-300 border border-amber-100 shadow-sm hover:shadow-md">
+                                <div className="absolute top-0 right-0 w-16 h-16 -mt-8 -mr-8 bg-amber-500/10 rounded-full"></div>
+                                <div className="flex items-start space-x-3">
+                                    <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg w-10 h-10 flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 transition-transform">
+                                        <Shield className="h-5 w-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-1 text-amber-900">Security & Compliance</h3>
+                                        <p className="text-sm text-gray-600 leading-relaxed">
+                                            Protect guest data and maintain compliance with all industry regulations.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </section>
+
+                {/* Testimonials Section */}
+                <section id="testimonials" className="py-20 relative overflow-hidden">
+                    {/* Decorative background elements */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        <div className="absolute -top-40 -right-40 w-80 h-80 bg-amber-100 rounded-full mix-blend-multiply opacity-70 blur-3xl"></div>
+                        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-amber-200 rounded-full mix-blend-multiply opacity-70 blur-3xl"></div>
+                    </div>
+                    
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                        <div className="text-center mb-16 relative">
+                            {/* Decorative element */}
+                            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-amber-100 rounded-full mix-blend-multiply opacity-70 blur-xl"></div>
+                            
+                            <div className="inline-block mb-3">
+                                <div className="flex items-center justify-center mb-4">
+                                    <div className="h-px bg-amber-300 w-8 mr-3"></div>
+                                    <span className="text-amber-600 font-medium text-sm uppercase tracking-wider">Testimonials</span>
+                                    <div className="h-px bg-amber-300 w-8 ml-3"></div>
+                                </div>
+                            </div>
+                            
+                            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-700 to-amber-900">
+                                What Our Clients Say
+                            </h2>
+                            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                                Hear from luxury hotels and restaurants that have transformed their operations with LuxStay.
+                            </p>
+                            <div className="w-20 h-1 bg-gradient-to-r from-amber-400/0 via-amber-400 to-amber-400/0 mx-auto mt-6"></div>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {/* Testimonial 1 */}
+                            <div className="group relative">
+                                {/* Card background with hover effect */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-amber-50 to-amber-100/80 rounded-xl transform transition-all duration-500 group-hover:scale-[1.02]"></div>
+                                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-xl border border-amber-200/50 shadow-lg transform transition-all duration-500 group-hover:border-amber-300/70 group-hover:shadow-xl"></div>
+                                
+                                {/* Card content */}
+                                <div className="relative p-8">
+                                    {/* Quote icon */}
+                                    <div className="absolute -top-4 -left-2 text-amber-400 opacity-20">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z"/>
+                                        </svg>
+                                    </div>
+                                    
+                                    <div className="pt-6">
+                                        {/* 5 stars */}
+                                        <div className="flex mb-4">
+                                            {[...Array(5)].map((_, i) => (
+                                                <Star key={i} className="h-5 w-5 text-amber-500 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                                </Star>
+                                            ))}
+                                        </div>
+                                        
+                                        <p className="text-gray-700 mb-6 italic leading-relaxed">
+                                            "LuxStay has completely transformed how we manage our hotel. The intuitive interface and comprehensive features have streamlined our operations and improved guest satisfaction significantly."
+                                        </p>
+                                        
+                                        <div className="flex items-center">
+                                            <div className="relative">
+                                                <div className="absolute inset-0 rounded-full bg-amber-300/30 blur-sm transform -translate-x-1 translate-y-1"></div>
+                                                <img 
+                                                    src="https://randomuser.me/api/portraits/women/48.jpg" 
+                                                    alt="Sarah Johnson" 
+                                                    className="h-14 w-14 rounded-full object-cover relative border-2 border-amber-300"
+                                                />
+                                            </div>
+                                            <div className="ml-4">
+                                                <h4 className="font-bold text-amber-900">Sarah Johnson</h4>
+                                                <p className="text-sm text-amber-700/80">General Manager, The Grand Hotel</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Decorative elements */}
+                                    <div className="absolute top-3 right-3 w-6 h-6 border-t-2 border-r-2 border-amber-300/50 rounded-tr-lg"></div>
+                                    <div className="absolute bottom-3 left-3 w-6 h-6 border-b-2 border-l-2 border-amber-300/50 rounded-bl-lg"></div>
+                                </div>
+                            </div>
+                            
+                            {/* Testimonial 2 */}
+                            <div className="group relative mt-8 md:mt-0">
+                                {/* Card background with hover effect */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-amber-50 to-amber-100/80 rounded-xl transform transition-all duration-500 group-hover:scale-[1.02]"></div>
+                                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-xl border border-amber-200/50 shadow-lg transform transition-all duration-500 group-hover:border-amber-300/70 group-hover:shadow-xl"></div>
+                                
+                                {/* Card content */}
+                                <div className="relative p-8">
+                                    {/* Quote icon */}
+                                    <div className="absolute -top-4 -left-2 text-amber-400 opacity-20">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z"/>
+                                        </svg>
+                                    </div>
+                                    
+                                    <div className="pt-6">
+                                        {/* 5 stars */}
+                                        <div className="flex mb-4">
+                                            {[...Array(5)].map((_, i) => (
+                                                <Star key={i} className="h-5 w-5 text-amber-500 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                                </Star>
+                                            ))}
+                                        </div>
+                                        
+                                        <p className="text-gray-700 mb-6 italic leading-relaxed">
+                                            "The restaurant management features in LuxStay are exceptional. We've reduced food waste by 30% and improved table turnover rates since implementing the system."
+                                        </p>
+                                        
+                                        <div className="flex items-center">
+                                            <div className="relative">
+                                                <div className="absolute inset-0 rounded-full bg-amber-300/30 blur-sm transform -translate-x-1 translate-y-1"></div>
+                                                <img 
+                                                    src="https://randomuser.me/api/portraits/men/32.jpg" 
+                                                    alt="Michael Chen" 
+                                                    className="h-14 w-14 rounded-full object-cover relative border-2 border-amber-300"
+                                                />
+                                            </div>
+                                            <div className="ml-4">
+                                                <h4 className="font-bold text-amber-900">Michael Chen</h4>
+                                                <p className="text-sm text-amber-700/80">Owner, Azure Fine Dining</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Decorative elements */}
+                                    <div className="absolute top-3 right-3 w-6 h-6 border-t-2 border-r-2 border-amber-300/50 rounded-tr-lg"></div>
+                                    <div className="absolute bottom-3 left-3 w-6 h-6 border-b-2 border-l-2 border-amber-300/50 rounded-bl-lg"></div>
+                                </div>
+                            </div>
+                            
+                            {/* Testimonial 3 */}
+                            <div className="group relative mt-8 md:mt-16">
+                                {/* Card background with hover effect */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-amber-50 to-amber-100/80 rounded-xl transform transition-all duration-500 group-hover:scale-[1.02]"></div>
+                                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-xl border border-amber-200/50 shadow-lg transform transition-all duration-500 group-hover:border-amber-300/70 group-hover:shadow-xl"></div>
+                                
+                                {/* Card content */}
+                                <div className="relative p-8">
+                                    {/* Quote icon */}
+                                    <div className="absolute -top-4 -left-2 text-amber-400 opacity-20">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z"/>
+                                        </svg>
+                                    </div>
+                                    
+                                    <div className="pt-6">
+                                        {/* 5 stars */}
+                                        <div className="flex mb-4">
+                                            {[...Array(5)].map((_, i) => (
+                                                <Star key={i} className="h-5 w-5 text-amber-500 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                                </Star>
+                                            ))}
+                                        </div>
+                                        
+                                        <p className="text-gray-700 mb-6 italic leading-relaxed">
+                                            "The analytics provided by LuxStay have given us insights we never had before. We've been able to optimize our pricing strategy and increase revenue by 25% in just six months."
+                                        </p>
+                                        
+                                        <div className="flex items-center">
+                                            <div className="relative">
+                                                <div className="absolute inset-0 rounded-full bg-amber-300/30 blur-sm transform -translate-x-1 translate-y-1"></div>
+                                                <img 
+                                                    src="https://randomuser.me/api/portraits/women/65.jpg" 
+                                                    alt="Elena Rodriguez" 
+                                                    className="h-14 w-14 rounded-full object-cover relative border-2 border-amber-300"
+                                                />
+                                            </div>
+                                            <div className="ml-4">
+                                                <h4 className="font-bold text-amber-900">Elena Rodriguez</h4>
+                                                <p className="text-sm text-amber-700/80">Director, Sunset Resort & Spa</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Decorative elements */}
+                                    <div className="absolute top-3 right-3 w-6 h-6 border-t-2 border-r-2 border-amber-300/50 rounded-tr-lg"></div>
+                                    <div className="absolute bottom-3 left-3 w-6 h-6 border-b-2 border-l-2 border-amber-300/50 rounded-bl-lg"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* Testimonial Banner */}
+                        <div className="mt-20 relative overflow-hidden">
+                            {/* Background with gradient */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-amber-600 to-amber-800 rounded-xl"></div>
+                            
+                            {/* Decorative elements */}
+                            <div className="absolute inset-0 overflow-hidden">
+                                <div className="absolute top-0 left-0 w-full h-full" style={{ 
+                                    backgroundImage: "url('data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a16207' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2H6zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')",
+                                    backgroundSize: "cover"
+                                }}></div>
+                                <div className="absolute -top-20 -left-20 w-40 h-40 bg-amber-500/30 rounded-full mix-blend-overlay blur-3xl"></div>
+                                <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-amber-500/30 rounded-full mix-blend-overlay blur-3xl"></div>
+                            </div>
+                            
+                            {/* Content */}
+                            <div className="relative z-10 p-10 md:p-12">
+                                <div className="max-w-4xl mx-auto text-center">
+                                    <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white">Join 5,000+ Satisfied Clients</h3>
+                                    <div className="w-16 h-0.5 bg-amber-300/50 mx-auto mb-6"></div>
+                                    <p className="text-lg text-amber-100 max-w-2xl mx-auto mb-8">
+                                        Experience the difference that a purpose-built hospitality management system can make for your business.
+                                    </p>
+                                    <Link
+                                        href={route("register")}
+                                        className="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden rounded-md bg-white text-amber-700 font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                                    >
+                                        <span className="absolute inset-0 w-full h-full transition duration-300 ease-out opacity-0 bg-gradient-to-r from-amber-400 to-amber-500 group-hover:opacity-100"></span>
+                                        <span className="relative group-hover:text-white flex items-center">
+                                            Start Your Free Trial
+                                            <ChevronRight className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
+                                        </span>
+                                    </Link>
+                                </div>
+                            </div>
+                            
+                            {/* Decorative border */}
+                            <div className="absolute inset-0 rounded-xl border border-amber-500/30"></div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Room Showcase Section */}
+                <section id="rooms" className="py-20 bg-gradient-to-b from-amber-50 to-white relative overflow-hidden">
+                    {/* Decorative elements */}
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                        <div className="absolute -top-20 -right-20 w-64 h-64 bg-amber-200/30 rounded-full mix-blend-multiply blur-3xl"></div>
+                        <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-amber-300/20 rounded-full mix-blend-multiply blur-3xl"></div>
+                    </div>
+                    
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                        <div className="text-center mb-16">
+                            <div className="inline-block mb-3">
+                                <div className="flex items-center justify-center space-x-2">
+                                    <div className="h-px w-8 bg-gradient-to-r from-transparent to-amber-500"></div>
+                                    <div className="text-amber-600 font-medium text-sm uppercase tracking-wider">Luxury Accommodations</div>
+                                    <div className="h-px w-8 bg-gradient-to-l from-transparent to-amber-500"></div>
+                                </div>
+                            </div>
+                            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-700 to-amber-900">
+                                Our Exclusive Rooms & Suites
+                            </h2>
+                            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                                Discover our collection of luxurious accommodations designed for comfort, elegance, and unforgettable experiences.
+                            </p>
+                        </div>
+                        
+                        {/* Room Cards Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                            {roomsData.map((room) => (
+                                <div key={room.id} className="bg-white rounded-xl shadow-lg overflow-hidden border border-amber-100 group hover:shadow-xl transition-all duration-300">
+                                    <div className="relative h-64 overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-t from-amber-900/70 to-transparent z-10"></div>
+                                        <img 
+                                            src={room.mainImage} 
+                                            alt={room.name} 
+                                            className="object-cover h-full w-full transition-transform duration-700 group-hover:scale-110"
+                                        />
+                                        <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
+                                            <div className="flex items-center">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <Star 
+                                                        key={i} 
+                                                        className={`h-4 w-4 ${i < Math.floor(room.rating) ? "text-amber-500 fill-amber-500" : "text-amber-300 fill-amber-300"}`} 
+                                                    />
+                                                ))}
+                                                <span className="ml-2 text-white text-xs">{room.rating} ({room.reviews})</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="p-5">
+                                        <h3 className="text-lg font-bold text-amber-900 mb-2">{room.name}</h3>
+                                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{room.description}</p>
+                                        <div className="flex justify-between items-center">
+                                            <div className="text-amber-700 font-bold">
+                                                {room.price}<span className="text-gray-500 text-xs font-normal"> / night</span>
+                                            </div>
+                                            <button 
+                                                onClick={() => openRoomModal(room)} 
+                                                className="px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded-md text-sm font-medium transition-colors duration-300 flex items-center"
+                                            >
+                                                View Details
+                                                <ChevronRight className="ml-1 h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        
+                        {/* View All Rooms Button */}
+                        <div className="text-center">
+                            <Link
+                                href="#"
+                                className="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden rounded-md bg-gradient-to-r from-amber-600 to-amber-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                            >
+                                <span className="absolute inset-0 w-full h-full transition duration-300 ease-out opacity-0 bg-gradient-to-r from-amber-400 to-amber-500 group-hover:opacity-100"></span>
+                                <span className="relative group-hover:text-white flex items-center">
+                                    View All Rooms
+                                    <ChevronRight className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
+                                </span>
+                            </Link>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Room Detail Modal */}
+                {isModalOpen && selectedRoom && (
+                    <div className="fixed inset-0 z-50 overflow-y-auto">
+                        <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+                                <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
+                            </div>
+                            
+                            {/* Modal Content */}
+                            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-6xl sm:w-full">
+                                <div className="absolute top-0 right-0 pt-4 pr-4 z-50">
+                                    <button
+                                        onClick={closeModal}
+                                        className="bg-white rounded-full p-2 text-gray-400 hover:text-gray-500 focus:outline-none"
+                                    >
+                                        <X className="h-6 w-6" />
+                                    </button>
+                                </div>
+                                
+                                <div className="grid grid-cols-1 lg:grid-cols-2">
+                                    {/* Image Gallery */}
+                                    <div className="relative">
+                                        <div className="h-96 md:h-full">
+                                            <img 
+                                                src={selectedRoom.mainImage} 
+                                                alt={selectedRoom.name} 
+                                                className="w-full h-full object-cover"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-amber-900/70 to-transparent"></div>
+                                            <div className="absolute bottom-0 left-0 right-0 p-6">
+                                                <h2 className="text-2xl font-bold text-white mb-2">{selectedRoom.name}</h2>
+                                                <div className="flex items-center mb-2">
+                                                    {[...Array(5)].map((_, i) => (
+                                                        <Star 
+                                                            key={i} 
+                                                            className={`h-5 w-5 ${i < Math.floor(selectedRoom.rating) ? "text-amber-500 fill-amber-500" : "text-amber-300 fill-amber-300"}`} 
+                                                        />
+                                                    ))}
+                                                    <span className="ml-2 text-white">{selectedRoom.rating} ({selectedRoom.reviews} reviews)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Thumbnail Gallery */}
+                                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-amber-900/80 to-transparent p-4">
+                                            <div className="flex space-x-2 overflow-x-auto pb-2">
+                                                {selectedRoom.images.map((image, index) => (
+                                                    <div key={index} className="flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 border-white">
+                                                        <img 
+                                                            src={image.url} 
+                                                            alt={image.title} 
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Room Details */}
+                                    <div className="p-6 md:p-8 bg-white">
+                                        <div className="mb-6">
+                                            <h3 className="text-2xl font-bold text-amber-900 mb-4">Room Details</h3>
+                                            <p className="text-gray-600 mb-4">{selectedRoom.description}</p>
+                                            
+                                            <div className="grid grid-cols-2 gap-4 mb-6">
+                                                <div className="flex items-start space-x-3">
+                                                    <div className="bg-amber-100 text-amber-700 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                        </svg>
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="text-sm font-semibold text-amber-900">Room Size</h4>
+                                                        <p className="text-gray-600 text-sm">{selectedRoom.size}</p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="flex items-start space-x-3">
+                                                    <div className="bg-amber-100 text-amber-700 rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                        </svg>
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="text-sm font-semibold text-amber-900">Occupancy</h4>
+                                                        <p className="text-gray-600 text-sm">{selectedRoom.occupancy}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="mb-6">
+                                            <h3 className="text-lg font-bold text-amber-900 mb-3">Amenities</h3>
+                                            <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                                {selectedRoom.amenities.map((amenity, index) => (
+                                                    <li key={index} className="flex items-center text-gray-600 text-sm">
+                                                        <div className="mr-2 text-amber-500">•</div>
+                                                        {amenity}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        
+                                        <div className="border-t border-gray-200 pt-6 mt-6">
+                                            <div className="flex justify-between items-center mb-6">
+                                                <div>
+                                                    <span className="text-gray-600 text-sm">Price per night</span>
+                                                    <p className="text-2xl font-bold text-amber-700">{selectedRoom.price}</p>
+                                                </div>
+                                                <button className="px-6 py-3 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-md font-medium hover:shadow-lg transition-all duration-300">
+                                                    Book Now
+                                                </button>
+                                            </div>
+                                            
+                                            <p className="text-xs text-gray-500">
+                                                *Rates are subject to change based on season and availability. Additional taxes and fees may apply.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {/* Image Gallery Section */}
+                                <div className="p-6 bg-gray-50 border-t border-gray-200">
+                                    <h3 className="text-lg font-bold text-amber-900 mb-4">Room Gallery</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        {selectedRoom.images.map((image, index) => (
+                                            <div key={index} className="relative rounded-lg overflow-hidden group h-48">
+                                                <img 
+                                                    src={image.url} 
+                                                    alt={image.title} 
+                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-amber-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                                <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                                    <h4 className="font-bold">{image.title}</h4>
+                                                    <p className="text-sm text-amber-200">{image.subtitle}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Footer */}
+                <footer className="relative bg-gradient-to-b from-amber-900 to-amber-950 text-white pt-20 pb-10 overflow-hidden">
+                    {/* Decorative elements */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-300/0 via-amber-400/50 to-amber-300/0"></div>
+                    <div className="absolute top-0 inset-x-0 h-64 bg-amber-800 opacity-10 transform -skew-y-6"></div>
+                    <div className="absolute bottom-0 right-0 w-96 h-96 bg-amber-700 rounded-full filter blur-[100px] opacity-10"></div>
+                    <div className="absolute top-20 left-20 w-64 h-64 bg-amber-500 rounded-full filter blur-[80px] opacity-5"></div>
+                    
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                        {/* Top footer with logo and newsletter */}
+                        <div className="flex flex-col lg:flex-row justify-between items-center pb-12 mb-12 border-b border-amber-700/30">
+                            <div className="flex items-center space-x-3 mb-8 lg:mb-0">
+                                <div className="relative">
+                                    <div className="absolute inset-0 rounded-xl bg-amber-400 blur-[8px] opacity-40"></div>
+                                    <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 text-white shadow-lg">
+                                        <Building2 size={28} className="animate-float" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-400">LuxStay</h1>
+                                </div>
+                            </div>
+                            
+                            {/* Newsletter subscription */}
+                            <div className="w-full lg:w-auto">
+                                <div className="bg-amber-800/30 backdrop-blur-sm rounded-xl p-6 max-w-xl mx-auto lg:mx-0">
+                                    <h4 className="text-lg font-bold mb-2 text-amber-200">Subscribe to our newsletter</h4>
+                                    <p className="text-amber-300/80 text-sm mb-4">Stay updated with the latest features and releases</p>
+                                    <div className="flex flex-col sm:flex-row gap-2">
+                                        <input 
+                                            type="email" 
+                                            placeholder="Your email address" 
+                                            className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-amber-600/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 text-white flex-grow"
+                                        />
+                                        <button className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 rounded-lg text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200">
+                                            Subscribe
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* Main footer content */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                            {/* Company Info */}
+                            <div>
+                                <h4 className="text-lg font-bold mb-6 text-amber-200 relative inline-block">
+                                    About LuxStay
+                                    <span className="absolute -bottom-2 left-0 w-12 h-1 bg-gradient-to-r from-amber-400/0 via-amber-400 to-amber-400/0 rounded-full"></span>
+                                </h4>
+                                <p className="text-amber-300/80 mb-6 leading-relaxed">
+                                    Elevating hospitality management with innovative solutions for luxury hotels and fine dining restaurants. Our platform is designed to enhance guest experiences and streamline operations.
+                                </p>
+                                
+                                {/* Social Media Icons */}
+                                <div className="flex space-x-3">
+                                    <a href="#" className="group">
+                                        <div className="w-10 h-10 rounded-lg bg-amber-800/30 flex items-center justify-center border border-amber-700/30 transition-all duration-300 group-hover:bg-amber-700/50 group-hover:border-amber-600/50">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-300 group-hover:text-amber-200" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                                            </svg>
+                                        </div>
+                                    </a>
+                                    <a href="#" className="group">
+                                        <div className="w-10 h-10 rounded-lg bg-amber-800/30 flex items-center justify-center border border-amber-700/30 transition-all duration-300 group-hover:bg-amber-700/50 group-hover:border-amber-600/50">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-300 group-hover:text-amber-200" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.323-1.325z" />
+                                        </svg>
+                                    </div>
+                                    </a>
+                                    <a href="#" className="group">
+                                        <div className="w-10 h-10 rounded-lg bg-amber-800/30 flex items-center justify-center border border-amber-700/30 transition-all duration-300 group-hover:bg-amber-700/50 group-hover:border-amber-600/50">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-300 group-hover:text-amber-200" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                        </div>
+                                    </a>
+                                    <a href="#" className="group">
+                                        <div className="w-10 h-10 rounded-lg bg-amber-800/30 flex items-center justify-center border border-amber-700/30 transition-all duration-300 group-hover:bg-amber-700/50 group-hover:border-amber-600/50">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-300 group-hover:text-amber-200" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                                        </svg>
+                                    </div>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            {/* Quick Links */}
+                            <div>
+                                <h4 className="text-lg font-bold mb-6 text-amber-200 relative inline-block">
+                                    Quick Links
+                                    <span className="absolute -bottom-2 left-0 w-12 h-1 bg-gradient-to-r from-amber-400/0 via-amber-400 to-amber-400/0 rounded-full"></span>
+                                </h4>
+                                <ul className="space-y-4">
+                                    {["Home", "Features", "Benefits", "Testimonials", "Rooms"].map((item) => (
+                                        <li key={item} className="group">
+                                            <button 
+                                                onClick={() => scrollToSection(item.toLowerCase())} 
+                                                className={`text-amber-300/80 hover:text-amber-200 transition-colors flex items-center group-hover:translate-x-1 duration-300`}
+                                            >
+                                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mr-2 opacity-70 group-hover:opacity-100"></span>
+                                                {item}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                            
+                            {/* Resources */}
+                            <div>
+                                <h4 className="text-lg font-bold mb-6 text-amber-200 relative inline-block">
+                                    Resources
+                                    <span className="absolute -bottom-2 left-0 w-12 h-1 bg-gradient-to-r from-amber-400/0 via-amber-400 to-amber-400/0 rounded-full"></span>
+                                </h4>
+                                <ul className="space-y-4">
+                                    {["Documentation", "Blog", "Case Studies", "FAQ", "Support Center"].map((item) => (
+                                        <li key={item} className="group">
+                                            <a 
+                                                href="#" 
+                                                className="text-amber-300/80 hover:text-amber-200 transition-colors flex items-center group-hover:translate-x-1 duration-300"
+                                            >
+                                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mr-2 opacity-70 group-hover:opacity-100"></span>
+                                                {item}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                            
+                            {/* Contact Info */}
+                            <div>
+                                <h4 className="text-lg font-bold mb-6 text-amber-200 relative inline-block">
+                                    Contact Us
+                                    <span className="absolute -bottom-2 left-0 w-12 h-1 bg-gradient-to-r from-amber-400/0 via-amber-400 to-amber-400/0 rounded-full"></span>
+                                </h4>
+                                <ul className="space-y-4">
+                                    <li className="flex items-start space-x-3">
+                                        <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p className="text-amber-300/80">Phone</p>
+                                            <p className="text-white font-medium">+1 (555) 123-4567</p>
+                                            <p className="text-amber-100/70 text-sm">Monday - Friday, 9am - 6pm EST</p>
+                                        </div>
+                                    </li>
+                                    <li className="flex items-start space-x-3">
+                                        <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p className="text-amber-300/80">Email</p>
+                                            <p className="text-white font-medium">info@hoteltech.com</p>
+                                            <p className="text-amber-100/70 text-sm">support@hoteltech.com</p>
+                                        </div>
+                                    </li>
+                                    <li className="flex items-start space-x-3">
+                                        <div className="bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p className="text-amber-300/80">Address</p>
+                                            <p className="text-white font-medium">123 Tech Avenue</p>
+                                            <p className="text-amber-100/70 text-sm">Suite 500, New York, NY 10001</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        {/* Bottom footer */}
+                        <div className="pt-8 border-t border-amber-700/30 flex flex-col md:flex-row justify-between items-center">
+                            <p className="text-amber-300/70 text-sm mb-4 md:mb-0">
+                                &copy; {new Date().getFullYear()} LuxStay. All rights reserved.
+                            </p>
+                            
+                            <div className="flex flex-wrap justify-center gap-6">
+                                {["Privacy Policy", "Terms of Service", "Cookie Policy", "Sitemap"].map((item) => (
+                                    <a key={item} href="#" className="text-amber-300/70 text-sm hover:text-amber-200 transition-colors">
+                                        {item}
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+
+                {/* CSS for animations */}
+                <style jsx global>{`
+                    @keyframes float {
+                        0% { transform: translateY(0px) rotate(0deg); }
+                        50% { transform: translateY(-10px) rotate(2deg); }
+                        100% { transform: translateY(0px) rotate(0deg); }
+                    }
+                    
+                    @keyframes blob {
+                        0% { transform: scale(1) translate(0px, 0px); }
+                        33% { transform: scale(1.1) translate(20px, -20px); }
+                        66% { transform: scale(0.9) translate(-20px, 20px); }
+                        100% { transform: scale(1) translate(0px, 0px); }
+                    }
+                    
+                    @keyframes fadeIn {
+                        0% { opacity: 0; transform: translateY(20px); }
+                        100% { opacity: 1; transform: translateY(0); }
+                    }
+                    
+                    @keyframes gradient {
+                        0% { background-position: 0% 50%; }
+                        50% { background-position: 100% 50%; }
+                        100% { background-position: 0% 50%; }
+                    }
+                    
+                    .animate-float {
+                        animation: float 6s ease-in-out infinite;
+                    }
+                    
+                    .animate-blob {
+                        animation: blob 10s infinite alternate;
+                    }
+                    
+                    .animate-fadeIn {
+                        animation: fadeIn 1s forwards;
+                    }
+                    
+                    .animate-gradient {
+                        background-size: 200% 200%;
+                        animation: gradient 4s ease infinite;
+                    }
+                    
+                    .animation-delay-500 {
+                        animation-delay: 0.5s;
+                    }
+                    
+                    .animation-delay-1000 {
+                        animation-delay: 1s;
+                    }
+                    
+                    .animation-delay-1500 {
+                        animation-delay: 1.5s;
+                    }
+                    
+                    .animation-delay-2000 {
+                        animation-delay: 2s;
+                    }
+                    
+                    .animation-delay-3000 {
+                        animation-delay: 3s;
+                    }
+                    
+                    .animation-delay-4000 {
+                        animation-delay: 4s;
+                    }
+                    
+                    .bg-grid-pattern {
+                        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a16207' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2H6zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+                    }
+                `}</style>
             </div>
         </>
     );
