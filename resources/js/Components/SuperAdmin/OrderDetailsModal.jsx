@@ -24,6 +24,79 @@ export default function OrderDetailsModal({ order, show, onClose, onStatusChange
   
   if (!order || !show) return null;
   
+  // Helper function to get the correct image path based on order data
+  const getImagePath = (order, item, index) => {
+    // Based on the memory: "Images are stored in the public directory with paths saved in the database as 'Menu/' + imageName"
+    const defaultPath = `Menu/${item.menuItemId}.jpg`;
+    
+    // If no images data at all, use default
+    if (!order.images) {
+      return defaultPath;
+    }
+    
+    // Handle array format
+    if (Array.isArray(order.images) && order.images[index]) {
+      // If the path already includes 'Menu/', return as is
+      if (order.images[index].includes('Menu/')) {
+        return order.images[index];
+      }
+      // Otherwise, ensure it has the correct prefix
+      return order.images[index].startsWith('Menu/') ? order.images[index] : `Menu/${order.images[index]}`;
+    }
+    
+    // Handle object format with numeric keys
+    if (typeof order.images === 'object' && !Array.isArray(order.images)) {
+      // Try to get the image by index as string key
+      if (order.images[index.toString()]) {
+        const imagePath = order.images[index.toString()];
+        return imagePath.startsWith('Menu/') ? imagePath : `Menu/${imagePath}`;
+      }
+      
+      // Try to get the image by menuItemId
+      if (order.images[item.menuItemId]) {
+        const imagePath = order.images[item.menuItemId];
+        return imagePath.startsWith('Menu/') ? imagePath : `Menu/${imagePath}`;
+      }
+    }
+    
+    // Handle string format (JSON string)
+    if (typeof order.images === 'string') {
+      try {
+        const parsedImages = JSON.parse(order.images);
+        
+        if (Array.isArray(parsedImages) && parsedImages[index]) {
+          const imagePath = parsedImages[index];
+          return imagePath.startsWith('Menu/') ? imagePath : `Menu/${imagePath}`;
+        } else if (parsedImages[index.toString()]) {
+          const imagePath = parsedImages[index.toString()];
+          return imagePath.startsWith('Menu/') ? imagePath : `Menu/${imagePath}`;
+        } else if (parsedImages[item.menuItemId]) {
+          const imagePath = parsedImages[item.menuItemId];
+          return imagePath.startsWith('Menu/') ? imagePath : `Menu/${imagePath}`;
+        }
+      } catch (e) {
+        // Silent fail for JSON parsing
+      }
+    }
+    
+    // Extract filename from menuItemId
+    if (item.menuItemId) {
+      // If menuItemId is a number, assume it's the image name
+      if (!isNaN(item.menuItemId)) {
+        return `Menu/${item.menuItemId}.jpg`;
+      }
+      
+      // If menuItemId contains a filename pattern (numbers with .jpg extension)
+      const filenameMatch = item.menuItemId.match(/(\d+\.jpg)$/);
+      if (filenameMatch) {
+        return `Menu/${filenameMatch[1]}`;
+      }
+    }
+    
+    // Fallback to default path
+    return defaultPath;
+  };
+  
   // Format date for display
   const formatDateTime = (dateTimeString) => {
     if (!dateTimeString) return "N/A";
@@ -207,12 +280,58 @@ export default function OrderDetailsModal({ order, show, onClose, onStatusChange
                 <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs">
                   <div className="space-y-2">
                     {order.items && order.items.map((item, index) => (
-                      <div key={index} className="flex justify-between items-center p-1.5 bg-white rounded border border-gray-100 hover:shadow-sm transition-shadow">
+                      <div key={index} className="flex justify-between items-center p-2 bg-white rounded border border-gray-100 hover:shadow-sm transition-shadow">
                         <div className="flex items-center">
-                          <span className="inline-flex items-center justify-center bg-amber-50 text-amber-700 font-medium rounded w-5 h-5 mr-2">{item.quantity}</span>
-                          <span className="text-gray-700">{item.name}</span>
+                          {/* Food Image */}
+                          <div className="w-10 h-10 rounded-lg overflow-hidden mr-3 shadow-sm group relative">
+                            {/* Base gradient background with utensils icon as fallback */}
+                            <div className="w-full h-full bg-gradient-to-r from-amber-400 to-amber-500 flex items-center justify-center">
+                              <Utensils className="h-4 w-4 text-white" />
+                            </div>
+                            
+                            {/* Display the actual menu item image */}
+                            <img
+                              src={`/${getImagePath(order, item, index)}`}
+                              alt={item.name}
+                              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                              onError={(e) => {
+                                // Try with storage path
+                                const storagePath = `/storage/${getImagePath(order, item, index)}`;
+                                e.target.src = storagePath;
+                                
+                                // Add a second error handler for the storage path
+                                e.target.onerror = () => {
+                                  // Try with a different format (just the filename)
+                                  const filename = getImagePath(order, item, index).split('/').pop();
+                                  if (filename) {
+                                    const simplePath = `/storage/Menu/${filename}`;
+                                    e.target.src = simplePath;
+                                    
+                                    // Final error handler
+                                    e.target.onerror = () => {
+                                      // If all paths fail, hide the image
+                                      e.target.style.display = 'none';
+                                    };
+                                  } else {
+                                    // If we can't extract a filename, hide the image
+                                    e.target.style.display = 'none';
+                                  }
+                                };
+                              }}
+                            />
+                            {/* Hover overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          </div>
+                          
+                          <div className="flex flex-col">
+                            <div className="flex items-center">
+                              <span className="inline-flex items-center justify-center bg-amber-50 text-amber-700 font-medium rounded w-5 h-5 mr-2">{item.quantity}</span>
+                              <span className="text-gray-700 font-medium">{item.name}</span>
+                            </div>
+                            <span className="text-gray-500 text-[10px] mt-0.5">Unit price: ${parseFloat(item.price/item.quantity).toFixed(2)}</span>
+                          </div>
                         </div>
-                        <span className="font-medium text-gray-700">${parseFloat(item.price * item.quantity).toFixed(2)}</span>
+                        <span className="font-medium text-amber-600">${parseFloat(item.price).toFixed(2)}</span>
                       </div>
                     ))}
                   </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import SuperAdminLayout from '@/Layouts/SuperAdminLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 import { Head } from '@inertiajs/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -25,7 +25,7 @@ import {
 import AddTaskModal from '@/Components/SuperAdmin/AddTaskModal';
 import UpdateTaskModal from '@/Components/SuperAdmin/UpdateTaskModal';
 
-export default function Task() {
+export default function AdminTask() {
     // State for task data and UI controls
     const [activeTab, setActiveTab] = useState("all");
     const [searchQuery, setSearchQuery] = useState("");
@@ -258,7 +258,7 @@ export default function Task() {
     }, []);
 
     return (
-        <SuperAdminLayout
+        <AdminLayout
             header={
                 <div className="flex flex-col space-y-2">
                     <h2 className="text-2xl font-bold text-gray-900">
@@ -725,6 +725,6 @@ export default function Task() {
                 fetchTasks={fetchTasks}
                 employeeData={employeeData}
             />
-        </SuperAdminLayout>
+        </AdminLayout>
     );
 }

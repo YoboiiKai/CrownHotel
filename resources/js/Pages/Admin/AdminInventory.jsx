@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Head } from '@inertiajs/react'
-import SuperAdminLayout from "@/Layouts/SuperAdminLayout"
+import AdminLayout from "@/Layouts/AdminLayout"
 import {
   Search,
   Filter,
@@ -24,7 +24,7 @@ import InventoryDetailsModal from "@/Components/SuperAdmin/InventoryDetailsModal
 import axios from "axios"
 import { toast, ToastContainer } from "react-toastify"
 
-export default function SuperAdminInventory({ auth }) {
+export default function AdminInventory({ auth }) {
   const [showNewItemForm, setShowNewItemForm] = useState(false)
   const [showUpdateItemForm, setShowUpdateItemForm] = useState(false)
   const [showItemDetails, setShowItemDetails] = useState(false)
@@ -106,7 +106,7 @@ export default function SuperAdminInventory({ auth }) {
   };
 
   return (
-    <SuperAdminLayout
+    <AdminLayout
       user={auth.user}
       header={
         <h2 className="font-semibold text-xl text-gray-800 leading-tight">Inventory Management</h2>
@@ -301,6 +301,6 @@ export default function SuperAdminInventory({ auth }) {
           onDelete={deleteInventory}
         />
       </div>
-    </SuperAdminLayout>
+    </AdminLayout>
   )
 }

@@ -16,6 +16,7 @@ import {
   CreditCard,
   ShoppingBag,
   MessageSquare,
+  Crown,
 } from "lucide-react"
 import { usePage, Link } from "@inertiajs/react"
 
@@ -375,15 +376,17 @@ export default function ClientLayout({ children }) {
               <Menu size={isMobile ? 18 : 20} />
             </button>
             <div className="flex items-center gap-2 sm:gap-3">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-xl bg-amber-800 blur-[6px] opacity-20"></div>
-                <div className="relative flex h-7 w-7 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-600 to-amber-900 text-white shadow-lg">
-                  <Coffee size={isMobile ? 14 : 20} />
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="relative flex">
+                  <div className="absolute inset-0 rounded-xl bg-amber-800 blur-[6px] opacity-20"></div>
+                  <div className="relative flex h-7 w-7 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-600 to-amber-900 text-white shadow-lg">
+                    <Crown size={isMobile ? 14 : 20} />
+                  </div>
                 </div>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm sm:text-lg font-bold text-gray-900 leading-tight">Hotel Tech</span>
-                <span className="hidden sm:inline-block text-xs text-amber-600 font-medium">Premium Hotel</span>
+                <div className="flex flex-col">
+                  <span className="text-sm sm:text-lg font-bold text-amber-600 leading-tight font-serif">CROWN of the ORIENT</span>
+                  <span className="hidden sm:inline-block text-xs text-amber-600 font-medium">BEACH RESORT</span>
+                </div>
               </div>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Head } from '@inertiajs/react';
-import SuperAdminLayout from '@/Layouts/SuperAdminLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 import { 
   Search, 
   Plus, 
@@ -26,7 +26,7 @@ import UpdateEventModal from '@/Components/SuperAdmin/UpdateEventModal';
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
-export default function EventRes() {
+export default function AdminEventReservation() {
   const [events, setEvents] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -128,7 +128,7 @@ export default function EventRes() {
   };
 
   return (
-    <SuperAdminLayout>
+    <AdminLayout>
       <ToastContainer position="top-right" hideProgressBar />
       <Head title="Event Reservations" />
       
@@ -390,6 +390,6 @@ export default function EventRes() {
           getStatusInfo={getStatusInfo}
         />
       )}
-    </SuperAdminLayout>
+    </AdminLayout>
   );
 }

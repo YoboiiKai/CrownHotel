@@ -100,23 +100,28 @@ Route::middleware('auth', 'verified')->group(function () {
     
 });
 
-
-
 //----------------------------------------------------(Admin)----------------------------------------------------//
-
-
-
-
-
-
-  
-
-
+Route::middleware('auth', 'verified')->group(function () {
+    Route::get('/Admin/AdminClient', fn () => Inertia::render('Admin/AdminClient'))->name('admin.client');
+    Route::get('/Admin/AdminEmployee', fn () => Inertia::render('Admin/AdminEmployee'))->name('admin.employee');
+    Route::get('/Admin/AdminRooms', fn () => Inertia::render('Admin/AdminRooms'))->name('admin.rooms');
+    Route::get('/Admin/Bookings', fn () => Inertia::render('Admin/Bookings'))->name('admin.bookings');
+    Route::get('/Admin/BookingCalendar', fn () => Inertia::render('Admin/BookingCalendar'))->name('admin.bookingcalendar');
+    Route::get('/Admin/AdminReservationCalendar', fn () => Inertia::render('Admin/AdminReservationCalendar'))->name('admin.reservationcalendar');
+    Route::get('/Admin/AdminEventReservation', fn () => Inertia::render('Admin/AdminEventReservation'))->name('admin.eventreservation');
+    Route::get('/Admin/AdminMenu', fn () => Inertia::render('Admin/AdminMenu'))->name('admin.menu');
+    Route::get('/Admin/AdminPosMenu', fn () => Inertia::render('Admin/AdminPosMenu'))->name('admin.posmenu');
+    Route::get('/Admin/AdminOrders', fn () => Inertia::render('Admin/AdminOrders'))->name('admin.orders');
+    Route::get('/Admin/AdminTask', fn () => Inertia::render('Admin/AdminTask'))->name('admin.task');
+    Route::get('/Admin/Feedback', fn () => Inertia::render('Admin/Feedback'))->name('admin.feedback');
+    Route::get('/Admin/AdminInventory', fn () => Inertia::render('Admin/AdminInventory'))->name('admin.inventory');
+    Route::get('/Admin/PurchaseOrders', fn () => Inertia::render('Admin/PurchaseOrders'))->name('admin.purchaseorders');
+    Route::get('/Admin/Reports', fn () => Inertia::render('Admin/Reports'))->name('admin.reports');
+    Route::get('/Admin/Settings', fn () => Inertia::render('Admin/Settings'))->name('admin.settings');
+});
 
 //--------------------------------------------------(Employee)---------------------------------------------------//
 Route::get('/employee/tasklist', fn () => Inertia::render('Employee/TaskList'))->name('employee.tasklist');
-
-
 
 
 

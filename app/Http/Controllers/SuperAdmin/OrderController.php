@@ -95,11 +95,29 @@ class OrderController extends Controller
             // Start transaction
             DB::beginTransaction();
 
-            // Create order with multiple items
+            // Validate each item and collect image paths
+            $imageArray = [];
+            foreach ($request->items as $index => $item) {
+                $menu = Menu::find($item['menuItemId']);
+                if (!$menu) {
+                    throw new \Exception("Menu item with ID {$item['menuItemId']} not found");
+                }
+                
+                // Store the image path for this menu item
+                $imageArray[$index] = $menu->image ?? "Menu/{$item['menuItemId']}.jpg";
+            }
+            
+            // If images were provided in the request, use those instead
+            if ($request->has('images')) {
+                $imageArray = $request->images;
+            }
+
+            // Create order with multiple items and their images
             $order = Order::create([
                 'roomNumber' => $request->roomNumber,
                 'customerName' => $request->customerName ?? 'Guest',
                 'items' => $request->items,
+                'images' => $imageArray, // Save the collected image paths
                 'subtotal' => $request->subtotal,
                 'discount' => $request->discount,
                 'total' => $request->total,
@@ -107,14 +125,6 @@ class OrderController extends Controller
                 'isSeniorCitizen' => $request->isSeniorCitizen,
                 'status' => 'pending', // Default status
             ]);
-
-            // Validate each item
-            foreach ($request->items as $item) {
-                $menu = Menu::find($item['menuItemId']);
-                if (!$menu) {
-                    throw new \Exception("Menu item with ID {$item['menuItemId']} not found");
-                }
-            }
 
             // Optional: Update inventory or menu item stats if needed
             // foreach ($request->items as $item) {
@@ -237,9 +247,21 @@ class OrderController extends Controller
                 'total' => $request->has('total') ? $request->total : $order->total,
             ]);
 
-            // Update items if provided
+            // Update items and images if provided
             if ($request->has('items')) {
                 $order->items = $request->items;
+                
+                // Update images for the new items
+                $images = [];
+                foreach ($request->items as $index => $item) {
+                    $menu = Menu::find($item['menuItemId']);
+                    if ($menu) {
+                        // Store the image path for this menu item
+                        $images[$index] = $menu->image ?? "Menu/{$item['menuItemId']}.jpg";
+                    }
+                }
+                
+                $order->images = $images;
                 $order->save();
             }
 

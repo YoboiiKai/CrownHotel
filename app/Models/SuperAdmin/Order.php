@@ -18,6 +18,7 @@ class Order extends Model
         'roomNumber',
         'customerName',
         'items',
+        'images',
         'subtotal',
         'discount',
         'total',
@@ -37,6 +38,7 @@ class Order extends Model
         'total' => 'decimal:2',
         'isSeniorCitizen' => 'boolean',
         'items' => 'array',
+        'images' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import SuperAdminLayout from "@/Layouts/SuperAdminLayout";
+import AdminLayout from "@/Layouts/AdminLayout";
+import { Head } from "@inertiajs/react";
 import {
   Plus,
   Minus,
@@ -51,7 +52,7 @@ const scrollbarStyles = `
   }
 `;
 
-export default function Menu() {
+export default function AdminPosMenu() {
   // Menu items data
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -193,7 +194,7 @@ export default function Menu() {
       return;
     }
     
-    // Prepare order data with multiple items and their images
+    // Prepare order data with multiple items
     const orderData = {
       roomNumber: roomNumber,
       items: cart.map(item => ({
@@ -202,11 +203,6 @@ export default function Menu() {
         quantity: item.quantity,
         price: item.price
       })),
-      // Include image paths for each item in the cart
-      images: cart.map((item, index) => {
-        // If item has an image path, use it; otherwise use the standard format
-        return item.image ? item.image : `Menu/${item.id}.jpg`;
-      }),
       subtotal: parseFloat(calculateSubtotal()),
       discount: parseFloat(calculateDiscount()),
       total: parseFloat(calculateTotal()),
@@ -241,7 +237,8 @@ export default function Menu() {
   };
 
   return (
-    <SuperAdminLayout>
+    <AdminLayout>
+      <Head title="POS Menu" />
       {/* Apply custom scrollbar styles */}
       <style>{scrollbarStyles}</style>
 
@@ -578,6 +575,6 @@ export default function Menu() {
         setOrderSuccess={setOrderSuccess}
         isSubmitting={isSubmitting}
       />
-    </SuperAdminLayout>
+    </AdminLayout>
   );
 }

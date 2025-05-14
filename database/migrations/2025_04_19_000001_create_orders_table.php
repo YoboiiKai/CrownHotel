@@ -19,6 +19,9 @@ return new class extends Migration
             // Store multiple items as JSON
             $table->json('items')->comment('JSON array of order items containing menuItemId, name, quantity, price');
             
+            // Store images for order items
+            $table->json('images')->nullable()->comment('JSON array of image paths corresponding to order items');
+            
             // Order totals
             $table->decimal('subtotal', 10, 2);
             $table->decimal('discount', 10, 2)->default(0);
