@@ -73,46 +73,23 @@ export default function Client() {
       <ToastContainer position="top-right" hideProgressBar />
       <div className="mx-auto max-w-6xl">
         {/* Action Bar */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="relative flex-1 sm:flex-none sm:w-64">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search clients..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
-              />
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-5 mb-8 mt-5">
+          <div className="relative w-full sm:w-64">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B5A2B]">
+              <Search className="h-4 w-4" />
             </div>
-            <div className="relative">
-              <div className="absolute right-0 mt-2 w-48 rounded-lg border border-gray-100 bg-white shadow-lg z-10 hidden">
-                <div className="p-2">
-                  <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
-                    onClick={() => setFilterStatus("all")}
-                  >
-                    All Clients
-                  </button>
-                  <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
-                    onClick={() => setFilterStatus("active")}
-                  >
-                    Active
-                  </button>
-                  <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
-                    onClick={() => setFilterStatus("inactive")}
-                  >
-                    Inactive
-                  </button>
-                </div>
-              </div>
-            </div>
+            <input
+              type="text"
+              placeholder="Search clients..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-full border border-[#DEB887]/30 bg-white py-2.5 pl-10 pr-4 text-sm text-[#5D3A1F] placeholder-[#8B5A2B]/40 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200 relative z-10"
+            />
           </div>
+          
           <button
             onClick={() => setShowNewClientForm(true)}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
+            className="px-6 py-2 text-sm font-medium rounded-full transition-all duration-200 bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm hover:shadow-md w-full sm:w-auto flex items-center justify-center gap-2"
           >
             <Plus className="h-4 w-4" />
             <span>Add New Client</span>
@@ -120,25 +97,39 @@ export default function Client() {
         </div>
 
         {/* Status Tabs */}
-        <div className="flex border-b border-gray-200 mb-6">
-          <button
-            className={`px-4 py-2 text-sm font-medium ${filterStatus === "all" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterStatus("all")}
-          >
-            All Clients
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium ${filterStatus === "active" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterStatus("active")}
-          >
-            Active
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium ${filterStatus === "inactive" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterStatus("inactive")}
-          >
-            Inactive
-          </button>
+        <div className="mb-8">
+          <div className="flex flex-col items-center">
+            <div className="inline-flex bg-white shadow-sm rounded-full p-1 border border-[#DEB887]/20">
+              <button
+                className={`px-6 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${filterStatus === "all" 
+                  ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm" 
+                  : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                onClick={() => setFilterStatus("all")}
+              >
+                All Clients
+              </button>
+              
+              <button
+                className={`px-6 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${filterStatus === "active" 
+                  ? "bg-gradient-to-r from-[#4CAF50]/90 to-[#4CAF50]/70 text-white shadow-sm" 
+                  : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                onClick={() => setFilterStatus("active")}
+              >
+                Active
+              </button>
+              
+              <button
+                className={`px-6 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${filterStatus === "inactive" 
+                  ? "bg-gradient-to-r from-[#F44336]/90 to-[#F44336]/70 text-white shadow-sm" 
+                  : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                onClick={() => setFilterStatus("inactive")}
+              >
+                Inactive
+              </button>
+            </div>
+            
+            <div className="mt-4 w-16 h-0.5 bg-gradient-to-r from-transparent via-[#DEB887]/30 to-transparent"></div>
+          </div>
         </div>
 
         {/* Client Cards */}
@@ -146,101 +137,120 @@ export default function Client() {
           {filteredClients.map((client) => (
             <div
               key={client.id}
-              className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all overflow-hidden group relative transform hover:-translate-y-1 duration-300"
+              className="rounded-lg overflow-hidden border border-[#DEB887]/30 bg-gradient-to-br from-[#F5EFE7] to-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 relative"
             >
-              <button
-                onClick={() => deleteClient(client.id)}
-                className="absolute top-3 right-3 h-7 w-7 flex items-center justify-center rounded-lg bg-red-100 text-red-600 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-all z-10 opacity-80 hover:opacity-100"
-                title="Delete Client"
-              >
-                <Trash className="h-3.5 w-3.5" />
-              </button>
-              <div className="p-5">
-                {/* Client Header with Image and Status */}
-                <div className="flex items-center gap-4 mb-4">
-                  {client.image ? (
-                    <div className="h-14 w-14 rounded-full overflow-hidden flex-shrink-0 border-2 border-amber-100 group-hover:border-amber-300 transition-all shadow-sm">
-                      <img 
-                        src={`/${client.image}`}
-                        alt={client.name}
-                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          // Set a fallback image or use initials
-                          e.target.parentNode.innerHTML = `<div class="h-14 w-14 rounded-full bg-gradient-to-r from-amber-50 to-amber-100 flex items-center justify-center text-amber-700 font-semibold text-lg flex-shrink-0 border-2 border-amber-100 group-hover:border-amber-300 transition-all shadow-sm">${client.name.split(' ').map(n => n[0]).join('').toUpperCase()}</div>`;
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div className="h-14 w-14 rounded-full bg-gradient-to-r from-amber-50 to-amber-100 flex items-center justify-center text-amber-700 font-semibold text-lg flex-shrink-0 border-2 border-amber-100 group-hover:border-amber-300 transition-all shadow-sm">
-                      {client.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                    </div>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-base font-semibold text-gray-900 truncate group-hover:text-amber-700 transition-colors">
+              <div className="absolute top-3 right-3 z-10">
+                <button
+                  onClick={() => deleteClient(client.id)}
+                  className="h-7 w-7 flex items-center justify-center rounded-full bg-red-100/80 text-red-600 hover:bg-red-200 transition-all opacity-80 hover:opacity-100 shadow-sm"
+                  title="Delete Client"
+                >
+                  <Trash className="h-3.5 w-3.5" />
+                </button>
+              </div>
+              <div className="p-3">
+                <div className="flex items-center mb-3">
+                  <div className="flex items-center gap-2">
+                    {client.image ? (
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full overflow-hidden border-2 border-[#DEB887]/30 shadow-md">
+                        <img 
+                          src={`/${client.image}`}
+                          alt={client.name}
+                          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            // Set a fallback image or use initials
+                            e.target.parentNode.innerHTML = `<div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#A67C52] to-[#8B5A2B] shadow-md text-white font-semibold text-sm">${client.name.split(' ').map(n => n[0]).join('').toUpperCase()}</div>`;
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#A67C52] to-[#8B5A2B] shadow-md text-white font-semibold text-sm">
+                        {client.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="text-sm font-semibold text-[#5D3A1F] truncate">
                         {client.name}
                       </h3>
-                    </div>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className={`px-2 py-0.5 rounded-md text-xs font-medium flex items-center ${
-                        client?.status === "active"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}>
-                        {client?.status === "active" ? (
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                        ) : (
-                          <X className="h-3 w-3 mr-1" />
-                        )}
-                        {client?.status ? client.status.charAt(0).toUpperCase() + client.status.slice(1) : "Inactive"}
-                      </span>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium flex items-center ${
+                          client?.status === "active"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}>
+                          {client?.status === "active" ? (
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                          ) : (
+                            <X className="h-3 w-3 mr-1" />
+                          )}
+                          {client?.status ? client.status.charAt(0).toUpperCase() + client.status.slice(1) : "Inactive"}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-
-                {/* Contact Information */}
-                <div className="space-y-1.5 mb-4 bg-gray-50 p-3 rounded-lg">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Mail className="h-4 w-4 text-amber-500 flex-shrink-0" />
-                    <p className="text-sm truncate">{client.email}</p>
+                <div className="mt-3">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                          <Mail className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                        </div>
+                        <p className="text-xs text-[#6B4226]/70 truncate">{client.email}</p>
+                      </div>
+                    </div>
+                    
+                    {client.phonenumber && (
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                            <Phone className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                          </div>
+                          <p className="text-xs text-[#6B4226]/70">{client.phonenumber}</p>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {client.address && (
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                            <Building className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                          </div>
+                          <p className="text-xs text-[#6B4226]/70 truncate">{client.address}</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  {client.phonenumber && (
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Phone className="h-4 w-4 text-amber-500 flex-shrink-0" />
-                      <p className="text-sm">{client.phonenumber}</p>
-                    </div>
-                  )}
-                  {client.address && (
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Building className="h-4 w-4 text-amber-500 flex-shrink-0" />
-                      <p className="text-sm truncate">{client.address}</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
-                  <button
-                    onClick={() => {
-                      setSelectedClient(client)
-                      setShowClientDetails(true)
-                    }}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-3 py-2.5 text-xs font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
-                  >
-                    <User className="h-4 w-4" />
-                    <span>View Details</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSelectedClient(client)
-                      setShowUpdateClientForm(true)
-                    }}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
-                  >
-                    <Edit className="h-4 w-4" />
-                    <span>Update Client</span>
-                  </button>
+                  
+                  <div className="mt-3 h-1 w-full rounded-full bg-[#F5EFE7] overflow-hidden">
+                    <div className="h-full rounded-full bg-gradient-to-r from-[#A67C52] to-[#DEB887] w-full"></div>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-2 mt-3">
+                    <button
+                      onClick={() => {
+                        setSelectedClient(client)
+                        setShowClientDetails(true)
+                      }}
+                      className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:shadow-md transition-all duration-300"
+                    >
+                      <User className="h-3 w-3" />
+                      <span>View</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedClient(client)
+                        setShowUpdateClientForm(true)
+                      }}
+                      className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#DEB887]/30 bg-white px-3 py-1.5 text-xs font-medium text-[#8B5A2B] hover:bg-[#DEB887]/10 transition-all duration-300"
+                    >
+                      <Edit className="h-3 w-3" />
+                      <span>Update</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -249,8 +259,8 @@ export default function Client() {
 
         {filteredClients.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12">
-            <div className="rounded-full bg-amber-100 p-3 mb-4">
-              <Users className="h-6 w-6 text-amber-600" />
+            <div className="rounded-full bg-[#E8DCCA] p-3 mb-4">
+              <Users className="h-6 w-6 text-[#8B5A2B]" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-1">No clients found</h3>
             <p className="text-sm text-gray-500 mb-4">There are no clients matching your current filters.</p>
@@ -259,7 +269,7 @@ export default function Client() {
                 setFilterStatus("all")
                 setSearchQuery("")
               }}
-              className="text-sm font-medium text-amber-600 hover:text-amber-800"
+              className="text-sm font-medium text-[#8B5A2B] hover:text-[#5A371F]"
             >
               Clear filters
             </button>

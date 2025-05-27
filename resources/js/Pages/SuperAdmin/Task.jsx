@@ -175,7 +175,7 @@ export default function Task() {
     const getPriorityColor = (priority) => {
         switch (priority) {
             case "high": return "text-red-600 bg-red-100";
-            case "medium": return "text-amber-600 bg-amber-100";
+            case "medium": return "text-[#8B5A2B] bg-[#F5EFE7]";
             case "low": return "text-green-600 bg-green-100";
             default: return "text-gray-600 bg-gray-100";
         }
@@ -185,7 +185,7 @@ export default function Task() {
     const getStatusColor = (status) => {
         switch (status) {
             case "completed": return "text-green-600 bg-green-100";
-            case "pending": return "text-amber-600 bg-amber-100";
+            case "pending": return "text-[#8B5A2B] bg-[#F5EFE7]";
             case "inprogress": return "text-blue-600 bg-blue-100";
             default: return "text-gray-600 bg-gray-100";
         }
@@ -285,7 +285,7 @@ export default function Task() {
                                         placeholder="Search tasks..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                                        className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#E5D3B3] transition-all"
                                     />
                                 </div>
                                 
@@ -307,7 +307,7 @@ export default function Task() {
                                                         setFilterPriority("all");
                                                         setShowFilterDropdown(false);
                                                     }}
-                                                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                                                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
                                                 >
                                                     All Priorities
                                                 </button>
@@ -316,7 +316,7 @@ export default function Task() {
                                                         setFilterPriority("high");
                                                         setShowFilterDropdown(false);
                                                     }}
-                                                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                                                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
                                                 >
                                                     High
                                                 </button>
@@ -325,7 +325,7 @@ export default function Task() {
                                                         setFilterPriority("medium");
                                                         setShowFilterDropdown(false);
                                                     }}
-                                                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                                                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
                                                 >
                                                     Medium
                                                 </button>
@@ -334,7 +334,7 @@ export default function Task() {
                                                         setFilterPriority("low");
                                                         setShowFilterDropdown(false);
                                                     }}
-                                                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                                                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
                                                 >
                                                     Low
                                                 </button>
@@ -361,7 +361,7 @@ export default function Task() {
                                                         setFilterEmployee("all");
                                                         setShowEmployeeDropdown(false);
                                                     }}
-                                                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                                                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
                                                 >
                                                     All Employees
                                                 </button>
@@ -372,7 +372,7 @@ export default function Task() {
                                                             setFilterEmployee(employee.id.toString());
                                                             setShowEmployeeDropdown(false);
                                                         }}
-                                                        className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                                                        className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
                                                     >
                                                         {employee.name}
                                                     </button>
@@ -386,7 +386,7 @@ export default function Task() {
                             {/* Create Task Button */}
                             <button
                                 onClick={() => setShowModal(true)}
-                                className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
+                                className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5D3A22] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
                             >
                                 <Plus className="h-4 w-4" />
                                 <span>Create Task</span>
@@ -396,19 +396,19 @@ export default function Task() {
                         {/* Status Tabs */}
                         <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
                             <button
-                                className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeTab === "all" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+                                className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeTab === "all" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
                                 onClick={() => setActiveTab("all")}
                             >
                                 All Tasks
                             </button>
                             <button
-                                className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeTab === "pending" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+                                className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeTab === "pending" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
                                 onClick={() => setActiveTab("pending")}
                             >
                                 Pending
                             </button>
                             <button
-                                className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeTab === "completed" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+                                className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${activeTab === "completed" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
                                 onClick={() => setActiveTab("completed")}
                             >
                                 Completed
@@ -447,11 +447,11 @@ export default function Task() {
 
                         {/* Pending Tasks Card */}
                         <div className="rounded-xl overflow-hidden bg-white shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
-                            <div className="h-2 bg-gradient-to-r from-amber-500 to-amber-600"></div>
+                            <div className="h-2 bg-gradient-to-r from-[#8B5A2B] to-[#6B4226]"></div>
                             <div className="p-6">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2.5 bg-gradient-to-r from-amber-500 to-amber-600 rounded-lg shadow-md">
+                                        <div className="p-2.5 bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-lg shadow-md">
                                             <Clock className="h-5 w-5 text-white" />
                                         </div>
                                         <h3 className="text-base font-semibold text-gray-900">Pending Tasks</h3>
@@ -513,8 +513,8 @@ export default function Task() {
                     {/* Task List */}
                     {filteredTasks.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 bg-white rounded-xl shadow-lg border border-gray-100">
-                            <div className="rounded-full bg-amber-100 p-3 mb-4">
-                                <ClipboardList className="h-6 w-6 text-amber-600" />
+                            <div className="rounded-full bg-[#F5EFE7] p-3 mb-4">
+                                <ClipboardList className="h-6 w-6 text-[#8B5A2B]" />
                             </div>
                             <h3 className="text-lg font-medium text-gray-900 mb-1">No tasks found</h3>
                             <p className="text-sm text-gray-500 mb-4">
@@ -530,7 +530,7 @@ export default function Task() {
                                         setSearchQuery("");
                                         setActiveTab("all");
                                     }}
-                                    className="text-sm font-medium text-amber-600 hover:text-amber-800"
+                                    className="text-sm font-medium text-[#8B5A2B] hover:text-[#6B4226]"
                                 >
                                     Clear filters
                                 </button>
@@ -600,7 +600,7 @@ export default function Task() {
                                                 <div className="ml-4">
                                                     <button
                                                         onClick={() => setExpandedTaskId(expandedTaskId === task.id ? null : task.id)}
-                                                        className="p-1.5 rounded-full text-gray-400 hover:text-amber-600 hover:bg-amber-50 focus:outline-none transition-colors"
+                                                        className="p-1.5 rounded-full text-gray-400 hover:text-[#8B5A2B] hover:bg-[#F5EFE7] focus:outline-none transition-colors"
                                                     >
                                                         <ChevronDown 
                                                             className={`h-5 w-5 transform transition-transform duration-200 ${
@@ -618,7 +618,7 @@ export default function Task() {
                                                         <div className="md:col-span-2 space-y-4">
                                                             <div>
                                                                 <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center">
-                                                                    <AlignLeft className="h-4 w-4 text-amber-500 mr-2" />
+                                                                    <AlignLeft className="h-4 w-4 text-[#8B5A2B] mr-2" />
                                                                     Description
                                                                 </h4>
                                                                 <div className="bg-gray-50 p-3 rounded-lg text-gray-700">
@@ -629,7 +629,7 @@ export default function Task() {
                                                             {task.notes && (
                                                                 <div>
                                                                     <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center">
-                                                                        <Clock className="h-4 w-4 text-amber-500 mr-2" />
+                                                                        <Clock className="h-4 w-4 text-[#8B5A2B] mr-2" />
                                                                         Notes
                                                                     </h4>
                                                                     <div className="bg-gray-50 p-3 rounded-lg text-gray-700">
@@ -641,7 +641,7 @@ export default function Task() {
                                                         <div className="space-y-4">
                                                             <div>
                                                                 <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center">
-                                                                    <Clock className="h-4 w-4 text-amber-500 mr-2" />
+                                                                    <Clock className="h-4 w-4 text-[#8B5A2B] mr-2" />
                                                                     Timeline
                                                                 </h4>
                                                                 <div className="bg-gray-50 p-3 rounded-lg">
@@ -668,7 +668,7 @@ export default function Task() {
                                                             <div className="flex flex-wrap gap-2">
                                                                 <button
                                                                     onClick={() => handleUpdateTask(task)}
-                                                                    className="flex items-center justify-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                                                                    className="flex items-center justify-center gap-1 rounded-lg border border-[#E5D3B3] bg-[#F5EFE7] px-3 py-2 text-xs font-medium text-[#6B4226] hover:bg-[#E5D3B3] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                                                                 >
                                                                     <Edit className="h-4 w-4" />
                                                                     <span>Update</span>
@@ -695,7 +695,7 @@ export default function Task() {
                                 <div className="px-6 py-4 border-t border-gray-100 flex justify-center">
                                     <button
                                         onClick={() => setShowAllTasks(!showAllTasks)}
-                                        className="flex items-center justify-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                                        className="flex items-center justify-center gap-1 rounded-lg border border-[#E5D3B3] bg-[#F5EFE7] px-4 py-2 text-sm font-medium text-[#6B4226] hover:bg-[#E5D3B3] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                                     >
                                         {showAllTasks ? 'Show Less' : `Show All (${filteredTasks.length})`}
                                     </button>

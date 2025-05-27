@@ -191,7 +191,7 @@ const Orders = ({ auth }) => {
                   placeholder="Search orders..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                  className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
                 />
               </div>
             </div>
@@ -200,31 +200,31 @@ const Orders = ({ auth }) => {
           {/* Status Tabs */}
           <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "all" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "all" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setStatusFilter("all")}
             >
               All Orders
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "pending" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "pending" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setStatusFilter("pending")}
             >
               Pending
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "processing" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "processing" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setStatusFilter("processing")}
             >
               Processing
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "completed" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "completed" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setStatusFilter("completed")}
             >
               Completed
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "cancelled" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "cancelled" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setStatusFilter("cancelled")}
             >
               Cancelled
@@ -235,8 +235,8 @@ const Orders = ({ auth }) => {
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredOrders.length === 0 ? (
               <div className="col-span-full flex flex-col items-center justify-center py-12">
-                <div className="rounded-full bg-amber-100 p-3 mb-4">
-                  <Utensils className="h-6 w-6 text-amber-600" />
+                <div className="rounded-full bg-[#F5EFE7] p-3 mb-4">
+                  <Utensils className="h-6 w-6 text-[#8B5A2B]" />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-1">No orders found</h3>
                 <p className="text-gray-500 text-center max-w-md">
@@ -250,9 +250,9 @@ const Orders = ({ auth }) => {
                   className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-lg transition-all group relative transform hover:-translate-y-1 duration-300"
                 >
                   {/* Order Header */}
-                  <div className="p-4 bg-gradient-to-r from-amber-50 to-white border-b border-gray-100">
+                  <div className="p-4 bg-gradient-to-r from-[#F5EFE7] to-white border-b border-gray-100">
                     <div className="flex justify-between items-start">
-                      <span className="text-base font-semibold text-gray-900 group-hover:text-amber-700 transition-colors">#{order.orderNumber}</span>
+                      <span className="text-base font-semibold text-gray-900 group-hover:text-[#8B5A2B] transition-colors">#{order.orderNumber}</span>
                       <div className="flex items-center gap-2">
                         <div className={`px-2.5 py-1 rounded-md text-xs font-medium inline-flex items-center ${getStatusBadgeClass(order.status)}`}>
                           {getStatusIcon(order.status)}
@@ -276,11 +276,11 @@ const Orders = ({ auth }) => {
                     {/* Customer Info */}
                     <div className="mb-3">
                       <div className="flex items-center mb-2">
-                        <User className="h-4 w-4 text-amber-500 mr-2" />
+                        <User className="h-4 w-4 text-[#8B5A2B] mr-2" />
                         <span className="text-sm text-gray-700">{order.customerName}</span>
                       </div>
                       <div className="flex items-center">
-                        <MapPin className="h-4 w-4 text-amber-500 mr-2" />
+                        <MapPin className="h-4 w-4 text-[#8B5A2B] mr-2" />
                         <span className="text-sm text-gray-700">Room {order.roomNumber}</span>
                       </div>
                     </div>
@@ -291,9 +291,9 @@ const Orders = ({ auth }) => {
                         <Utensils className="h-4 w-4 text-gray-400 mr-1.5" />
                         <span className="text-sm text-gray-600">{order.items?.length || 0} items</span>
                       </div>
-                      <div className="flex items-center bg-amber-50 px-2.5 py-1 rounded-md">
-                        <DollarSign className="h-4 w-4 text-amber-600 mr-1" />
-                        <span className="font-medium text-amber-700">${parseFloat(order.total || 0).toFixed(2)}</span>
+                      <div className="flex items-center bg-[#F5EFE7] px-2.5 py-1 rounded-md">
+                        <DollarSign className="h-4 w-4 text-[#8B5A2B] mr-1" />
+                        <span className="font-medium text-[#6B4226]">${parseFloat(order.total || 0).toFixed(2)}</span>
                       </div>
                     </div>
                     
@@ -309,7 +309,7 @@ const Orders = ({ auth }) => {
                         <span className="text-gray-700">${parseFloat(order.discount || 0).toFixed(2)}</span>
                       </div>
                       {order.isSeniorCitizen && (
-                        <div className="text-xs text-amber-600 font-medium">
+                        <div className="text-xs text-[#8B5A2B] font-medium">
                           Senior Citizen Discount Applied
                         </div>
                       )}
@@ -338,14 +338,14 @@ const Orders = ({ auth }) => {
                     <div className="flex gap-2">
                       <button
                         onClick={() => setShowOrderDetails(order)}
-                        className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-xs font-medium rounded-lg shadow-sm text-white bg-gradient-to-r from-amber-600 to-amber-800 hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                        className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-xs font-medium rounded-lg shadow-sm text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] hover:from-[#6B4226] hover:to-[#513018] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                       >
                         <Eye className="h-4 w-4 mr-1.5" />
                         <span>View Details</span>
                       </button>
                       <button
                         onClick={() => setOrderToUpdate(order)}
-                        className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                        className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#E5D3B3] bg-[#F5EFE7] px-3 py-2 text-xs font-medium text-[#6B4226] hover:bg-[#E5D3B3] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                       >
                         <Edit className="h-4 w-4 mr-1.5" />
                         <span>Update</span>

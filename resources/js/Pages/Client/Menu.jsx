@@ -32,12 +32,12 @@ const scrollbarStyles = `
   }
   
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #d97706;
+    background: #8B5A2B;
     border-radius: 10px;
   }
   
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #b45309;
+    background: #5D3A1F;
   }
   
   .pos-table th,
@@ -47,7 +47,7 @@ const scrollbarStyles = `
   }
   
   .pos-table tbody tr:hover {
-    background-color: #fef3c7;
+    background-color: #F5EFE6;
   }
 `;
 
@@ -278,7 +278,7 @@ export default function Menu() {
                   placeholder="Search menu..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                  className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#DEB887]/30 transition-all"
                 />
               </div>
             </div>
@@ -287,31 +287,31 @@ export default function Menu() {
           {/* Category Tabs */}
           <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "all" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "all" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setFilterCategory("all")}
             >
               All Items
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "appetizer" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "appetizer" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setFilterCategory("appetizer")}
             >
               Appetizers
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "main_course" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "main_course" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setFilterCategory("main_course")}
             >
               Main Courses
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "dessert" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "dessert" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setFilterCategory("dessert")}
             >
               Desserts
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "beverage" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "beverage" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setFilterCategory("beverage")}
             >
               Beverages
@@ -338,7 +338,7 @@ export default function Menu() {
                     {/* Price moved to top left */}
                     <div className="absolute top-2 left-2">
                       <div className="flex items-center gap-1 bg-black/70 px-2 py-1 rounded-full">
-                        <PhilippinePeso className="h-3 w-3 text-amber-600" />
+                        <PhilippinePeso className="h-3 w-3 text-[#8B5A2B]" />
                         <span className="font-semibold text-white text-sm">{item.price}</span>
                       </div>
                     </div>
@@ -361,9 +361,9 @@ export default function Menu() {
                   <div className="p-2">
                     {/* Category and Prep Time */}
                     <div className="flex flex-wrap items-center text-xs text-gray-500 mb-2">
-                      <div className="flex items-center mr-2 bg-amber-50 px-2 py-1 rounded-md">
+                      <div className="flex items-center mr-2 bg-[#F5EFE6] px-2 py-1 rounded-md">
                         
-                        <span className="font-medium text-amber-700 text-[10px]">{getCategoryLabel(item.category)}</span>
+                        <span className="font-medium text-[#8B5A2B] text-[10px]">{getCategoryLabel(item.category)}</span>
                       </div>
                       <div className="flex items-center bg-gray-50 px-2 py-1 rounded-md">
                         <Clock className="h-2.5 w-2.5 mr-1 text-gray-500" />
@@ -381,7 +381,7 @@ export default function Menu() {
                     <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
                       <button
                         onClick={() => setShowMenuItemDetails(item)}
-                        className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-3 py-1.5 text-[10px] font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900"
+                        className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] px-3 py-1.5 text-[10px] font-medium text-white shadow-sm hover:from-[#8B5A2B] hover:to-[#5D3A1F]"
                       >
                         <Utensils className="h-2.5 w-2.5" />
                         <span>View</span>
@@ -392,7 +392,7 @@ export default function Menu() {
                         className={`flex-1 flex items-center justify-center gap-1 rounded-lg ${
                           item.status === 'sold_out'
                             ? 'border border-gray-200 bg-gray-100 px-3 py-1.5 text-[10px] font-medium text-gray-400 cursor-not-allowed'
-                            : 'border border-amber-200 bg-amber-50 px-3 py-1.5 text-[10px] font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all'
+                            : 'border border-[#DEB887]/30 bg-[#F5EFE6] px-3 py-1.5 text-[10px] font-medium text-[#8B5A2B] hover:bg-[#DEB887]/20 focus:outline-none focus:ring-2 focus:ring-[#8B5A2B]/50 focus:ring-offset-1 transition-all'
                         }`}
                       >
                         <ShoppingCart className={`h-2.5 w-2.5 ${item.status === 'sold_out' ? 'text-gray-400' : ''}`} />
@@ -406,8 +406,8 @@ export default function Menu() {
 
             {filteredMenuItems.length === 0 && (
               <div className="flex flex-col items-center justify-center py-12">
-                <div className="rounded-full bg-amber-100 p-3 mb-4">
-                  <Utensils className="h-6 w-6 text-amber-600" />
+                <div className="rounded-full bg-[#DEB887]/30 p-3 mb-4">
+                  <Utensils className="h-6 w-6 text-[#8B5A2B]" />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-1">No menu items found</h3>
                 <p className="text-gray-500 text-center max-w-md">
@@ -423,10 +423,10 @@ export default function Menu() {
           <div className="bg-white rounded-lg border border-gray-200 shadow-sm sticky top-4 h-[calc(100vh-40px)] flex flex-col">
             <div className="p-4 border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <ShoppingCart className="h-5 w-5 text-amber-600" />
+                <ShoppingCart className="h-5 w-5 text-[#8B5A2B]" />
                 Your Order
                 {cart.length > 0 && (
-                  <span className="ml-auto bg-amber-100 text-amber-800 text-xs font-medium rounded-full px-2 py-0.5">
+                  <span className="ml-auto bg-[#DEB887]/30 text-[#6B4226] text-xs font-medium rounded-full px-2 py-0.5">
                     {cart.reduce((total, item) => total + item.quantity, 0)} items
                   </span>
                 )}
@@ -455,8 +455,8 @@ export default function Menu() {
                           <h3 className="text-[10px] font-medium text-gray-900 truncate">{item.menuname}</h3>
                           <div className="flex items-center justify-between mt-0.5">
                             <div className="flex items-center gap-0.5">
-                              <PhilippinePeso className="h-2.5 w-2.5 text-amber-600" />
-                              <span className="text-[10px] font-medium text-amber-600">{item.price}</span>
+                              <PhilippinePeso className="h-2.5 w-2.5 text-[#8B5A2B]" />
+                              <span className="text-[10px] font-medium text-[#8B5A2B]">{item.price}</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <button 
@@ -468,7 +468,7 @@ export default function Menu() {
                               <span className="text-[10px] font-medium w-4 text-center">{item.quantity}</span>
                               <button 
                                 onClick={() => addToCart(item)}
-                                className="p-0.5 rounded-full bg-amber-100 text-amber-600 hover:bg-amber-200"
+                                className="p-0.5 rounded-full bg-[#DEB887]/30 text-[#8B5A2B] hover:bg-[#DEB887]/50"
                               >
                                 <Plus className="h-2.5 w-2.5" />
                               </button>
@@ -507,7 +507,7 @@ export default function Menu() {
                       id="seniorDiscount"
                       checked={isSeniorCitizen}
                       onChange={() => setIsSeniorCitizen(!isSeniorCitizen)}
-                      className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-[#8B5A2B] focus:ring-[#8B5A2B] border-gray-300 rounded"
                     />
                     <label htmlFor="seniorDiscount" className="ml-2 block text-xs text-gray-700">
                       Apply Senior Citizen Discount (20%)
@@ -561,7 +561,7 @@ export default function Menu() {
                       className={`flex-1 py-2 px-4 rounded-lg text-white text-xs font-medium ${
                         cart.length === 0 || isSubmitting
                           ? "bg-gray-400 cursor-not-allowed"
-                          : "bg-gradient-to-r from-amber-600 to-amber-800 hover:from-amber-700 hover:to-amber-900"
+                          : "bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] hover:from-[#8B5A2B] hover:to-[#5D3A1F]"
                       }`}
                       disabled={cart.length === 0 || isSubmitting}
                     >

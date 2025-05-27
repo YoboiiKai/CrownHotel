@@ -70,18 +70,22 @@ class OrderController extends Controller
         try {
             // Validate the request
             $validator = Validator::make($request->all(), [
-                'roomNumber' => 'required|string|max:50',
+                'service_type' => 'required|in:room,table',
+                'room_number' => 'required_if:service_type,room|nullable|string|max:50',
+                'table_number' => 'required_if:service_type,table|nullable|string|max:50',
                 'customerName' => 'nullable|string|max:100',
                 'items' => 'required|array|min:1',
-                'items.*.menuItemId' => 'required|exists:menu,id',
+                'items.*.menu_id' => 'required|exists:menu,id',
                 'items.*.quantity' => 'required|integer|min:1',
                 'items.*.price' => 'required|numeric|min:0',
-                'items.*.name' => 'required|string',
+                'items.*.subtotal' => 'required|numeric|min:0',
                 'subtotal' => 'required|numeric|min:0',
                 'discount' => 'required|numeric|min:0',
                 'total' => 'required|numeric|min:0',
                 'notes' => 'nullable|string',
-                'isSeniorCitizen' => 'required|boolean',
+                'is_senior_citizen' => 'required|boolean',
+                'payment_method' => 'required|in:cash,card,mobile',
+                'payment_status' => 'nullable|in:pending,processing,completed,failed',
             ]);
 
             if ($validator->fails()) {
@@ -98,13 +102,13 @@ class OrderController extends Controller
             // Validate each item and collect image paths
             $imageArray = [];
             foreach ($request->items as $index => $item) {
-                $menu = Menu::find($item['menuItemId']);
+                $menu = Menu::find($item['menu_id']);
                 if (!$menu) {
-                    throw new \Exception("Menu item with ID {$item['menuItemId']} not found");
+                    throw new \Exception("Menu item with ID {$item['menu_id']} not found");
                 }
                 
                 // Store the image path for this menu item
-                $imageArray[$index] = $menu->image ?? "Menu/{$item['menuItemId']}.jpg";
+                $imageArray[$index] = $menu->image ?? "Menu/{$item['menu_id']}.jpg";
             }
             
             // If images were provided in the request, use those instead
@@ -114,7 +118,9 @@ class OrderController extends Controller
 
             // Create order with multiple items and their images
             $order = Order::create([
-                'roomNumber' => $request->roomNumber,
+                'service_type' => $request->service_type,
+                'room_number' => $request->service_type === 'room' ? $request->room_number : null,
+                'table_number' => $request->service_type === 'table' ? $request->table_number : null,
                 'customerName' => $request->customerName ?? 'Guest',
                 'items' => $request->items,
                 'images' => $imageArray, // Save the collected image paths
@@ -122,16 +128,12 @@ class OrderController extends Controller
                 'discount' => $request->discount,
                 'total' => $request->total,
                 'notes' => $request->notes,
-                'isSeniorCitizen' => $request->isSeniorCitizen,
+                'is_senior_citizen' => $request->is_senior_citizen,
+                'payment_method' => $request->payment_method,
+                'payment_status' => $request->payment_status ?? ($request->payment_method === 'cash' ? 'completed' : 'pending'),
                 'status' => 'pending', // Default status
             ]);
-
-            // Optional: Update inventory or menu item stats if needed
-            // foreach ($request->items as $item) {
-            //     Menu::find($item['menuItemId'])->increment('sales_count', $item['quantity']);
-            // }
-
-            // Commit transaction
+            
             DB::commit();
 
             // Return success response with the created order

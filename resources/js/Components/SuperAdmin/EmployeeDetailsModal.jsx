@@ -72,8 +72,8 @@ export default function EmployeeDetailsModal({ show, onClose, employee, onStatus
           </div>
 
           {/* Employee Profile Header */}
-          <div className="flex items-center gap-4 p-5 bg-amber-50 rounded-lg border border-amber-200 mb-6">
-            <div className="h-20 w-20 rounded-full bg-amber-100 flex items-center justify-center overflow-hidden">
+          <div className="flex items-center gap-4 p-5 bg-[#F5EFE7] rounded-lg border border-[#D2B48C] mb-6">
+            <div className="h-20 w-20 rounded-full bg-[#E8DCCA] flex items-center justify-center overflow-hidden">
               {employee.image ? (
                 <img 
                   src={`/${employee.image}`} 
@@ -81,7 +81,7 @@ export default function EmployeeDetailsModal({ show, onClose, employee, onStatus
                   className="h-full w-full object-cover" 
                 />
               ) : (
-                <span className="text-amber-700 font-semibold text-2xl">
+                <span className="text-[#6B4226] font-semibold text-2xl">
                   {employee.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                 </span>
               )}
@@ -101,7 +101,7 @@ export default function EmployeeDetailsModal({ show, onClose, employee, onStatus
                   )}
                   <span>{employee.status === "active" ? "Active" : "Inactive"}</span>
                 </span>
-                <span className="text-sm bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+                <span className="text-sm bg-[#E8DCCA] text-[#6B4226] px-2 py-0.5 rounded-full">
                   {employee.position}
                 </span>
               </div>
@@ -116,7 +116,7 @@ export default function EmployeeDetailsModal({ show, onClose, employee, onStatus
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Mail className="h-5 w-5 text-amber-600 mt-0.5" />
+                  <Mail className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-500 mb-1">Email Address</p>
                     <p className="text-sm font-medium text-gray-800">{employee.email}</p>
@@ -124,7 +124,7 @@ export default function EmployeeDetailsModal({ show, onClose, employee, onStatus
                 </div>
                 
                 <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Phone className="h-5 w-5 text-amber-600 mt-0.5" />
+                  <Phone className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-500 mb-1">Phone Number</p>
                     <p className="text-sm font-medium text-gray-800">{employee.phonenumber || "Not provided"}</p>
@@ -139,7 +139,7 @@ export default function EmployeeDetailsModal({ show, onClose, employee, onStatus
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Briefcase className="h-5 w-5 text-amber-600 mt-0.5" />
+                  <Briefcase className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-500 mb-1">Job Title</p>
                     <p className="text-sm font-medium text-gray-800">{employee.job_title}</p>
@@ -147,7 +147,7 @@ export default function EmployeeDetailsModal({ show, onClose, employee, onStatus
                 </div>
                 
                 <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Users className="h-5 w-5 text-amber-600 mt-0.5" />
+                  <Users className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-500 mb-1">Department</p>
                     <p className="text-sm font-medium text-gray-800">{employee.department}</p>
@@ -155,7 +155,7 @@ export default function EmployeeDetailsModal({ show, onClose, employee, onStatus
                 </div>
 
                 <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <DollarSign className="h-5 w-5 text-amber-600 mt-0.5" />
+                  <DollarSign className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-500 mb-1">Salary</p>
                     <p className="text-sm font-medium text-gray-800">${employee.salary.toLocaleString()}/month</p>
@@ -169,7 +169,7 @@ export default function EmployeeDetailsModal({ show, onClose, employee, onStatus
               <h4 className="text-sm font-medium text-gray-700 border-b border-gray-200 pb-2">Address Information</h4>
               
               <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                <MapPin className="h-5 w-5 text-amber-600 mt-0.5" />
+                <MapPin className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
                 <div>
                   <p className="text-xs text-gray-500 mb-1">Address</p>
                   <p className="text-sm font-medium text-gray-800">{employee.address}</p>
@@ -186,7 +186,7 @@ export default function EmployeeDetailsModal({ show, onClose, employee, onStatus
                   <button 
                     onClick={handleActivate}
                     disabled={isActivating}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-green-800 rounded-lg shadow-sm hover:from-green-700 hover:to-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-all disabled:opacity-70"
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-lg shadow-sm hover:from-[#7C5124] hover:to-[#5A371F] focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:ring-offset-1 transition-all disabled:opacity-70"
                   >
                     <CheckCircle className="h-4 w-4" />
                     {isActivating ? "Activating..." : "Activate Employee"}
@@ -195,7 +195,7 @@ export default function EmployeeDetailsModal({ show, onClose, employee, onStatus
                   <button 
                     onClick={handleDeactivate}
                     disabled={isDeactivating}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-800 rounded-lg shadow-sm hover:from-red-700 hover:to-red-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-all disabled:opacity-70"
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-lg shadow-sm hover:from-[#7C5124] hover:to-[#5A371F] focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:ring-offset-1 transition-all disabled:opacity-70"
                   >
                     <Ban className="h-4 w-4" />
                     {isDeactivating ? "Deactivating..." : "Deactivate Employee"}

@@ -19,10 +19,25 @@ class RoomController extends Controller
         $rooms = Room::all();
         return response()->json($rooms);
     }
-
+    
     /**
-     * Store a newly created resource in storage.
+     * Display a listing of rooms with their bookings.
      */
+    public function roomsWithBookings()
+    {
+        try {
+            $rooms = Room::with('bookings')->get();
+            return response()->json($rooms);
+        } catch (\Exception $e) {
+            Log::error('Error fetching rooms with bookings: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching rooms with bookings'
+            ], 500);
+        }
+    }
+
+
     public function store(Request $request)
     {
         try {

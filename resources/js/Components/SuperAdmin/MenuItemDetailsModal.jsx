@@ -41,7 +41,7 @@ export default function MenuItemDetailsModal({
               <div className="absolute bottom-4 left-4 right-4">
                 <h2 className="text-xl font-bold text-white mb-1">{showMenuItemDetails.menuname}</h2>
                 <div className="flex items-center gap-2">
-                  <div className="px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                  <div className="px-2 py-0.5 rounded-full text-xs font-medium bg-[#F5EFE7] text-[#6B4226]">
                     {getCategoryLabel(showMenuItemDetails.category)}
                   </div>
                   <div className="flex items-center gap-1 text-white">
@@ -63,8 +63,8 @@ export default function MenuItemDetailsModal({
             <div className="p-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-1">
-                  <PhilippinePeso className="h-4 w-4 text-amber-600" />
-                  <span className="text-lg font-bold text-amber-600">{showMenuItemDetails.price}</span>
+                  <PhilippinePeso className="h-4 w-4 text-[#8B5A2B]" />
+                  <span className="text-lg font-bold text-[#8B5A2B]">{showMenuItemDetails.price}</span>
                 </div>
                 {showMenuItemDetails.status === 'sold_out' ? (
                   <div className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 flex items-center">
@@ -111,7 +111,7 @@ export default function MenuItemDetailsModal({
                     addToCart(showMenuItemDetails);
                     setShowMenuItemDetails(null);
                   }}
-                  className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                  className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#513018] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                 >
                   <ShoppingCart className="h-4 w-4" />
                   <span>Add to Cart</span>

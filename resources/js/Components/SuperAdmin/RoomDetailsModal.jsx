@@ -91,16 +91,16 @@ export default function RoomDetailsModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+      <div className="bg-white rounded-xl overflow-hidden border border-[#E8DCCA] shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-amber-50 px-4 py-4">
+        <div className="bg-[#F5EFE7] px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <h3 className="text-lg font-bold text-gray-900">Room Details</h3>
             </div>
             <button 
               onClick={onClose} 
-              className="text-gray-400 hover:text-gray-600 transition-colors bg-white rounded-full p-1 hover:bg-gray-100"
+              className="text-gray-400 hover:text-gray-600 transition-colors bg-white rounded-full p-1 hover:bg-[#E8DCCA]"
             >
               <X className="h-5 w-5" />
             </button>
@@ -154,47 +154,47 @@ export default function RoomDetailsModal({
 
               <div className="grid grid-cols-1 gap-6">
                 {/* Room Details Card */}
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2">
+                <div className="bg-white rounded-lg border border-[#E8DCCA] shadow-sm p-2">
                   <div className="flex items-center mb-2">
-                    <Home className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
+                    <Home className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
                     <h5 className="text-xs font-semibold text-gray-900">Room Information</h5>
                   </div>
                   
-                  <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs grid grid-cols-1 gap-2">
+                  <div className="bg-gray-50 rounded-lg p-2 border border-[#E8DCCA] text-xs grid grid-cols-1 gap-2">
                     {/* Room Number */}
                     <div className="flex items-center">
                       <span className="text-gray-500">Room Number:</span>
-                      <span className="text-gray-700 font-medium ml-1.5">{room.roomNumber}</span>
+                      <span className="text-[#8B5A2B] font-medium ml-1.5">{room.roomNumber}</span>
                     </div>
                     
                     {/* Room Type */}
                     <div className="flex items-center">
                       <span className="text-gray-500">Type:</span>
-                      <span className="text-gray-700 font-medium ml-1.5">{getRoomTypeLabel(room.roomType)}</span>
+                      <span className="text-[#8B5A2B] font-medium ml-1.5">{getRoomTypeLabel(room.roomType)}</span>
                     </div>
                     
                     {/* Price */}
                     <div className="flex items-center">
                       <span className="text-gray-500">Price:</span>
-                      <span className="text-gray-700 font-medium ml-1.5">₱{room.price}/night</span>
+                      <span className="text-[#8B5A2B] font-medium ml-1.5">₱{room.price}/night</span>
                     </div>
                     
                     {/* Capacity */}
                     <div className="flex items-center">
                       <span className="text-gray-500">Capacity:</span>
-                      <span className="text-gray-700 font-medium ml-1.5">{room.capacity} {room.capacity === 1 ? 'Person' : 'People'}</span>
+                      <span className="text-[#8B5A2B] font-medium ml-1.5">{room.capacity} {room.capacity === 1 ? 'Person' : 'People'}</span>
                     </div>
                   </div>
                 </div>
                 
                 {/* Amenities Card */}
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2">
+                <div className="bg-white rounded-lg border border-[#E8DCCA] shadow-sm p-2">
                   <div className="flex items-center mb-2">
-                    <Tag className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
+                    <Tag className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
                     <h5 className="text-xs font-semibold text-gray-900">Amenities</h5>
                   </div>
                   
-                  <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs">
+                  <div className="bg-gray-50 rounded-lg p-2 border border-[#E8DCCA] text-xs">
                     {(() => {
                       let amenities = room.amenities;
                       if (typeof amenities === "string") {
@@ -212,62 +212,62 @@ export default function RoomDetailsModal({
                         <div className="grid grid-cols-2 gap-2">
                           {amenities.wifi && (
                             <div className="flex items-center">
-                              <Wifi className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
-                              <span className="text-gray-700">Free WiFi</span>
+                              <Wifi className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
+                              <span className="text-[#8B5A2B]">Free WiFi</span>
                             </div>
                           )}
                           {amenities.tv && (
                             <div className="flex items-center">
-                              <Tv className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
-                              <span className="text-gray-700">Smart TV</span>
+                              <Tv className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
+                              <span className="text-[#8B5A2B]">Smart TV</span>
                             </div>
                           )}
                           {amenities.bathtub && (
                             <div className="flex items-center">
-                              <Bath className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
-                              <span className="text-gray-700">Bathtub</span>
+                              <Bath className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
+                              <span className="text-[#8B5A2B]">Bathtub</span>
                             </div>
                           )}
                           {amenities.minibar && (
                             <div className="flex items-center">
-                              <Wine className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
-                              <span className="text-gray-700">Mini Bar</span>
+                              <Wine className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
+                              <span className="text-[#8B5A2B]">Mini Bar</span>
                             </div>
                           )}
                           {amenities.airCon && (
                             <div className="flex items-center">
-                              <Wind className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
-                              <span className="text-gray-700">Air Conditioning</span>
+                              <Wind className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
+                              <span className="text-[#8B5A2B]">Air Conditioning</span>
                             </div>
                           )}
                           {amenities.hairDryer && (
                             <div className="flex items-center">
-                              <Shirt className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
-                              <span className="text-gray-700">Hair Dryer</span>
+                              <Shirt className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
+                              <span className="text-[#8B5A2B]">Hair Dryer</span>
                             </div>
                           )}
                           {amenities.breakfast && (
                             <div className="flex items-center">
-                              <Coffee className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
-                              <span className="text-gray-700">Complimentary Breakfast</span>
+                              <Coffee className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
+                              <span className="text-[#8B5A2B]">Complimentary Breakfast</span>
                             </div>
                           )}
                           {amenities.balcony && (
                             <div className="flex items-center">
-                              <Sunrise className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
-                              <span className="text-gray-700">Private Balcony</span>
+                              <Sunrise className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
+                              <span className="text-[#8B5A2B]">Private Balcony</span>
                             </div>
                           )}
                           {amenities.toiletries && (
                             <div className="flex items-center">
-                              <Bath className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
-                              <span className="text-gray-700">Robe, Towel and Toiletries</span>
+                              <Bath className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
+                              <span className="text-[#8B5A2B]">Robe, Towel and Toiletries</span>
                             </div>
                           )}
                           {amenities.parking && (
                             <div className="flex items-center">
-                              <Car className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
-                              <span className="text-gray-700">Free Parking</span>
+                              <Car className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
+                              <span className="text-[#8B5A2B]">Free Parking</span>
                             </div>
                           )}
                         </div>
@@ -278,14 +278,14 @@ export default function RoomDetailsModal({
                 
                 {/* Description Card */}
                 {room.description && (
-                  <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2 col-span-1 md:col-span-2">
+                  <div className="bg-white rounded-lg border border-[#E8DCCA] shadow-sm p-2 col-span-1 md:col-span-2">
                     <div className="flex items-center mb-2">
-                      <AlertTriangle className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
+                      <AlertTriangle className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
                       <h5 className="text-xs font-semibold text-gray-900">Room Description</h5>
                     </div>
                     
-                    <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs">
-                      <p className="text-gray-700 italic">
+                    <div className="bg-gray-50 rounded-lg p-2 border border-[#E8DCCA] text-xs">
+                      <p className="text-[#8B5A2B] italic">
                         {room.description || 'No description provided.'}
                       </p>
                     </div>
@@ -296,7 +296,7 @@ export default function RoomDetailsModal({
           </div>
           
           {/* Footer */}
-          <div className="flex flex-col pt-3 border-t border-gray-100 mt-4">
+          <div className="flex flex-col pt-3 border-t border-[#E8DCCA] mt-4">
             {/* Status Management */}
             <div className="mb-4">
               <div className="flex flex-wrap gap-3">
@@ -315,7 +315,7 @@ export default function RoomDetailsModal({
                   <button 
                     onClick={() => handleStatusChange('maintenance')}
                     disabled={isChangingStatus}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-amber-600 to-amber-800 rounded-lg shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all disabled:opacity-70"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-lg shadow-sm hover:from-[#6B4226] hover:to-[#5A3921] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all disabled:opacity-70"
                   >
                     <AlertTriangle className="h-3.5 w-3.5" />
                     {isChangingStatus ? 'Updating...' : 'Set to Maintenance'}

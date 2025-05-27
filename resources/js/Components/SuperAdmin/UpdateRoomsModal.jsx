@@ -428,7 +428,7 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
   }
 
   // Define reusable classes
-  const inputClasses = "w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all placeholder:text-gray-400"
+  const inputClasses = "w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all placeholder:text-gray-400"
   const labelClasses = "block text-sm font-medium text-gray-700 mb-1.5"
   const iconWrapperClasses = "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
   const errorClasses = "text-xs text-red-600 mt-1.5 font-medium"
@@ -437,10 +437,10 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-amber-50 border-b border-amber-100 px-6 py-4">
+        <div className="bg-[#F5EFE7] border-b border-[#E8DCCA] px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-md shadow-sm">
+              <div className="p-2 bg-gradient-to-r from-[#8B5A2B] to-[#A67C52] rounded-md shadow-sm">
                 <Home className="h-5 w-5 text-white" />
               </div>
               <h3 className="text-lg font-bold text-gray-900">Update Room</h3>
@@ -458,7 +458,7 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
   
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Info Banner */}
-            <div className="p-4 bg-amber-50 rounded-lg border border-amber-200 mb-6">
+            <div className="p-4 bg-[#F5EFE7] rounded-lg border border-[#E8DCCA] mb-6">
               <h4 className="text-sm font-medium text-gray-800 mb-2">Room Information</h4>
               <p className="text-xs text-gray-500">Update room details and images. You can add or remove images as needed.</p>
             </div>
@@ -704,9 +704,9 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                             ].map((option) => (
                               <div
                                 key={option.value}
-                                className={`px-4 py-2 text-sm cursor-pointer hover:bg-amber-50 ${
+                                className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#F5EFE7] ${
                                   formData.roomType === option.value 
-                                    ? "bg-amber-50 text-amber-600"
+                                    ? "bg-amber-50 text-[#8B5A2B]"
                                     : "text-gray-700"
                                 }`}
                                 onClick={() => {
@@ -789,9 +789,9 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                             ].map((option) => (
                               <div
                                 key={option.value}
-                                className={`px-4 py-2 text-sm cursor-pointer hover:bg-amber-50 ${
+                                className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#F5EFE7] ${
                                   formData.capacity === option.value 
-                                    ? "bg-amber-50 text-amber-600"
+                                    ? "bg-amber-50 text-[#8B5A2B]"
                                     : "text-gray-700"
                                 }`}
                                 onClick={() => {
@@ -848,10 +848,10 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                         type="checkbox"
                         checked={formData.amenities.wifi}
                         onChange={() => handleAmenityChange('wifi')}
-                        className="rounded text-amber-600 focus:ring-amber-500 h-4 w-4"
+                        className="rounded text-[#8B5A2B] focus:ring-[#A67C52] h-4 w-4"
                       />
                       <span className="text-sm text-gray-700 flex items-center gap-1.5">
-                        <Wifi className="h-3.5 w-3.5 text-amber-500" />
+                        <Wifi className="h-3.5 w-3.5 text-[#8B5A2B]" />
                         WiFi
                       </span>
                     </label>
@@ -861,10 +861,10 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                         type="checkbox"
                         checked={formData.amenities.tv}
                         onChange={() => handleAmenityChange('tv')}
-                        className="rounded text-amber-600 focus:ring-amber-500 h-4 w-4"
+                        className="rounded text-[#8B5A2B] focus:ring-[#A67C52] h-4 w-4"
                       />
                       <span className="text-sm text-gray-700 flex items-center gap-1.5">
-                        <Tv className="h-3.5 w-3.5 text-amber-500" />
+                        <Tv className="h-3.5 w-3.5 text-[#8B5A2B]" />
                         TV
                       </span>
                     </label>
@@ -874,10 +874,10 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                         type="checkbox"
                         checked={formData.amenities.airCon}
                         onChange={() => handleAmenityChange('airCon')}
-                        className="rounded text-amber-600 focus:ring-amber-500 h-4 w-4"
+                        className="rounded text-[#8B5A2B] focus:ring-[#A67C52] h-4 w-4"
                       />
                       <span className="text-sm text-gray-700 flex items-center gap-1.5">
-                        <Wind className="h-3.5 w-3.5 text-amber-500" />
+                        <Wind className="h-3.5 w-3.5 text-[#8B5A2B]" />
                         Air Conditioning
                       </span>
                     </label>
@@ -887,10 +887,10 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                         type="checkbox"
                         checked={formData.amenities.minibar}
                         onChange={() => handleAmenityChange('minibar')}
-                        className="rounded text-amber-600 focus:ring-amber-500 h-4 w-4"
+                        className="rounded text-[#8B5A2B] focus:ring-[#A67C52] h-4 w-4"
                       />
                       <span className="text-sm text-gray-700 flex items-center gap-1.5">
-                        <Wine className="h-3.5 w-3.5 text-amber-500" />
+                        <Wine className="h-3.5 w-3.5 text-[#8B5A2B]" />
                         Minibar
                       </span>
                     </label>
@@ -900,10 +900,10 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                         type="checkbox"
                         checked={formData.amenities.bathtub}
                         onChange={() => handleAmenityChange('bathtub')}
-                        className="rounded text-amber-600 focus:ring-amber-500 h-4 w-4"
+                        className="rounded text-[#8B5A2B] focus:ring-[#A67C52] h-4 w-4"
                       />
                       <span className="text-sm text-gray-700 flex items-center gap-1.5">
-                        <Bath className="h-3.5 w-3.5 text-amber-500" />
+                        <Bath className="h-3.5 w-3.5 text-[#8B5A2B]" />
                         Bathtub
                       </span>
                     </label>
@@ -913,10 +913,10 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                         type="checkbox"
                         checked={formData.amenities.hairDryer}
                         onChange={() => handleAmenityChange('hairDryer')}
-                        className="rounded text-amber-600 focus:ring-amber-500 h-4 w-4"
+                        className="rounded text-[#8B5A2B] focus:ring-[#A67C52] h-4 w-4"
                       />
                       <span className="text-sm text-gray-700 flex items-center gap-1.5">
-                        <Shirt className="h-3.5 w-3.5 text-amber-500" />
+                        <Shirt className="h-3.5 w-3.5 text-[#8B5A2B]" />
                         Hair Dryer
                       </span>
                     </label>
@@ -926,10 +926,10 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                         type="checkbox"
                         checked={formData.amenities.breakfast}
                         onChange={() => handleAmenityChange('breakfast')}
-                        className="rounded text-amber-600 focus:ring-amber-500 h-4 w-4"
+                        className="rounded text-[#8B5A2B] focus:ring-[#A67C52] h-4 w-4"
                       />
                       <span className="text-sm text-gray-700 flex items-center gap-1.5">
-                        <Coffee className="h-3.5 w-3.5 text-amber-500" />
+                        <Coffee className="h-3.5 w-3.5 text-[#8B5A2B]" />
                         Breakfast
                       </span>
                     </label>
@@ -939,10 +939,10 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                         type="checkbox"
                         checked={formData.amenities.balcony}
                         onChange={() => handleAmenityChange('balcony')}
-                        className="rounded text-amber-600 focus:ring-amber-500 h-4 w-4"
+                        className="rounded text-[#8B5A2B] focus:ring-[#A67C52] h-4 w-4"
                       />
                       <span className="text-sm text-gray-700 flex items-center gap-1.5">
-                        <Sunrise className="h-3.5 w-3.5 text-amber-500" />
+                        <Sunrise className="h-3.5 w-3.5 text-[#8B5A2B]" />
                         Balcony
                       </span>
                     </label>
@@ -952,10 +952,10 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                         type="checkbox"
                         checked={formData.amenities.toiletries}
                         onChange={() => handleAmenityChange('toiletries')}
-                        className="rounded text-amber-600 focus:ring-amber-500 h-4 w-4"
+                        className="rounded text-[#8B5A2B] focus:ring-[#A67C52] h-4 w-4"
                       />
                       <span className="text-sm text-gray-700 flex items-center gap-1.5">
-                        <Shirt className="h-3.5 w-3.5 text-amber-500" />
+                        <Shirt className="h-3.5 w-3.5 text-[#8B5A2B]" />
                         Toiletries
                       </span>
                     </label>
@@ -965,10 +965,10 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                         type="checkbox"
                         checked={formData.amenities.parking}
                         onChange={() => handleAmenityChange('parking')}
-                        className="rounded text-amber-600 focus:ring-amber-500 h-4 w-4"
+                        className="rounded text-[#8B5A2B] focus:ring-[#A67C52] h-4 w-4"
                       />
                       <span className="text-sm text-gray-700 flex items-center gap-1.5">
-                        <Car className="h-3.5 w-3.5 text-amber-500" />
+                        <Car className="h-3.5 w-3.5 text-[#8B5A2B]" />
                         Parking
                       </span>
                     </label>
@@ -982,7 +982,7 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-200 focus:ring-offset-2 transition-all"
+                className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#E8DCCA] focus:ring-offset-2 transition-all"
                 disabled={isSubmitting}
               >
                 Cancel
@@ -990,7 +990,7 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex items-center rounded-lg bg-gradient-to-r from-amber-500 to-amber-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-600 hover:to-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all disabled:opacity-70"
+                className="flex items-center rounded-lg bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5A3921] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 transition-all disabled:opacity-70"
               >
                 {isSubmitting ? (
                   "Updating..."

@@ -88,7 +88,7 @@ export default function SuperAdminInventory({ auth }) {
     if (item.quantity <= 0) {
       return { status: "out-of-stock", color: "bg-red-100 text-red-800" };
     } else if (item.quantity <= item.minStockLevel) {
-      return { status: "low-stock", color: "bg-amber-100 text-amber-800" };
+      return { status: "low-stock", color: "bg-[#F5EFE7] text-[#8B5A2B]" };
     } else {
       return { status: "in-stock", color: "bg-green-100 text-green-800" };
     }
@@ -126,13 +126,13 @@ export default function SuperAdminInventory({ auth }) {
                   placeholder="Search inventory..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                  className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#E5D3B3] transition-all"
                 />
               </div>
             </div>
             <button
               onClick={() => setShowNewItemForm(true)}
-              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
+              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5D3A22] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
             >
               <Plus className="h-4 w-4" />
               <span>Add New Item</span>
@@ -142,31 +142,31 @@ export default function SuperAdminInventory({ auth }) {
           {/* Category Tabs */}
           <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "all" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "all" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setFilterCategory("all")}
             >
               All Categories
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "food" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "food" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setFilterCategory("food")}
             >
               Food & Beverage
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "housekeeping" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "housekeeping" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setFilterCategory("housekeeping")}
             >
               Housekeeping
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "equipment" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "equipment" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setFilterCategory("equipment")}
             >
               Equipment
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "amenities" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "amenities" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
               onClick={() => setFilterCategory("amenities")}
             >
               Guest Amenities
@@ -206,8 +206,8 @@ export default function SuperAdminInventory({ auth }) {
                       <div className="flex items-center justify-between mb-1">
                         <h3 className="text-sm font-semibold text-gray-900 truncate">{item.itemName}</h3>
                         <div className="flex items-center gap-0.5">
-                          <DollarSign className="h-3 w-3 text-amber-600" />
-                          <span className="font-medium text-xs text-amber-600">{item.price.toFixed(2)}</span>
+                          <DollarSign className="h-3 w-3 text-[#964B00]" />
+                          <span className="font-medium text-xs text-[#964B00]">{item.price.toFixed(2)}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-1 mb-1">
@@ -218,7 +218,7 @@ export default function SuperAdminInventory({ auth }) {
                         <Package className="h-3 w-3 text-gray-400" />
                         <p className="text-xs text-gray-500">
                           {item.quantity} {item.unit} {item.quantity < item.minStockLevel && (
-                            <span className="text-amber-600 font-medium">
+                            <span className="text-[#8B5A2B] font-medium">
                               (Min: {item.minStockLevel})
                             </span>
                           )}
@@ -234,7 +234,7 @@ export default function SuperAdminInventory({ auth }) {
                           setSelectedItem(item)
                           setShowItemDetails(true)
                         }}
-                        className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-2 py-1.5 text-xs font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                        className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-2 py-1.5 text-xs font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5D3A22] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                       >
                         <Eye className="h-3 w-3" />
                         <span>View</span>
@@ -245,7 +245,7 @@ export default function SuperAdminInventory({ auth }) {
                           setSelectedItem(item)
                           setShowUpdateItemForm(true)
                         }}
-                        className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-2 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                        className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#E5D3B3] bg-[#F5EFE7] px-2 py-1.5 text-xs font-medium text-[#8B5A2B] hover:bg-[#EAE0D5] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                       >
                         <Edit className="h-3 w-3" />
                         <span>Update</span>
@@ -259,8 +259,8 @@ export default function SuperAdminInventory({ auth }) {
           
           {filteredItems.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12">
-              <div className="rounded-full bg-amber-100 p-3 mb-4">
-                <Package className="h-6 w-6 text-amber-600" />
+              <div className="rounded-full bg-[#F5EFE7] p-3 mb-4">
+                <Package className="h-6 w-6 text-[#8B5A2B]" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-1">No inventory items found</h3>
               <p className="text-sm text-gray-500 mb-4">There are no items matching your current filters.</p>
@@ -269,7 +269,7 @@ export default function SuperAdminInventory({ auth }) {
                   setFilterCategory("all")
                   setSearchQuery("")
                 }}
-                className="text-sm font-medium text-amber-600 hover:text-amber-800"
+                className="text-sm font-medium text-[#8B5A2B] hover:text-[#6B4226]"
               >
                 Clear filters
               </button>

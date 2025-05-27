@@ -168,7 +168,7 @@ export default function UpdateTaskModal({ show, onClose, task, employeeData, fet
     }))
   }
 
-  const inputClasses = "w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all placeholder:text-gray-400"
+  const inputClasses = "w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#E5D3B3] transition-all placeholder:text-gray-400"
   const labelClasses = "block text-sm font-medium text-gray-700 mb-1.5"
   const iconWrapperClasses = "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
   const errorClasses = "text-xs text-red-600 mt-1.5 font-medium"
@@ -177,10 +177,10 @@ export default function UpdateTaskModal({ show, onClose, task, employeeData, fet
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-amber-50 border-b border-amber-100 px-6 py-4">
+        <div className="bg-[#F5EFE7] border-b border-[#E5D3B3] px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-md shadow-sm">
+              <div className="p-2 bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-md shadow-sm">
                 <Clock className="h-5 w-5 text-white" />
               </div>
               <h3 className="text-lg font-bold text-gray-900">Update Task</h3>
@@ -197,7 +197,7 @@ export default function UpdateTaskModal({ show, onClose, task, employeeData, fet
         <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Info Banner */}
-            <div className="p-4 bg-amber-50 rounded-lg border border-amber-200 mb-6">
+            <div className="p-4 bg-[#F5EFE7] rounded-lg border border-[#E5D3B3] mb-6">
               <h4 className="text-sm font-medium text-gray-800 mb-2">Task #{formData.id}</h4>
               <p className="text-xs text-gray-500">Update the task details below.</p>
             </div>
@@ -262,9 +262,9 @@ export default function UpdateTaskModal({ show, onClose, task, employeeData, fet
                           ].map((option) => (
                             <div
                               key={option.value}
-                              className={`px-4 py-2 text-sm cursor-pointer hover:bg-amber-50 ${
+                              className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#F5EFE7] ${
                                 formData.priority === option.value 
-                                  ? "bg-amber-50 text-amber-600"
+                                  ? "bg-[#F5EFE7] text-[#8B5A2B]"
                                   : "text-gray-700"
                               }`}
                               onClick={() => {
@@ -316,9 +316,9 @@ export default function UpdateTaskModal({ show, onClose, task, employeeData, fet
                           {employeeData && employeeData.map((employee) => (
                             <div
                               key={employee.id}
-                              className={`px-4 py-2 text-sm cursor-pointer hover:bg-amber-50 ${
+                              className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#F5EFE7] ${
                                 formData.employeeId === employee.id.toString() 
-                                  ? "bg-amber-50 text-amber-600"
+                                  ? "bg-[#F5EFE7] text-[#8B5A2B]"
                                   : "text-gray-700"
                               }`}
                               onClick={() => {
@@ -392,14 +392,14 @@ export default function UpdateTaskModal({ show, onClose, task, employeeData, fet
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                className="px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-amber-600 to-amber-800 rounded-lg shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all disabled:opacity-70"
+                className="px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-lg shadow-sm hover:from-[#6B4226] hover:to-[#5D3A22] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all disabled:opacity-70"
               >
                 {isSubmitting ? "Updating..." : "Update Task"}
               </button>

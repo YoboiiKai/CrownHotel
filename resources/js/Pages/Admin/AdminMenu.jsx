@@ -136,13 +136,13 @@ export default function AdminMenu() {
                 placeholder="Search menu..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
               />
             </div>
             <div className="relative">
               <button 
                 onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-                className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
               >
                 <Filter className="h-4 w-4 text-gray-400" />
                 <span>Filter</span>
@@ -156,7 +156,7 @@ export default function AdminMenu() {
                         setFilterCategory("brandy");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Brandy
                     </button>
@@ -165,7 +165,7 @@ export default function AdminMenu() {
                         setFilterCategory("whiskey");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Whiskey
                     </button>
@@ -174,7 +174,7 @@ export default function AdminMenu() {
                         setFilterCategory("vodka");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Vodka
                     </button>
@@ -183,7 +183,7 @@ export default function AdminMenu() {
                         setFilterCategory("wine");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Wine
                     </button>
@@ -192,7 +192,7 @@ export default function AdminMenu() {
                         setFilterCategory("tequila");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Tequila
                     </button>
@@ -201,7 +201,7 @@ export default function AdminMenu() {
                         setFilterCategory("rum");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Rum
                     </button>
@@ -210,7 +210,7 @@ export default function AdminMenu() {
                         setFilterCategory("beer");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Beer
                     </button>
@@ -219,7 +219,7 @@ export default function AdminMenu() {
                         setFilterCategory("soju");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Soju
                     </button>
@@ -228,7 +228,7 @@ export default function AdminMenu() {
                         setFilterCategory("gin");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Gin
                     </button>
@@ -239,7 +239,7 @@ export default function AdminMenu() {
           </div>
           <button
             onClick={() => setShowAddMenuForm(true)}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
+            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#8B5A2B] hover:to-[#6B4226] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
           >
             <Plus className="h-4 w-4" />
             <span>Add New Menu Item</span>
@@ -249,73 +249,73 @@ export default function AdminMenu() {
         {/* Category Tabs */}
         <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "all" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "all" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("all")}
           >
             All Items
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "breakfast" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "breakfast" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("breakfast")}
           >
             Breakfast
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "seafood" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "seafood" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("seafood")}
           >
             Seafood
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "chicken" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "chicken" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("chicken")}
           >
             Chicken
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "pork" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "pork" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("pork")}
           >
             Pork
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "pasta" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "pasta" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("pasta")}
           >
             Pasta
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "vegetables" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "vegetables" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("vegetables")}
           >
             Vegetables
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "snacks" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "snacks" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("snacks")}
           >
             Snacks
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "coffee" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "coffee" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("coffee")}
           >
             Coffee
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "cocktails" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "cocktails" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("cocktails")}
           >
             CockTails
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "tower" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "tower" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("tower")}
           >
             Tower
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "beverages" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "beverages" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("beverages")}
           >
             Beverages
@@ -374,9 +374,9 @@ export default function AdminMenu() {
               <div className="p-3">
                 {/* Category and Prep Time */}
                 <div className="flex flex-wrap items-center text-xs text-gray-500 mb-3">
-                  <div className="flex items-center mr-2 bg-amber-50 px-2 py-1 rounded-md">
-                    <Tag className="h-3 w-3 mr-1 text-amber-600" />
-                    <span className="font-medium text-amber-700">{getCategoryLabel(item.category)}</span>
+                  <div className="flex items-center mr-2 bg-[#A67C52]/10 px-2 py-1 rounded-md">
+                    <Tag className="h-3 w-3 mr-1 text-[#8B5A2B]" />
+                    <span className="font-medium text-[#6B4226]">{getCategoryLabel(item.category)}</span>
                   </div>
                   <div className="flex items-center bg-gray-50 px-2 py-1 rounded-md">
                     <Clock className="h-3 w-3 mr-1 text-gray-500" />
@@ -394,14 +394,14 @@ export default function AdminMenu() {
                       setSelectedMenuItem(item);
                       setShowMenuItemDetails(true);
                     }}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-3 py-2 text-xs font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                    className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] px-3 py-2 text-xs font-medium text-white shadow-sm hover:from-[#8B5A2B] hover:to-[#6B4226] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                   >
                     <Utensils className="h-4 w-4" />
                     <span>View</span>
                   </button>
                   <button
                     onClick={() => handleUpdateMenuItem(item)}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                    className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#A67C52]/30 bg-[#A67C52]/10 px-3 py-2 text-xs font-medium text-[#6B4226] hover:bg-[#A67C52]/20 focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                   >
                     <Edit className="h-4 w-4" />
                     <span>Update</span>
@@ -414,8 +414,8 @@ export default function AdminMenu() {
 
         {filteredMenuItems.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12">
-            <div className="rounded-full bg-amber-100 p-3 mb-4">
-              <Utensils className="h-6 w-6 text-amber-600" />
+            <div className="rounded-full bg-[#A67C52]/20 p-3 mb-4">
+              <Utensils className="h-6 w-6 text-[#8B5A2B]" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-1">No menu items found</h3>
             <p className="text-sm text-gray-500 mb-4">There are no menu items matching your current filters.</p>
@@ -424,7 +424,7 @@ export default function AdminMenu() {
                 setFilterCategory("all");
                 setSearchQuery("");
               }}
-              className="text-sm font-medium text-amber-600 hover:text-amber-800"
+              className="text-sm font-medium text-[#8B5A2B] hover:text-[#6B4226]"
             >
               Clear filters
             </button>

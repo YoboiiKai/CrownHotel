@@ -202,8 +202,8 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
     }
   }
 
-  const inputClasses = "w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all placeholder:text-gray-400"
-  const labelClasses = "block text-sm font-medium text-gray-700 mb-1.5"
+  const inputClasses = "w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-[#6B4226] focus:border-[#A67C52] focus:outline-none focus:ring-2 focus:ring-[#E8DCCA] transition-all placeholder:text-gray-400"
+  const labelClasses = "block text-sm font-medium text-[#6B4226] mb-1.5"
   const iconWrapperClasses = "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
   const errorClasses = "text-xs text-red-600 mt-1.5 font-medium"
 
@@ -211,17 +211,17 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl overflow-tr border border-gray-200 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto">
         {/* Header */}
-        <div className="bg-amber-50 border-b border-amber-100 px-6 py-4">
+        <div className="bg-[#F5EFE7] border-b border-[#E8DCCA] px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-md shadow-sm">
+              <div className="p-2 bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] rounded-md shadow-sm">
                 <User className="h-5 w-5 text-white" />
               </div>
               <h3 className="text-lg font-bold text-gray-900">Update Employee</h3>
             </div>
             <button 
               onClick={onClose} 
-              className="text-gray-400 hover:text-gray-600 transition-colors bg-white rounded-full p-1 hover:bg-gray-100"
+              className="text-gray-400 hover:text-gray-600 transition-colors bg-white rounded-full p-1 hover:bg-[#F0E4CC]"
             >
               <X className="h-5 w-5" />
             </button>
@@ -231,7 +231,7 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
         <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Info Banner */}
-            <div className="p-4 bg-amber-50 rounded-lg border border-amber-200 mb-6">
+            <div className="p-4 bg-[#F5EFE7] rounded-lg border border-[#D2B48C] mb-6">
               <h4 className="text-sm font-medium text-gray-800 mb-2">Employee Information</h4>
               <p className="text-xs text-gray-500">Update employee details for {employee.name}.</p>
             </div>
@@ -254,7 +254,7 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                   </div>
                   <label 
                     htmlFor="image-upload" 
-                    className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all cursor-pointer border border-gray-200 w-full justify-center mt-2"
+                    className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-sm font-medium text-[#6B4226] hover:bg-[#E8DCCA] focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:ring-offset-2 transition-all cursor-pointer border border-gray-200 w-full justify-center mt-2"
                   >
                     <Upload className="h-4 w-4" />
                     Update Photo
@@ -349,7 +349,7 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                         className={`${inputClasses} pl-10 cursor-pointer flex items-center justify-between`}
                         onClick={() => setShowDepartmentDropdown(!showDepartmentDropdown)}
                       >
-                        <span className={formData.department ? "text-gray-700" : "text-gray-400"}>
+                        <span className={formData.department ? "text-[#6B4226]" : "text-gray-400"}>
                           {formData.department || "Select department"}
                         </span>
                         <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -363,10 +363,10 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                             {departments.map((department) => (
                               <div
                                 key={department.id}
-                                className={`px-4 py-2 text-sm cursor-pointer hover:bg-amber-50 ${
+                                className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#F5EFE7] ${
                                   formData.department === department.name 
-                                    ? "bg-amber-50 text-amber-600"
-                                    : "text-gray-700"
+                                    ? "bg-[#F5EFE7] text-[#8B5A2B]"
+                                    : "text-[#6B4226]"
                                 }`}
                                 onClick={() => {
                                   setFormData({
@@ -446,7 +446,7 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                         value={formData.address}
                         onChange={handleInputChange}
                         placeholder="123 Main St, City, Country"
-                        className={`${inputClasses} pl-10 min-h-[40px] border border-gray-300 rounded-md focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all`}
+                        className={`${inputClasses} pl-10 min-h-[40px] border border-gray-300 rounded-md focus:border-[#A67C52] focus:ring-2 focus:ring-[#E8DCCA] transition-all`}
                       />
                       {errors.address && <p className={errorClasses}>{errors.address}</p>}
                     </div>
@@ -498,7 +498,7 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-amber-600 to-amber-800 rounded-lg shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all disabled:opacity-70"
+                className="px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-lg shadow-sm hover:from-[#7C5124] hover:to-[#5A371F] focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:ring-offset-1 transition-all disabled:opacity-70"
               >
                 {isSubmitting ? "Updating..." : "Update Employee"}
               </button>

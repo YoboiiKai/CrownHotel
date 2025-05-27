@@ -21,7 +21,7 @@ export default function PurchaseOrderDetails({ show, onClose, order }) {
 
   const getStatusColor = (status) => {
     const colors = {
-      pending: "bg-amber-100 text-amber-800",
+      pending: "bg-[#F5EFE7] text-[#8B5A2B]",
       received: "bg-green-100 text-green-800",
       delivered: "bg-blue-100 text-blue-800",
       cancelled: "bg-red-100 text-red-800"
@@ -32,7 +32,7 @@ export default function PurchaseOrderDetails({ show, onClose, order }) {
   const getStatusIcon = (status) => {
     switch (status) {
       case "pending":
-        return <Clock className="h-3 w-3 text-amber-600" />
+        return <Clock className="h-3 w-3 text-[#8B5A2B]" />
       case "received":
         return <span className="h-3 w-3 text-green-600">✓</span>
       case "delivered":
@@ -50,8 +50,8 @@ export default function PurchaseOrderDetails({ show, onClose, order }) {
         <div className="p-6">
           <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100">
-                <Calendar className="h-5 w-5 text-amber-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F5EFE7]">
+                <Calendar className="h-5 w-5 text-[#8B5A2B]" />
               </div>
               <h3 className="text-xl font-bold text-gray-900">Order Details</h3>
             </div>
@@ -141,7 +141,7 @@ export default function PurchaseOrderDetails({ show, onClose, order }) {
             </button>
             {order.status === "pending" && (
               <button
-                className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-amber-600 to-amber-800 rounded-lg hover:from-amber-700 hover:to-amber-900 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-lg hover:from-[#6B4226] hover:to-[#5D3A22] transition-colors"
               >
                 Update Status
               </button>

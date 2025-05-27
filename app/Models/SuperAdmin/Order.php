@@ -15,7 +15,9 @@ class Order extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'roomNumber',
+        'service_type',
+        'room_number',
+        'table_number',
         'customerName',
         'items',
         'images',
@@ -23,7 +25,9 @@ class Order extends Model
         'discount',
         'total',
         'notes',
-        'isSeniorCitizen',
+        'is_senior_citizen',
+        'payment_method',
+        'payment_status',
         'status',
     ];
 
@@ -36,7 +40,7 @@ class Order extends Model
         'subtotal' => 'decimal:2',
         'discount' => 'decimal:2',
         'total' => 'decimal:2',
-        'isSeniorCitizen' => 'boolean',
+        'is_senior_citizen' => 'boolean',
         'items' => 'array',
         'images' => 'array',
         'created_at' => 'datetime',

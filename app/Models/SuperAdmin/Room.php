@@ -19,12 +19,22 @@ class Room extends Model
         'description',
         'image',
         'additionalImages',
+        'extraBedRate',
     ];
 
     protected $casts = [
         'price' => 'float',
         'capacity' => 'integer',
+        'extraBedRate' => 'float',
         'amenities' => 'json',
         'additionalImages' => 'json',
     ];
+    
+    /**
+     * Get the bookings for the room.
+     */
+    public function bookings()
+    {
+        return $this->hasMany(\App\Models\Booking::class, 'roomNumber', 'roomNumber');
+    }
 }

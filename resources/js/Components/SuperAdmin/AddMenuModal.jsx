@@ -155,7 +155,7 @@ export default function AddMenuModal({ show, onClose, onSubmit }) {
     }
   }
 
-  const inputClasses = "w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all placeholder:text-gray-400"
+  const inputClasses = "w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all placeholder:text-gray-400"
   const labelClasses = "block text-sm font-medium text-gray-700 mb-1.5"
   const iconWrapperClasses = "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
   const errorClasses = "text-xs text-red-600 mt-1.5 font-medium"
@@ -164,10 +164,10 @@ export default function AddMenuModal({ show, onClose, onSubmit }) {
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl overflow-tr border border-gray-200 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto">
         {/* Header */}
-        <div className="bg-amber-50 border-b border-amber-100 px-6 py-4">
+        <div className="bg-[#A67C52]/10 border-b border-[#A67C52]/20 px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-amber-500 to-amber-600 rounded-md shadow-sm">
+              <div className="p-2 bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] rounded-md shadow-sm">
                 <UtensilsCrossed className="h-5 w-5 text-white" />
               </div>
               <h3 className="text-lg font-bold text-gray-900">Add Menu Item</h3>
@@ -184,8 +184,8 @@ export default function AddMenuModal({ show, onClose, onSubmit }) {
         <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Menu Item Header */}
-            <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
-              <p className="text-sm text-amber-800">
+            <div className="p-4 bg-[#A67C52]/10 rounded-lg border border-[#A67C52]/30">
+              <p className="text-sm text-[#6B4226]">
                 Add a new menu item with details. All items will be visible in the menu management section.
               </p>
             </div>
@@ -211,7 +211,7 @@ export default function AddMenuModal({ show, onClose, onSubmit }) {
                       </div>
                       <label 
                         htmlFor="image-upload" 
-                        className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all cursor-pointer border border-gray-200 w-full justify-center mt-2"
+                        className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 transition-all cursor-pointer border border-gray-200 w-full justify-center mt-2"
                       >
                         <Upload className="h-4 w-4" />
                         Upload Photo
@@ -328,9 +328,9 @@ export default function AddMenuModal({ show, onClose, onSubmit }) {
                             ].map((option) => (
                               <div
                                 key={option.value}
-                                className={`px-4 py-2 text-sm cursor-pointer hover:bg-amber-50 ${
+                                className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#A67C52]/10 ${
                                   formData.category === option.value 
-                                    ? (option.value ? "bg-amber-50 text-amber-600" : "bg-gray-100 text-gray-700")
+                                    ? (option.value ? "bg-[#A67C52]/10 text-[#8B5A2B]" : "bg-gray-100 text-gray-700")
                                     : "text-gray-700"
                                 }`}
                                 onClick={() => {
@@ -407,7 +407,7 @@ export default function AddMenuModal({ show, onClose, onSubmit }) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-amber-600 to-amber-800 rounded-lg shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all disabled:opacity-70"
+                className="px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] rounded-lg shadow-sm hover:from-[#8B5A2B] hover:to-[#6B4226] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all disabled:opacity-70"
               >
                 {isSubmitting ? "Adding..." : "Add Menu Item"}
               </button>

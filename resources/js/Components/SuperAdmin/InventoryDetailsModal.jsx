@@ -43,7 +43,7 @@ export default function InventoryDetailsModal({
     if (item.quantity <= 0) {
       return { status: "out-of-stock", color: "bg-red-100 text-red-800" }
     } else if (item.quantity < item.minStockLevel) {
-      return { status: "low-stock", color: "bg-amber-100 text-amber-800" }
+      return { status: "low-stock", color: "bg-[#F5EFE7] text-[#8B5A2B]" }
     } else {
       return { status: "in-stock", color: "bg-green-100 text-green-800" }
     }
@@ -90,7 +90,7 @@ export default function InventoryDetailsModal({
           {/* Modal Header with Gradient Icon */}
           <div className="flex items-start mb-6">
             <div className="flex-shrink-0 mr-4">
-              <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-lg">
+              <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-[#8B5A2B] to-[#6B4226] flex items-center justify-center shadow-lg">
                 <Package className="h-6 w-6 text-white" />
               </div>
             </div>
@@ -106,7 +106,7 @@ export default function InventoryDetailsModal({
           </div>
           
           {/* Item Header with Status */}
-          <div className="bg-amber-50 rounded-lg border border-amber-200 mb-6 p-4">
+          <div className="bg-[#F5EFE7] rounded-lg border border-[#E5D3B3] mb-6 p-4">
             <div className="flex justify-between items-start">
               <div className="flex-1">
                 <h4 className="text-xl font-semibold text-gray-900">{item.itemName}</h4>
@@ -126,7 +126,7 @@ export default function InventoryDetailsModal({
                       : "In Stock"}
                 </div>
                 {item.quantity < item.minStockLevel && (
-                  <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800">
+                  <span className="inline-flex items-center rounded-full bg-[#F5EFE7] px-2.5 py-0.5 text-xs font-medium text-[#8B5A2B]">
                     <AlertTriangle className="mr-1 h-3 w-3" />
                     Below minimum
                   </span>
@@ -139,7 +139,7 @@ export default function InventoryDetailsModal({
               <div className="flex justify-between items-center mb-1">
                 <p className="text-xs font-medium text-gray-700">Stock Level</p>
                 <p className="text-xs text-gray-500">
-                  <span className="font-medium text-gray-700">{item.quantity}</span> / {item.minStockLevel} {item.unit}
+                  <span className="font-medium text-xs text-brown-600">{item.quantity}</span> / {item.minStockLevel} {item.unit}
                 </p>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
@@ -148,7 +148,7 @@ export default function InventoryDetailsModal({
                     item.quantity <= 0 
                       ? 'bg-red-600' 
                       : item.quantity < item.minStockLevel 
-                        ? 'bg-amber-600' 
+                        ? 'bg-[#8B5A2B]' 
                         : 'bg-green-600'
                   }`}
                   style={{ width: `${Math.min(100, (item.quantity / item.minStockLevel) * 100)}%` }}
@@ -166,7 +166,7 @@ export default function InventoryDetailsModal({
                 <h4 className="text-sm font-medium text-gray-700 border-b border-gray-200 pb-2 mb-4">Item Details</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Tag className="h-5 w-5 text-amber-600 mt-0.5" />
+                    <Tag className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Category</p>
                       <p className="text-sm font-medium text-gray-800">{getCategoryLabel(item.category)}</p>
@@ -174,7 +174,7 @@ export default function InventoryDetailsModal({
                   </div>
                   
                   <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Package className="h-5 w-5 text-amber-600 mt-0.5" />
+                    <Package className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Current Quantity</p>
                       <p className="text-sm font-medium text-gray-800">{item.quantity} {item.unit}</p>
@@ -182,7 +182,7 @@ export default function InventoryDetailsModal({
                   </div>
                   
                   <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                    <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5" />
+                    <AlertTriangle className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Min Stock Level</p>
                       <p className="text-sm font-medium text-gray-800">{item.minStockLevel} {item.unit}</p>
@@ -190,7 +190,7 @@ export default function InventoryDetailsModal({
                   </div>
                   
                   <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                    <DollarSign className="h-5 w-5 text-amber-600 mt-0.5" />
+                    <DollarSign className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Price</p>
                       <p className="text-sm font-medium text-gray-800">${parseFloat(item.price).toFixed(2)}</p>
@@ -204,7 +204,7 @@ export default function InventoryDetailsModal({
                 <h4 className="text-sm font-medium text-gray-700 border-b border-gray-200 pb-2 mb-4">Location & Supplier</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                    <MapPin className="h-5 w-5 text-amber-600 mt-0.5" />
+                    <MapPin className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Storage Location</p>
                       <p className="text-sm font-medium text-gray-800">
@@ -214,7 +214,7 @@ export default function InventoryDetailsModal({
                   </div>
                   
                   <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Building className="h-5 w-5 text-amber-600 mt-0.5" />
+                    <Building className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Supplier</p>
                       <p className="text-sm font-medium text-gray-800">{item.supplier || "Not specified"}</p>
@@ -251,7 +251,7 @@ export default function InventoryDetailsModal({
               {/* Description Section */}
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-3">
                 <div className="flex items-center mb-2">
-                  <Tag className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
+                  <Tag className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
                   <h5 className="text-xs font-semibold text-gray-900">Description</h5>
                 </div>
                 

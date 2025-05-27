@@ -1,27 +1,47 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Eye, EyeOff, Mail, Lock, Building2, User, ChevronRight, Shield, Star, Phone, Calendar, MapPin, Briefcase } from "lucide-react"
+import { useState, useEffect, useRef, Fragment } from "react"
+import { Eye, EyeOff, Mail, Lock, Crown, Hotel, ChevronRight, Moon, Sun, Star, Phone, Calendar, MapPin, Briefcase, User } from "lucide-react"
 import { Head, Link, useForm } from "@inertiajs/react"
+import { Transition } from "@headlessui/react"
 
 import InputError from "@/Components/InputError"
-import Loader from "@/Components/Loader"
 
 export default function Register() {
-    const [showPassword, setShowPassword] = useState(false)
-    const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false)
-    const [isNameFocused, setIsNameFocused] = useState(false)
-    const [isEmailFocused, setIsEmailFocused] = useState(false)
-    const [isPhoneFocused, setIsPhoneFocused] = useState(false)
-    const [isAddressFocused, setIsAddressFocused] = useState(false)
-    const [isDateOfBirthFocused, setIsDateOfBirthFocused] = useState(false)
-    const [isOccupationFocused, setIsOccupationFocused] = useState(false)
-    const [isPasswordFocused, setIsPasswordFocused] = useState(false)
-    const [isPasswordConfirmationFocused, setIsPasswordConfirmationFocused] = useState(false)
-    const [mounted, setMounted] = useState(false)
-    const [isLoading, setIsLoading] = useState(true)
-    const [formTransformed, setFormTransformed] = useState(false)
-    const [animationComplete, setAnimationComplete] = useState(false)
+    // Theme state
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        // Check user preference from localStorage or system preference
+        if (typeof window !== 'undefined') {
+            const savedTheme = localStorage.getItem('hotelTheme');
+            if (savedTheme) return savedTheme === 'dark';
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+        return false;
+    });
+    
+    // UI state management
+    const [uiState, setUiState] = useState({
+        showPassword: false,
+        showPasswordConfirmation: false,
+        isNameFocused: false,
+        isEmailFocused: false,
+        isPhoneFocused: false,
+        isAddressFocused: false,
+        isDateOfBirthFocused: false,
+        isOccupationFocused: false,
+        isPasswordFocused: false,
+        isPasswordConfirmationFocused: false,
+        isLoading: false,
+        mounted: false,
+        formTransformed: false,
+        animationComplete: false,
+        currentImageIndex: 0
+    });
+    
+    // Refs
+    const starsRef = useRef(null);
+    const parallaxRef = useRef(null);
+    const formRef = useRef(null);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
@@ -34,28 +54,136 @@ export default function Register() {
         password_confirmation: '',
     });
 
+    // Destructure UI state for easier access
+    const {
+        showPassword,
+        showPasswordConfirmation,
+        isNameFocused,
+        isEmailFocused,
+        isPhoneFocused,
+        isAddressFocused,
+        isDateOfBirthFocused,
+        isOccupationFocused,
+        isPasswordFocused,
+        isPasswordConfirmationFocused,
+        isLoading,
+        mounted,
+        formTransformed,
+        animationComplete,
+        currentImageIndex
+    } = uiState;
+    
+    // Helper function to update UI state partially
+    const updateUiState = (newState) => {
+        setUiState(prevState => ({ ...prevState, ...newState }));
+    };
+
+    // Handle theme toggle
+    const toggleTheme = () => {
+        const newThemeValue = !isDarkMode;
+        setIsDarkMode(newThemeValue);
+        localStorage.setItem('hotelTheme', newThemeValue ? 'dark' : 'light');
+    };
+
+    // Create background elements effect
     useEffect(() => {
-        setMounted(true)
+        // Avoid running this effect during SSR
+        if (typeof window === 'undefined') return;
         
-        // Simulate loading for a smoother entrance
-        const timer = setTimeout(() => {
-            setIsLoading(false)
+        // Update mounted state
+        updateUiState({ mounted: true });
+        
+        // Create twinkling stars with performance optimization
+        if (starsRef.current) {
+            const starsContainer = starsRef.current;
+            const starCount = 120; // Increased star count for more immersive effect
+            const fragment = document.createDocumentFragment(); // Use document fragment for better performance
+            
+            // Clear any existing stars
+            starsContainer.innerHTML = '';
+            
+            // Create stars with random positions, sizes, and animations
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                const size = Math.random() * 3 + 1; // Random size between 1-4px
+                const posX = Math.random() * 100; // Random X position
+                const posY = Math.random() * 100; // Random Y position
+                const duration = Math.random() * 3 + 2; // Random animation duration
+                const delay = Math.random() * 5; // Random animation delay
+                
+                // Set custom properties for animation
+                star.style.setProperty('--duration', `${duration}s`);
+                star.style.setProperty('--delay', `${delay}s`);
+                
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${posX}%`;
+                star.style.top = `${posY}%`;
+                star.className = 'absolute rounded-full bg-white opacity-0 animate-twinkle';
+                
+                // Add a subtle glow to larger stars
+                if (size > 3) {
+                    star.classList.add('star-glow');
+                }
+                
+                fragment.appendChild(star);
+            }
+            
+            // Append all stars at once for better performance
+            starsRef.current.appendChild(fragment);
+        }
+        
+        // Setup parallax effect for background images
+        const handleParallax = (e) => {
+            if (!parallaxRef.current) return;
+            
+            const layers = parallaxRef.current.querySelectorAll('.parallax-layer');
+            const speed = 0.01;
+            
+            const x = (window.innerWidth - e.pageX * speed) / 100;
+            const y = (window.innerHeight - e.pageY * speed) / 100;
+            
+            layers.forEach((layer, index) => {
+                const depth = index + 1;
+                const translateX = x * depth;
+                const translateY = y * depth;
+                
+                layer.style.transform = `translate3d(${translateX}px, ${translateY}px, 0)`;
+            });
+        };
+        
+        // Add parallax effect listener
+        document.addEventListener('mousemove', handleParallax);
+        
+        // Simulate loading for a smoother entrance with staggered animations
+        const loadingTimer = setTimeout(() => {
+            updateUiState({ isLoading: false });
             
             // Start the form transformation after loading is complete
             setTimeout(() => {
-                setFormTransformed(true)
+                updateUiState({ formTransformed: true });
                 
                 // Set animation complete after transformation is done
                 setTimeout(() => {
-                    setAnimationComplete(true)
-                }, 1200)
-            }, 300)
-        }, 800)
+                    updateUiState({ animationComplete: true });
+                }, 1000);
+            }, 300);
+        }, 1500);
         
+        // Image rotation for background slideshow
+        const imageInterval = setInterval(() => {
+            updateUiState(prevState => ({
+                currentImageIndex: (prevState.currentImageIndex + 1) % 4 // Assuming 4 background images
+            }));
+        }, 8000); // Change image every 8 seconds
+        
+        // Cleanup function
         return () => {
-            clearTimeout(timer)
-        }
-    }, [])
+            clearTimeout(loadingTimer);
+            clearInterval(imageInterval);
+            document.removeEventListener('mousemove', handleParallax);
+        };
+    }, []);
 
     const submit = (e) => {
         e.preventDefault();
@@ -65,86 +193,144 @@ export default function Register() {
         });
     };
 
+    // Toggle password visibility with improved UX
     const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword)
-    }
-
+        updateUiState({ showPassword: !showPassword });
+        
+        // Focus back on password field after toggling for better UX
+        setTimeout(() => {
+            document.getElementById('password')?.focus();
+        }, 10);
+    };
+    
     const togglePasswordConfirmationVisibility = () => {
-        setShowPasswordConfirmation(!showPasswordConfirmation)
-    }
+        updateUiState({ showPasswordConfirmation: !showPasswordConfirmation });
+        
+        // Focus back on password confirmation field after toggling for better UX
+        setTimeout(() => {
+            document.getElementById('password_confirmation')?.focus();
+        }, 10);
+    };
 
     return (
         <>
-            <Head title="Register | LuxStay" />
-            <Loader isLoading={isLoading} />
+            <Head title="Crown of the Orient | Register" />
             
-            <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-amber-900 via-amber-800 to-amber-950">
-                {/* Background pattern */}
-                <div className="absolute inset-0 pattern-overlay"></div>
+            <div className={`relative min-h-screen w-full overflow-hidden ${isDarkMode ? 'bg-gradient-to-br from-[#1A0F00] via-[#3D2914] to-[#1A0F00]' : 'bg-gradient-to-br from-[#5D3A1F] via-[#8B5A2B] to-[#3D2914]'}`}>
+                {/* Theme toggle */}
+                <button 
+                    onClick={toggleTheme} 
+                    className="absolute top-4 right-4 z-50 p-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-colors"
+                    aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+                >
+                    {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+                </button>
                 
-                {/* Subtle light effects */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-amber-400 opacity-10 blur-[120px] rounded-full"></div>
-                <div className="absolute bottom-0 left-1/4 w-[400px] h-[200px] bg-amber-600 opacity-5 blur-[80px] rounded-full"></div>
-                <div className="absolute top-1/4 right-1/4 w-[300px] h-[300px] bg-amber-300 opacity-5 blur-[80px] rounded-full"></div>
+                {/* Stars container */}
+                <div ref={starsRef} className="absolute inset-0 z-0 overflow-hidden"></div>
+                
+                {/* Parallax background elements */}
+                <div ref={parallaxRef} className="absolute inset-0 z-0 overflow-hidden">
+                    <div className="parallax-layer absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-[#DEB887] opacity-10 blur-[120px] rounded-full"></div>
+                    <div className="parallax-layer absolute bottom-0 left-1/4 w-[400px] h-[200px] bg-[#A67C52] opacity-5 blur-[80px] rounded-full"></div>
+                    <div className="parallax-layer absolute top-1/4 right-1/4 w-[300px] h-[300px] bg-[#DEB887] opacity-5 blur-[80px] rounded-full"></div>
+                </div>
+                
+                {/* Background image slideshow */}
+                <div className="absolute inset-0 z-0 overflow-hidden">
+                    {[0, 1, 2, 3].map((index) => (
+                        <div 
+                            key={index}
+                            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ${currentImageIndex === index ? 'opacity-10' : 'opacity-0'}`}
+                            style={{ 
+                                backgroundImage: `url('/images/hotel-bg-${index + 1}.jpg')`,
+                                backgroundBlendMode: 'overlay'
+                            }}
+                        />
+                    ))}
+                </div>
                 
                 {/* Main content */}
+                {/* Custom loader with hotel branding */}
+                <Transition
+                    show={isLoading}
+                    enter="transition-opacity duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="transition-opacity duration-500"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-[#1A0F00] bg-opacity-90"
+                >
+                    <div className="relative">
+                        <div className="absolute inset-0 rounded-full bg-[#DEB887] blur-[25px] opacity-30 glow-effect"></div>
+                        <div className="relative flex h-32 w-32 items-center justify-center">
+                            <div className="absolute inset-0 rounded-full border-4 border-[#DEB887]/20 animate-ping"></div>
+                            <div className="absolute inset-0 rounded-full border-4 border-[#DEB887]/20 border-t-[#A67C52] animate-spin-slow"></div>
+                            <Hotel size={48} className="text-[#DEB887] animate-float" />
+                        </div>
+                    </div>
+                </Transition>
+                
                 <div className="relative z-10 flex min-h-screen w-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
                     <div className="w-full max-w-6xl">
                         <div className="overflow-hidden rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
                             {/* Registration form - landscape layout */}
                             <div className="flex flex-col md:flex-row">
                                 {/* Left side - Brand and welcome */}
-                                <div className="w-full md:w-1/2 p-8 sm:p-12 bg-gradient-to-br from-amber-800 to-amber-950 text-white flex flex-col justify-between relative overflow-hidden">
+                                <div className="w-full md:w-1/2 p-8 sm:p-12 bg-gradient-to-br from-[#8B5A2B] to-[#5D3A1F] text-white flex flex-col justify-between relative overflow-hidden">
                                     
                                     <div className="relative">
                                         <div className="flex items-center space-x-4 mb-12">
                                             <div className="relative">
-                                            <div className="absolute inset-0 rounded-xl bg-amber-400 blur-[15px] opacity-40"></div>
-                                                <div className="relative flex h-24 w-24 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-amber-900 text-white shadow-lg">
-                                                    <Building2 size={48} className="animate-float" />
-                                                    <div className="absolute inset-0 rounded-xl border border-amber-400/30 animate-pulse-slow"></div>
+                                            <div className="absolute inset-0 rounded-xl bg-[#DEB887] blur-[15px] opacity-40"></div>
+                                                <div className="relative flex h-24 w-24 items-center justify-center rounded-xl bg-gradient-to-br from-[#A67C52] to-[#6B4226] text-white shadow-lg">
+                                                    <Crown size={48} className="animate-float" />
+                                                    <div className="absolute inset-0 rounded-xl border border-[#DEB887]/30 animate-pulse-slow"></div>
                                                 </div>
                                             </div>
                                             <div>
-                                                <h1 className="text-3xl font-bold text-white">LuxStay</h1>
-                                                <p className="text-sm text-amber-200">Premium Hotel Experience</p>
+                                                <h1 className="text-3xl font-bold text-white font-serif">CROWN of the ORIENT</h1>
+                                                <p className="text-sm text-[#DEB887]">BEACH RESORT</p>
                                             </div>
                                         </div>
                                         
-                                        <h2 className="text-4xl font-bold tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-100">Join our community</h2>
-                                        <p className="text-amber-200 text-lg">Create an account to start your luxury journey with us.</p>
+                                        <h2 className="text-4xl font-bold tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-[#DEB887] to-[#E6CCB2]">Join our community</h2>
+                                        <p className="text-[#DEB887] text-lg">Create an account to start your luxury journey with us.</p>
                                         
                                         <div className="mt-10 space-y-6">
                                             {/* Luxury Experience */}
-                                            <div className="border border-amber-500/20 rounded-lg p-6 bg-gradient-to-br from-amber-800/30 to-amber-950/30 backdrop-blur-sm">
-                                                <h3 className="text-xl font-semibold text-amber-300 mb-4">The LuxStay Experience</h3>
-                                                <p className="text-amber-100 text-sm mb-4">
-                                                    At LuxStay, we believe luxury is in the details. From personalized check-in to curated room amenities, every moment of your stay is designed to exceed expectations.
+                                            <div className="border border-[#A67C52]/20 rounded-lg p-6 bg-gradient-to-br from-[#8B5A2B]/30 to-[#5D3A1F]/30 backdrop-blur-sm">
+                                                <h3 className="text-xl font-semibold text-[#DEB887] mb-4">The Luxury Experience</h3>
+                                                <p className="text-[#E6CCB2] text-sm mb-4">
+                                                    At Crown of the Orient, we believe luxury is in the details. From personalized check-in to curated room amenities, every moment of your stay is designed to exceed expectations.
                                                 </p>
                                                 <div className="grid grid-cols-2 gap-3 mt-4">
-                                                    <div className="flex flex-col items-center p-3 bg-amber-900/30 rounded-lg">
-                                                        <div className="h-8 w-8 rounded-full bg-amber-400/20 flex items-center justify-center mb-2">
-                                                            <Star size={16} className="text-amber-300" />
+                                                    <div className="flex flex-col items-center p-3 bg-[#6B4226]/30 rounded-lg">
+                                                        <div className="h-8 w-8 rounded-full bg-[#A67C52]/20 flex items-center justify-center mb-2">
+                                                            <Star size={16} className="text-[#DEB887]" />
                                                         </div>
-                                                        <span className="text-xs text-center text-amber-100">5-Star Service</span>
+                                                        <span className="text-xs text-center text-[#E6CCB2]">5-Star Service</span>
                                                     </div>
-                                                    <div className="flex flex-col items-center p-3 bg-amber-900/30 rounded-lg">
-                                                        <div className="h-8 w-8 rounded-full bg-amber-400/20 flex items-center justify-center mb-2">
-                                                            <MapPin size={16} className="text-amber-300" />
+                                                    <div className="flex flex-col items-center p-3 bg-[#6B4226]/30 rounded-lg">
+                                                        <div className="h-8 w-8 rounded-full bg-[#A67C52]/20 flex items-center justify-center mb-2">
+                                                            <Hotel size={16} className="text-[#DEB887]" />
                                                         </div>
-                                                        <span className="text-xs text-center text-amber-100">Prime Locations</span>
+                                                        <span className="text-xs text-center text-[#E6CCB2]">Luxury Rooms</span>
                                                     </div>
-                                                    <div className="flex flex-col items-center p-3 bg-amber-900/30 rounded-lg">
-                                                        <div className="h-8 w-8 rounded-full bg-amber-400/20 flex items-center justify-center mb-2">
-                                                            <User size={16} className="text-amber-300" />
+                                                    <div className="flex flex-col items-center p-3 bg-[#6B4226]/30 rounded-lg">
+                                                        <div className="h-8 w-8 rounded-full bg-[#A67C52]/20 flex items-center justify-center mb-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#DEB887]" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+                                                            </svg>
                                                         </div>
-                                                        <span className="text-xs text-center text-amber-100">Personal Concierge</span>
+                                                        <span className="text-xs text-center text-[#E6CCB2]">Fine Dining</span>
                                                     </div>
-                                                    <div className="flex flex-col items-center p-3 bg-amber-900/30 rounded-lg">
-                                                        <div className="h-8 w-8 rounded-full bg-amber-400/20 flex items-center justify-center mb-2">
-                                                            <ChevronRight size={16} className="text-amber-300" />
+                                                    <div className="flex flex-col items-center p-3 bg-[#6B4226]/30 rounded-lg">
+                                                        <div className="h-8 w-8 rounded-full bg-[#A67C52]/20 flex items-center justify-center mb-2">
+                                                            <ChevronRight size={16} className="text-[#DEB887]" />
                                                         </div>
-                                                        <span className="text-xs text-center text-amber-100">Exclusive Access</span>
+                                                        <span className="text-xs text-center text-[#E6CCB2]">Exclusive Access</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -152,31 +338,31 @@ export default function Register() {
                                     </div>
                                     
                                     <div className="mt-8 hidden md:block relative z-10 text-center">
-                                        <p className="text-xs text-amber-300/70">
-                                            &copy; {new Date().getFullYear()} LuxStay Hotels. All rights reserved.
+                                        <p className="text-xs text-[#DEB887]/70">
+                                            &copy; {new Date().getFullYear()} Crown of the Orient Beach Resort. All rights reserved.
                                         </p>
                                     </div>
 
                                     {/* Animated light beam */}
-                                    <div className="absolute -top-24 -right-24 w-48 h-48 bg-amber-300 opacity-20 blur-3xl rounded-full animate-pulse-slow"></div>
-                                    <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-amber-500 opacity-20 blur-3xl rounded-full animate-pulse-slow delay-700"></div>
+                                    <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#DEB887] opacity-20 blur-3xl rounded-full animate-pulse-slow"></div>
+                                    <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-[#A67C52] opacity-20 blur-3xl rounded-full animate-pulse-slow delay-700"></div>
                                 </div>
                                 
                                 {/* Right side - Registration form */}
-                                <div className="w-full md:w-1/2 p-8 sm:p-12 bg-gradient-to-r from-white to-amber-50 relative">
+                                <div className="w-full md:w-1/2 p-8 sm:p-12 bg-gradient-to-r from-white to-[#F5EFE6] relative">
                                     {/* Decorative corner accents */}
-                                    <div className="absolute top-0 right-0 w-[120px] h-[120px] border-t-2 border-r-2 border-amber-300/40 rounded-tl-2xl"></div>
-                                    <div className="absolute bottom-0 left-0 w-[120px] h-[120px] border-b-2 border-l-2 border-amber-300/40 rounded-tr-2xl"></div>
+                                    <div className="absolute top-0 right-0 w-[120px] h-[120px] border-t-2 border-r-2 border-[#DEB887]/40 rounded-tl-2xl"></div>
+                                    <div className="absolute bottom-0 left-0 w-[120px] h-[120px] border-b-2 border-l-2 border-[#DEB887]/40 rounded-tr-2xl"></div>
                                     
                                     {/* Enhanced decorative elements */}
-                                    <div className="absolute top-1/4 right-1/4 w-[250px] h-[250px] bg-amber-100 opacity-20 blur-[80px] rounded-full"></div>
-                                    <div className="absolute bottom-1/3 right-1/3 w-[200px] h-[200px] bg-amber-200 opacity-20 blur-[60px] rounded-full"></div>
-                                    <div className="absolute top-1/2 left-1/4 w-[150px] h-[150px] bg-amber-300 opacity-10 blur-[50px] rounded-full"></div>
+                                    <div className="absolute top-1/4 right-1/4 w-[250px] h-[250px] bg-[#DEB887] opacity-10 blur-[80px] rounded-full"></div>
+                                    <div className="absolute bottom-1/3 right-1/3 w-[200px] h-[200px] bg-[#A67C52] opacity-10 blur-[60px] rounded-full"></div>
+                                    <div className="absolute top-1/2 left-1/4 w-[150px] h-[150px] bg-[#8B5A2B] opacity-5 blur-[50px] rounded-full"></div>
                                     
                                     
                                     <div className="relative z-10 max-w-md mx-auto">
                                         <div className="mb-8">
-                                            <h2 className="text-3xl font-bold tracking-tight text-gray-900 text-transparent bg-clip-text bg-gradient-to-r from-amber-700 to-amber-900">Create an account</h2>
+                                            <h2 className="text-3xl font-bold tracking-tight text-gray-900 text-transparent bg-clip-text bg-gradient-to-r from-[#8B5A2B] to-[#5D3A1F]">Create an account</h2>
                                             <p className="mt-2 text-sm text-gray-600">Fill in your details to join our luxury experience</p>
                                         </div>
 
@@ -191,11 +377,11 @@ export default function Register() {
                                                     </label>
                                                     <div
                                                         className={`mt-1 relative rounded-md shadow-sm transition-all duration-200 ${
-                                                            isNameFocused ? "ring-2 ring-amber-500" : ""
+                                                            isNameFocused ? "ring-2 ring-[#A67C52]" : ""
                                                         } ${errors.name ? "border-red-500" : "border-gray-300"}`}
                                                     >
                                                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                            <User className={`h-5 w-5 ${isNameFocused ? "text-amber-500" : "text-gray-400"}`} />
+                                                            <User className={`h-5 w-5 ${isNameFocused ? "text-[#A67C52]" : "text-gray-400"}`} />
                                                         </div>
                                                         <input
                                                             id="name"
@@ -208,7 +394,7 @@ export default function Register() {
                                                             onFocus={() => setIsNameFocused(true)}
                                                             onBlur={() => setIsNameFocused(false)}
                                                             className={`block w-full rounded-md border pl-10 py-3 text-gray-900 placeholder-gray-400 focus:outline-none sm:text-sm ${
-                                                                errors.name ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-amber-500"
+                                                                errors.name ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#A67C52]"
                                                             }`}
                                                             placeholder="John Doe"
                                                         />
@@ -223,11 +409,11 @@ export default function Register() {
                                                     </label>
                                                     <div
                                                         className={`mt-1 relative rounded-md shadow-sm transition-all duration-200 ${
-                                                            isEmailFocused ? "ring-2 ring-amber-500" : ""
+                                                            isEmailFocused ? "ring-2 ring-[#A67C52]" : ""
                                                         } ${errors.email ? "border-red-500" : "border-gray-300"}`}
                                                     >
                                                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                            <Mail className={`h-5 w-5 ${isEmailFocused ? "text-amber-500" : "text-gray-400"}`} />
+                                                            <Mail className={`h-5 w-5 ${isEmailFocused ? "text-[#A67C52]" : "text-gray-400"}`} />
                                                         </div>
                                                         <input
                                                             id="email"
@@ -240,7 +426,7 @@ export default function Register() {
                                                             onFocus={() => setIsEmailFocused(true)}
                                                             onBlur={() => setIsEmailFocused(false)}
                                                             className={`block w-full rounded-md border pl-10 py-3 text-gray-900 placeholder-gray-400 focus:outline-none sm:text-sm ${
-                                                                errors.email ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-amber-500"
+                                                                errors.email ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#A67C52]"
                                                             }`}
                                                             placeholder="you@example.com"
                                                         />
@@ -255,11 +441,11 @@ export default function Register() {
                                                     </label>
                                                     <div
                                                         className={`mt-1 relative rounded-md shadow-sm transition-all duration-200 ${
-                                                            isPhoneFocused ? "ring-2 ring-amber-500" : ""
+                                                            isPhoneFocused ? "ring-2 ring-[#A67C52]" : ""
                                                         } ${errors.phone ? "border-red-500" : "border-gray-300"}`}
                                                     >
                                                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                            <Phone className={`h-5 w-5 ${isPhoneFocused ? "text-amber-500" : "text-gray-400"}`} />
+                                                            <Phone className={`h-5 w-5 ${isPhoneFocused ? "text-[#A67C52]" : "text-gray-400"}`} />
                                                         </div>
                                                         <input
                                                             id="phone"
@@ -272,7 +458,7 @@ export default function Register() {
                                                             onFocus={() => setIsPhoneFocused(true)}
                                                             onBlur={() => setIsPhoneFocused(false)}
                                                             className={`block w-full rounded-md border pl-10 py-3 text-gray-900 placeholder-gray-400 focus:outline-none sm:text-sm ${
-                                                                errors.phone ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-amber-500"
+                                                                errors.phone ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#A67C52]"
                                                             }`}
                                                             placeholder="+1 (123) 456-7890"
                                                         />
@@ -287,11 +473,11 @@ export default function Register() {
                                                     </label>
                                                     <div
                                                         className={`mt-1 relative rounded-md shadow-sm transition-all duration-200 ${
-                                                            isDateOfBirthFocused ? "ring-2 ring-amber-500" : ""
+                                                            isDateOfBirthFocused ? "ring-2 ring-[#A67C52]" : ""
                                                         } ${errors.date_of_birth ? "border-red-500" : "border-gray-300"}`}
                                                     >
                                                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                            <Calendar className={`h-5 w-5 ${isDateOfBirthFocused ? "text-amber-500" : "text-gray-400"}`} />
+                                                            <Calendar className={`h-5 w-5 ${isDateOfBirthFocused ? "text-[#A67C52]" : "text-gray-400"}`} />
                                                         </div>
                                                         <input
                                                             id="date_of_birth"
@@ -304,7 +490,7 @@ export default function Register() {
                                                             onFocus={() => setIsDateOfBirthFocused(true)}
                                                             onBlur={() => setIsDateOfBirthFocused(false)}
                                                             className={`block w-full rounded-md border pl-10 py-3 text-gray-900 placeholder-gray-400 focus:outline-none sm:text-sm ${
-                                                                errors.date_of_birth ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-amber-500"
+                                                                errors.date_of_birth ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#A67C52]"
                                                             }`}
                                                             placeholder="YYYY-MM-DD"
                                                         />
@@ -322,11 +508,11 @@ export default function Register() {
                                                     </label>
                                                     <div
                                                         className={`mt-1 relative rounded-md shadow-sm transition-all duration-200 ${
-                                                            isAddressFocused ? "ring-2 ring-amber-500" : ""
+                                                            isAddressFocused ? "ring-2 ring-[#A67C52]" : ""
                                                         } ${errors.address ? "border-red-500" : "border-gray-300"}`}
                                                     >
                                                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                            <MapPin className={`h-5 w-5 ${isAddressFocused ? "text-amber-500" : "text-gray-400"}`} />
+                                                            <MapPin className={`h-5 w-5 ${isAddressFocused ? "text-[#A67C52]" : "text-gray-400"}`} />
                                                         </div>
                                                         <input
                                                             id="address"
@@ -339,7 +525,7 @@ export default function Register() {
                                                             onFocus={() => setIsAddressFocused(true)}
                                                             onBlur={() => setIsAddressFocused(false)}
                                                             className={`block w-full rounded-md border pl-10 py-3 text-gray-900 placeholder-gray-400 focus:outline-none sm:text-sm ${
-                                                                errors.address ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-amber-500"
+                                                                errors.address ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#A67C52]"
                                                             }`}
                                                             placeholder="123 Main St, Anytown, USA"
                                                         />
@@ -354,11 +540,11 @@ export default function Register() {
                                                     </label>
                                                     <div
                                                         className={`mt-1 relative rounded-md shadow-sm transition-all duration-200 ${
-                                                            isOccupationFocused ? "ring-2 ring-amber-500" : ""
+                                                            isOccupationFocused ? "ring-2 ring-[#A67C52]" : ""
                                                         } ${errors.occupation ? "border-red-500" : "border-gray-300"}`}
                                                     >
                                                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                            <Briefcase className={`h-5 w-5 ${isOccupationFocused ? "text-amber-500" : "text-gray-400"}`} />
+                                                            <Briefcase className={`h-5 w-5 ${isOccupationFocused ? "text-[#A67C52]" : "text-gray-400"}`} />
                                                         </div>
                                                         <input
                                                             id="occupation"
@@ -371,7 +557,7 @@ export default function Register() {
                                                             onFocus={() => setIsOccupationFocused(true)}
                                                             onBlur={() => setIsOccupationFocused(false)}
                                                             className={`block w-full rounded-md border pl-10 py-3 text-gray-900 placeholder-gray-400 focus:outline-none sm:text-sm ${
-                                                                errors.occupation ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-amber-500"
+                                                                errors.occupation ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#A67C52]"
                                                             }`}
                                                             placeholder="Software Engineer"
                                                         />
@@ -389,11 +575,11 @@ export default function Register() {
                                                     </label>
                                                     <div
                                                         className={`mt-1 relative rounded-md shadow-sm transition-all duration-200 ${
-                                                            isPasswordFocused ? "ring-2 ring-amber-500" : ""
+                                                            isPasswordFocused ? "ring-2 ring-[#A67C52]" : ""
                                                         } ${errors.password ? "border-red-500" : "border-gray-300"}`}
                                                     >
                                                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                            <Lock className={`h-5 w-5 ${isPasswordFocused ? "text-amber-500" : "text-gray-400"}`} />
+                                                            <Lock className={`h-5 w-5 ${isPasswordFocused ? "text-[#A67C52]" : "text-gray-400"}`} />
                                                         </div>
                                                         <input
                                                             id="password"
@@ -406,7 +592,7 @@ export default function Register() {
                                                             onFocus={() => setIsPasswordFocused(true)}
                                                             onBlur={() => setIsPasswordFocused(false)}
                                                             className={`block w-full rounded-md border pl-10 pr-10 py-3 text-gray-900 placeholder-gray-400 focus:outline-none sm:text-sm ${
-                                                                errors.password ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-amber-500"
+                                                                errors.password ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#A67C52]"
                                                             }`}
                                                             placeholder="••••••••"
                                                         />
@@ -414,7 +600,7 @@ export default function Register() {
                                                             <button
                                                                 type="button"
                                                                 onClick={togglePasswordVisibility}
-                                                                className="text-gray-400 hover:text-amber-500 focus:outline-none"
+                                                                className="text-gray-400 hover:text-[#A67C52] focus:outline-none"
                                                             >
                                                                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                                                             </button>
@@ -430,11 +616,11 @@ export default function Register() {
                                                     </label>
                                                     <div
                                                         className={`mt-1 relative rounded-md shadow-sm transition-all duration-200 ${
-                                                            isPasswordConfirmationFocused ? "ring-2 ring-amber-500" : ""
+                                                            isPasswordConfirmationFocused ? "ring-2 ring-[#A67C52]" : ""
                                                         } ${errors.password_confirmation ? "border-red-500" : "border-gray-300"}`}
                                                     >
                                                         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                            <Lock className={`h-5 w-5 ${isPasswordConfirmationFocused ? "text-amber-500" : "text-gray-400"}`} />
+                                                            <Lock className={`h-5 w-5 ${isPasswordConfirmationFocused ? "text-[#A67C52]" : "text-gray-400"}`} />
                                                         </div>
                                                         <input
                                                             id="password_confirmation"
@@ -447,7 +633,7 @@ export default function Register() {
                                                             onFocus={() => setIsPasswordConfirmationFocused(true)}
                                                             onBlur={() => setIsPasswordConfirmationFocused(false)}
                                                             className={`block w-full rounded-md border pl-10 pr-10 py-3 text-gray-900 placeholder-gray-400 focus:outline-none sm:text-sm ${
-                                                                errors.password_confirmation ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-amber-500"
+                                                                errors.password_confirmation ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#A67C52]"
                                                             }`}
                                                             placeholder="••••••••"
                                                         />
@@ -455,7 +641,7 @@ export default function Register() {
                                                             <button
                                                                 type="button"
                                                                 onClick={togglePasswordConfirmationVisibility}
-                                                                className="text-gray-400 hover:text-amber-500 focus:outline-none"
+                                                                className="text-gray-400 hover:text-[#A67C52] focus:outline-none"
                                                             >
                                                                 {showPasswordConfirmation ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                                                             </button>
@@ -469,16 +655,16 @@ export default function Register() {
                                                 <button
                                                     type="submit"
                                                     disabled={processing}
-                                                    className="group relative flex w-full justify-center rounded-md border border-transparent bg-gradient-to-r from-amber-600 to-amber-700 py-3.5 px-4 text-sm font-medium text-white shadow-lg hover:shadow-xl hover:from-amber-700 hover:to-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-200 overflow-hidden"
+                                                    className="group relative flex w-full justify-center rounded-md border border-transparent bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] py-3.5 px-4 text-sm font-medium text-white shadow-lg hover:shadow-xl hover:from-[#8B5A2B] hover:to-[#6B4226] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-200 overflow-hidden"
                                                 >
-                                                    <span className="absolute inset-0 overflow-hidden">
-                                                        <span className="absolute inset-0 rounded-md bg-gradient-to-r from-amber-400/20 to-transparent transform -translate-x-full hover:translate-x-0 transition-transform ease-in-out duration-700 group-hover:translate-x-full"></span>
-                                                    </span>
+                                                     <span className="absolute inset-0 overflow-hidden">
+                                                         <span className="absolute inset-0 rounded-md bg-gradient-to-r from-[#DEB887]/20 to-transparent transform -translate-x-full hover:translate-x-0 transition-transform ease-in-out duration-700 group-hover:translate-x-full"></span>
+                                                     </span>
                                                     {processing ? (
                                                         <span className="flex items-center relative z-10">
                                                             <div className="relative mr-3">
                                                                 <div className="h-5 w-5 relative">
-                                                                    <div className="absolute inset-0 rounded-full border-2 border-amber-200 border-t-amber-500 animate-spin"></div>
+                                                                    <div className="absolute inset-0 rounded-full border-2 border-[#DEB887] border-t-[#A67C52] animate-spin"></div>
                                                                 </div>
                                                             </div>
                                                             Processing...
@@ -499,7 +685,7 @@ export default function Register() {
                                                 Already have an account?{" "}
                                                 <Link
                                                     href={route("login")}
-                                                    className="font-medium text-amber-600 hover:text-amber-700 transition-colors"
+                                                    className="font-medium text-[#A67C52] hover:text-[#8B5A2B] transition-colors"
                                                 >
                                                     Sign in
                                                 </Link>
@@ -530,8 +716,9 @@ export default function Register() {
                 }
                 
                 @keyframes float {
-                    0%, 100% { transform: translateY(0); }
-                    50% { transform: translateY(-5px); }
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-10px); }
+                    100% { transform: translateY(0px); }
                 }
                 
                 .animate-float {
@@ -562,7 +749,7 @@ export default function Register() {
                 }
                 
                 .glow-effect {
-                    box-shadow: 0 0 40px 20px rgba(245, 158, 11, 0.3);
+                    box-shadow: 0 0 40px 20px rgba(222, 184, 135, 0.3);
                     border-radius: 50%;
                     animation: pulse-slow 2s ease-in-out infinite;
                 }
@@ -579,8 +766,14 @@ export default function Register() {
                 }
                 
                 @keyframes twinkle {
-                    0%, 100% { opacity: 0.2; transform: scale(0.8); }
-                    50% { opacity: 0.8; transform: scale(1.2); }
+                    0% { opacity: 0; transform: scale(0.5); }
+                    50% { opacity: 1; transform: scale(1); }
+                    100% { opacity: 0; transform: scale(0.5); }
+                }
+                
+                .animate-twinkle {
+                    animation: twinkle var(--duration, 3s) ease-in-out infinite;
+                    animation-delay: var(--delay, 0s);
                 }
                 
                 .animate-fade-in {

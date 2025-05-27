@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('roomNumber');
+            $table->enum('service_type', ['room', 'table'])->default('room');
+            $table->string('room_number')->nullable();
+            $table->string('table_number')->nullable();
             $table->string('customerName')->default('Guest');
             
             // Store multiple items as JSON
-            $table->json('items')->comment('JSON array of order items containing menuItemId, name, quantity, price');
+            $table->json('items')->comment('JSON array of order items containing menu_id, quantity, price, subtotal');
             
             // Store images for order items
             $table->json('images')->nullable()->comment('JSON array of image paths corresponding to order items');
@@ -29,7 +31,9 @@ return new class extends Migration
             
             // Additional information
             $table->text('notes')->nullable();
-            $table->boolean('isSeniorCitizen')->default(false);
+            $table->boolean('is_senior_citizen')->default(false);
+            $table->enum('payment_method', ['cash', 'card', 'mobile'])->default('cash');
+            $table->enum('payment_status', ['pending', 'processing', 'completed', 'failed'])->nullable();
             $table->enum('status', ['pending', 'processing', 'completed', 'cancelled'])->default('pending');
             
             $table->timestamps();

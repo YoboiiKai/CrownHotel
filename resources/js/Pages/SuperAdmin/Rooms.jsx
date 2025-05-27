@@ -108,7 +108,7 @@ export default function Rooms() {
         const colors = {
             available: "bg-green-100 text-green-800",
             occupied: "bg-blue-100 text-blue-800",
-            maintenance: "bg-amber-100 text-amber-800",
+            maintenance: "bg-[#F5EFE7] text-[#8B5A2B]",
             reserved: "bg-purple-100 text-purple-800",
         };
         return colors[status] || "bg-gray-100 text-gray-800";
@@ -167,13 +167,13 @@ export default function Rooms() {
                                 placeholder="Search rooms..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
                             />
                         </div>
                     </div>
                     <button
                         onClick={() => setShowNewRoomForm(true)}
-                        className="flex items-center gap-2 rounded-md bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                        className="flex items-center gap-2 rounded-md bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5A3921] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                     >
                         <Plus className="h-4 w-4" />
                         <span>Add New Room</span>
@@ -185,7 +185,7 @@ export default function Rooms() {
                     <button
                         className={`px-4 py-2 text-sm font-medium ${
                             filterStatus === "all"
-                                ? "text-amber-600 border-b-2 border-amber-600"
+                                ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]"
                                 : "text-gray-500 hover:text-gray-700"
                         }`}
                         onClick={() => setFilterStatus("all")}
@@ -195,7 +195,7 @@ export default function Rooms() {
                     <button
                         className={`px-4 py-2 text-sm font-medium ${
                             filterStatus === "available"
-                                ? "text-amber-600 border-b-2 border-amber-600"
+                                ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]"
                                 : "text-gray-500 hover:text-gray-700"
                         }`}
                         onClick={() => setFilterStatus("available")}
@@ -205,7 +205,7 @@ export default function Rooms() {
                     <button
                         className={`px-4 py-2 text-sm font-medium ${
                             filterStatus === "occupied"
-                                ? "text-amber-600 border-b-2 border-amber-600"
+                                ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]"
                                 : "text-gray-500 hover:text-gray-700"
                         }`}
                         onClick={() => setFilterStatus("occupied")}
@@ -215,7 +215,7 @@ export default function Rooms() {
                     <button
                         className={`px-4 py-2 text-sm font-medium ${
                             filterStatus === "maintenance"
-                                ? "text-amber-600 border-b-2 border-amber-600"
+                                ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]"
                                 : "text-gray-500 hover:text-gray-700"
                         }`}
                         onClick={() => setFilterStatus("maintenance")}
@@ -230,15 +230,15 @@ export default function Rooms() {
                         <div key={room.id} className="group">
                             <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all overflow-hidden group relative transform hover:-translate-y-1 duration-300">
                                 {/* Card Header */}
-                                <div className="relative bg-gradient-to-r from-amber-50 to-white p-2.5 border-b border-amber-100">
+                                <div className="relative bg-gradient-to-r from-[#F5EFE7] to-white p-2.5 border-b border-[#E8DCCA]">
                                     <div className="absolute top-0 right-0 h-16 w-16 bg-amber-100 rounded-full -mr-8 -mt-8 opacity-30"></div>
                                     
                                     <div className="flex items-center justify-between relative z-10">
                                         <div className="flex items-center gap-1.5">
-                                            <div className="p-1 bg-gradient-to-r from-amber-500 to-amber-600 rounded-md shadow-sm">
+                                            <div className="p-1 bg-gradient-to-r from-[#8B5A2B] to-[#A67C52] rounded-md shadow-sm">
                                                 <Home className="h-3 w-3 text-white" />
                                             </div>
-                                            <span className="text-xs font-medium text-amber-800">
+                                            <span className="text-xs font-medium text-[#6B4226]">
                                                 Room {room.roomNumber}
                                             </span>
                                         </div>
@@ -292,7 +292,7 @@ export default function Rooms() {
                                     <div className="mb-3 bg-gray-50 rounded-md border border-gray-200 shadow-sm overflow-hidden">
                                         {/* Room Type Header */}
                                         <div className="flex items-center gap-2 p-2 border-b border-gray-200 bg-white">
-                                            <h3 className="text-sm font-semibold text-gray-800 truncate group-hover:text-amber-700 transition-colors">
+                                            <h3 className="text-sm font-semibold text-gray-800 truncate group-hover:text-[#8B5A2B] transition-colors">
                                                 {getRoomTypeLabel(room.roomType)}
                                             </h3>
                                         </div>
@@ -319,7 +319,7 @@ export default function Rooms() {
                                                 setSelectedRoom(room);
                                                 setShowRoomDetails(true);
                                             }}
-                                            className="flex-1 flex items-center justify-center gap-1 rounded-md bg-gradient-to-r from-amber-600 to-amber-800 px-2 py-1.5 text-xs font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                                            className="flex-1 flex items-center justify-center gap-1 rounded-md bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-2 py-1.5 text-xs font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5A3921] focus:outline-none focus:ring-1 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                                         >
                                             <Eye className="h-3 w-3" />
                                             <span>View</span>
@@ -328,7 +328,7 @@ export default function Rooms() {
                                             onClick={() => {
                                                 setShowUpdateRoom(room);
                                             }}
-                                            className="flex-1 flex items-center justify-center gap-1 rounded-md border border-amber-200 bg-amber-50 px-2 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                                            className="flex-1 flex items-center justify-center gap-1 rounded-md border border-[#E8DCCA] bg-[#F5EFE7] px-2 py-1.5 text-xs font-medium text-[#8B5A2B] hover:bg-[#E8DCCA] focus:outline-none focus:ring-1 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                                         >
                                             <Edit className="h-3 w-3" />
                                             <span>Update</span>
@@ -342,8 +342,8 @@ export default function Rooms() {
 
                 {filteredRooms.length === 0 && (
                     <div className="flex flex-col items-center justify-center py-12">
-                        <div className="rounded-full bg-amber-100 p-3 mb-4">
-                            <Bed className="h-6 w-6 text-amber-600" />
+                        <div className="rounded-full bg-[#F5EFE7] p-3 mb-4">
+                            <Bed className="h-6 w-6 text-[#8B5A2B]" />
                         </div>
                         <h3 className="text-lg font-medium text-gray-900 mb-1">
                             No rooms found
@@ -356,7 +356,7 @@ export default function Rooms() {
                                 setFilterStatus("all");
                                 setSearchQuery("");
                             }}
-                            className="text-sm font-medium text-amber-600 hover:text-amber-800"
+                            className="text-sm font-medium text-[#8B5A2B] hover:text-[#6B4226]"
                         >
                             Clear filters
                         </button>

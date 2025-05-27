@@ -99,14 +99,14 @@ export default function AdminEmployee() {
                 placeholder="Search employees..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#A67C52] focus:outline-none focus:ring-2 focus:ring-[#E8DCCA] transition-all"
               />
             </div>
             
           </div>
           <button
             onClick={() => setShowNewEmployeeForm(true)}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
+            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#7C5124] hover:to-[#5A371F] focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
           >
             <Plus className="h-4 w-4" />
             <span>Add New Employee</span>
@@ -116,19 +116,19 @@ export default function AdminEmployee() {
         {/* Status Tabs */}
         <div className="flex border-b border-gray-200 mb-6">
           <button
-            className={`px-4 py-2 text-sm font-medium ${filterStatus === "all" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium ${filterStatus === "all" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterStatus("all")}
           >
             All Employees
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium ${filterStatus === "active" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium ${filterStatus === "active" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterStatus("active")}
           >
             Active
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium ${filterStatus === "inactive" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium ${filterStatus === "inactive" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterStatus("inactive")}
           >
             Inactive
@@ -153,7 +153,7 @@ export default function AdminEmployee() {
                 {/* Employee Header with Image and Status */}
                 <div className="flex items-center gap-4 mb-4">
                   {employee.image ? (
-                    <div className="h-14 w-14 rounded-full overflow-hidden flex-shrink-0 border-2 border-amber-100 group-hover:border-amber-300 transition-all shadow-sm">
+                    <div className="h-14 w-14 rounded-full overflow-hidden flex-shrink-0 border-2 border-[#E8DCCA] group-hover:border-[#D2B48C] transition-all shadow-sm">
                       <img 
                         src={`/${employee.image}`}
                         alt={employee.name}
@@ -161,20 +161,20 @@ export default function AdminEmployee() {
                       />
                     </div>
                   ) : (
-                    <div className="h-14 w-14 rounded-full bg-gradient-to-r from-amber-50 to-amber-100 flex items-center justify-center text-amber-700 font-semibold text-lg flex-shrink-0 border-2 border-amber-100 group-hover:border-amber-300 transition-all shadow-sm">
+                    <div className="h-14 w-14 rounded-full bg-gradient-to-r from-[#F5EFE7] to-[#E8DCCA] flex items-center justify-center text-[#6B4226] font-semibold text-lg flex-shrink-0 border-2 border-[#E8DCCA] group-hover:border-[#D2B48C] transition-all shadow-sm">
                       {employee.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between">
-                      <h3 className="text-base font-semibold text-gray-900 truncate group-hover:text-amber-700 transition-colors">
+                      <h3 className="text-base font-semibold text-gray-900 truncate group-hover:text-[#6B4226] transition-colors">
                         {employee.name}
                       </h3>
                     </div>
                     <div className="flex items-center gap-2 mt-1">
-                      <div className="flex items-center gap-1 bg-amber-50 px-2 py-0.5 rounded-md">
-                        <Briefcase className="h-3 w-3 text-amber-600" />
-                        <span className="text-xs text-amber-600 font-medium">{employee.jobtitle || "STAFF"}</span>
+                      <div className="flex items-center gap-1 bg-[#F5EFE7] px-2 py-0.5 rounded-md">
+                        <Briefcase className="h-3 w-3 text-[#8B5A2B]" />
+                        <span className="text-xs text-[#8B5A2B] font-medium">{employee.jobtitle || "STAFF"}</span>
                       </div>
                       <span className={`px-2 py-0.5 rounded-md text-xs font-medium flex items-center ${
                         employee?.status === "active"
@@ -195,11 +195,11 @@ export default function AdminEmployee() {
                 {/* Contact Information */}
                 <div className="space-y-1.5 mb-4 bg-gray-50 p-3 rounded-lg">
                   <div className="flex items-center gap-2 text-gray-600">
-                    <Mail className="h-4 w-4 text-amber-500 flex-shrink-0" />
+                    <Mail className="h-4 w-4 text-[#A67C52] flex-shrink-0" />
                     <p className="text-sm truncate">{employee.email || "No email provided"}</p>
                   </div>
                   <div className="flex items-center gap-2 text-gray-600">
-                    <Phone className="h-4 w-4 text-amber-500 flex-shrink-0" />
+                    <Phone className="h-4 w-4 text-[#A67C52] flex-shrink-0" />
                     <p className="text-sm">{employee.phonenumber || "No phone number"}</p>
                   </div>
                 </div>
@@ -211,7 +211,7 @@ export default function AdminEmployee() {
                       setSelectedEmployee(employee)
                       setShowEmployeeDetails(true)
                     }}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-3 py-2.5 text-xs font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                    className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-3 py-2.5 text-xs font-medium text-white shadow-sm hover:from-[#7C5124] hover:to-[#5A371F] focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:ring-offset-1 transition-all"
                   >
                     <User className="h-4 w-4" />
                     <span>View Details</span>
@@ -221,7 +221,7 @@ export default function AdminEmployee() {
                       setSelectedEmployee(employee)
                       setShowUpdateEmployeeForm(true)
                     }}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                    className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#D2B48C] bg-[#F5EFE7] px-3 py-2.5 text-xs font-medium text-[#6B4226] hover:bg-[#E8DCCA] focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:ring-offset-1 transition-all"
                   >
                     <Edit className="h-4 w-4" />
                     <span>Update Employee</span>
@@ -234,8 +234,8 @@ export default function AdminEmployee() {
 
         {filteredEmployees.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12">
-            <div className="rounded-full bg-amber-100 p-3 mb-4">
-              <Users className="h-6 w-6 text-amber-600" />
+            <div className="rounded-full bg-[#E8DCCA] p-3 mb-4">
+              <Users className="h-6 w-6 text-[#8B5A2B]" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-1">No employees found</h3>
             <p className="text-sm text-gray-500 mb-4">There are no employees matching your current filters.</p>
@@ -244,7 +244,7 @@ export default function AdminEmployee() {
                 setFilterStatus("all")
                 setSearchQuery("")
               }}
-              className="text-sm font-medium text-amber-600 hover:text-amber-800"
+              className="text-sm font-medium text-[#8B5A2B] hover:text-[#5A371F]"
             >
               Clear filters
             </button>

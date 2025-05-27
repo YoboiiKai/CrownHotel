@@ -361,10 +361,10 @@ export default function UpdateOrderModal({ show, onClose, order, onUpdate }) {
       <div className="flex items-center justify-center min-h-screen p-4">
         <div className="bg-white rounded-xl overflow-hidden shadow-xl w-full max-w-5xl max-h-[90vh] overflow-y-auto animate-slideIn">
           {/* Header */}
-          <div className="bg-amber-50 px-6 py-4 border-b border-amber-100">
+          <div className="bg-[#F5EFE7] px-6 py-4 border-b border-[#E5D3B3]">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-amber-500 to-amber-700 flex items-center justify-center">
+                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] flex items-center justify-center">
                   <Utensils className="h-5 w-5 text-white" />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900">Update Order</h3>
@@ -395,7 +395,7 @@ export default function UpdateOrderModal({ show, onClose, order, onUpdate }) {
                       name="customerName"
                       value={formData.customerName}
                       onChange={handleInputChange}
-                      className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-200 focus:ring-opacity-50 text-sm p-2.5"
+                      className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-[#8B5A2B] focus:ring focus:ring-[#E5D3B3] focus:ring-opacity-50 text-sm p-2.5"
                     />
                     {errors.customerName && <p className="text-red-500 text-xs mt-1">{errors.customerName}</p>}
                   </div>
@@ -410,7 +410,7 @@ export default function UpdateOrderModal({ show, onClose, order, onUpdate }) {
                       name="roomNumber"
                       value={formData.roomNumber}
                       onChange={handleInputChange}
-                      className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-200 focus:ring-opacity-50 text-sm p-2.5"
+                      className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-[#8B5A2B] focus:ring focus:ring-[#E5D3B3] focus:ring-opacity-50 text-sm p-2.5"
                     />
                     {errors.roomNumber && <p className="text-red-500 text-xs mt-1">{errors.roomNumber}</p>}
                   </div>
@@ -424,7 +424,7 @@ export default function UpdateOrderModal({ show, onClose, order, onUpdate }) {
                       name="status"
                       value={formData.status}
                       onChange={handleInputChange}
-                      className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-200 focus:ring-opacity-50 text-sm p-2.5"
+                      className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-[#8B5A2B] focus:ring focus:ring-[#E5D3B3] focus:ring-opacity-50 text-sm p-2.5"
                     >
                       <option value="pending">Pending</option>
                       <option value="processing">Processing</option>
@@ -458,32 +458,32 @@ export default function UpdateOrderModal({ show, onClose, order, onUpdate }) {
                       value={formData.notes}
                       onChange={handleInputChange}
                       placeholder="Any special requests or dietary restrictions"
-                      className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-200 focus:ring-opacity-50 text-sm p-2.5"
+                      className="w-full rounded-lg border border-gray-300 shadow-sm focus:border-[#8B5A2B] focus:ring focus:ring-[#E5D3B3] focus:ring-opacity-50 text-sm p-2.5"
                     ></textarea>
                   </div>
                   
                   {/* Order Summary */}
-                  <div className="p-4 bg-amber-50 rounded-lg border border-amber-100">
-                    <h4 className="text-sm font-semibold text-amber-800 mb-3">Order Summary</h4>
+                  <div className="p-4 bg-[#F5EFE7] rounded-lg border border-[#E5D3B3]">
+                    <h4 className="text-sm font-semibold text-[#6B4226] mb-3">Order Summary</h4>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-amber-800">Subtotal:</span>
+                      <span className="text-sm font-medium text-[#6B4226]">Subtotal:</span>
                       <div className="flex items-center">
-                        <DollarSign className="h-4 w-4 text-amber-600 mr-1" />
-                        <span className="text-sm font-semibold text-amber-600">{subtotal.toFixed(2)}</span>
+                        <DollarSign className="h-4 w-4 text-[#8B5A2B] mr-1" />
+                        <span className="text-sm font-semibold text-[#8B5A2B]">{subtotal.toFixed(2)}</span>
                       </div>
                     </div>
                     <div className="flex justify-between items-center mt-2">
-                      <span className="text-sm font-medium text-amber-800">Discount:</span>
+                      <span className="text-sm font-medium text-[#6B4226]">Discount:</span>
                       <div className="flex items-center">
-                        <DollarSign className="h-4 w-4 text-amber-600 mr-1" />
-                        <span className="text-sm font-semibold text-amber-600">{discount.toFixed(2)}</span>
+                        <DollarSign className="h-4 w-4 text-[#8B5A2B] mr-1" />
+                        <span className="text-sm font-semibold text-[#8B5A2B]">{discount.toFixed(2)}</span>
                       </div>
                     </div>
-                    <div className="flex justify-between items-center mt-2 pt-2 border-t border-amber-200">
-                      <span className="text-sm font-medium text-amber-800">Total:</span>
+                    <div className="flex justify-between items-center mt-2 pt-2 border-t border-[#E5D3B3]">
+                      <span className="text-sm font-medium text-[#6B4226]">Total:</span>
                       <div className="flex items-center">
-                        <DollarSign className="h-4 w-4 text-amber-600 mr-1" />
-                        <span className="text-base font-bold text-amber-600">{total.toFixed(2)}</span>
+                        <DollarSign className="h-4 w-4 text-[#8B5A2B] mr-1" />
+                        <span className="text-base font-bold text-[#8B5A2B]">{total.toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
@@ -509,7 +509,7 @@ export default function UpdateOrderModal({ show, onClose, order, onUpdate }) {
                           <select
                             value={item.menuItemId ? String(item.menuItemId) : ''}
                             onChange={(e) => handleMenuItemSelect(e.target.value, item.id)}
-                            className="w-full rounded-md border border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-200 focus:ring-opacity-50 text-sm py-1.5 px-3 pr-10"
+                            className="w-full rounded-md border border-gray-300 shadow-sm focus:border-[#8B5A2B] focus:ring focus:ring-[#E5D3B3] focus:ring-opacity-50 text-sm py-1.5 px-3 pr-10"
                           >
                             <option value="">Select a menu item</option>
                             {menuItems.map(menuItem => (
@@ -543,7 +543,7 @@ export default function UpdateOrderModal({ show, onClose, order, onUpdate }) {
                             placeholder="Price"
                             value={item.price}
                             disabled
-                            className="w-full rounded-md border border-gray-300 bg-gray-50 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-200 focus:ring-opacity-50 text-sm py-1.5 pl-9 pr-3 cursor-not-allowed"
+                            className="w-full rounded-md border border-gray-300 bg-gray-50 shadow-sm focus:border-[#8B5A2B] focus:ring focus:ring-[#E5D3B3] focus:ring-opacity-50 text-sm py-1.5 pl-9 pr-3 cursor-not-allowed"
                           />
                         </div>
                         <button

@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Schema;
 
 class EventController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         // Start with a base query

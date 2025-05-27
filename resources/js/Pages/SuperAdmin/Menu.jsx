@@ -13,7 +13,9 @@ import {
   Coffee,
   CheckCircle,
   XCircle,
-  Tag
+  Tag,
+  TrendingUp,
+  Eye
 } from "lucide-react";
 import AddMenuModal from "@/Components/SuperAdmin/AddMenuModal";
 import UpdateMenuModal from "@/Components/SuperAdmin/UpdateMenuModal";
@@ -134,7 +136,7 @@ export default function Menu() {
                 placeholder="Search menu..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
               />
             </div>
             <div className="relative">
@@ -154,7 +156,7 @@ export default function Menu() {
                         setFilterCategory("brandy");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Brandy
                     </button>
@@ -163,7 +165,7 @@ export default function Menu() {
                         setFilterCategory("whiskey");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Whiskey
                     </button>
@@ -172,7 +174,7 @@ export default function Menu() {
                         setFilterCategory("vodka");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Vodka
                     </button>
@@ -181,7 +183,7 @@ export default function Menu() {
                         setFilterCategory("wine");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Wine
                     </button>
@@ -190,7 +192,7 @@ export default function Menu() {
                         setFilterCategory("tequila");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Tequila
                     </button>
@@ -199,7 +201,7 @@ export default function Menu() {
                         setFilterCategory("rum");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Rum
                     </button>
@@ -208,7 +210,7 @@ export default function Menu() {
                         setFilterCategory("beer");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Beer
                     </button>
@@ -217,7 +219,7 @@ export default function Menu() {
                         setFilterCategory("soju");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Soju
                     </button>
@@ -226,7 +228,7 @@ export default function Menu() {
                         setFilterCategory("gin");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
                       Gin
                     </button>
@@ -237,7 +239,7 @@ export default function Menu() {
           </div>
           <button
             onClick={() => setShowAddMenuForm(true)}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
+            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#8B5A2B] hover:to-[#6B4226] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
           >
             <Plus className="h-4 w-4" />
             <span>Add New Menu Item</span>
@@ -247,163 +249,185 @@ export default function Menu() {
         {/* Category Tabs */}
         <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "all" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "all" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("all")}
           >
             All Items
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "breakfast" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "breakfast" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("breakfast")}
           >
             Breakfast
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "seafood" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "seafood" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("seafood")}
           >
             Seafood
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "chicken" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "chicken" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("chicken")}
           >
             Chicken
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "pork" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "pork" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("pork")}
           >
             Pork
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "pasta" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "pasta" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("pasta")}
           >
             Pasta
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "vegetables" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "vegetables" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("vegetables")}
           >
             Vegetables
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "snacks" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "snacks" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("snacks")}
           >
             Snacks
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "coffee" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "coffee" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("coffee")}
           >
             Coffee
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "cocktails" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "cocktails" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("cocktails")}
           >
             CockTails
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "tower" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "tower" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("tower")}
           >
             Tower
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "beverages" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "beverages" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterCategory("beverages")}
           >
             Beverages
           </button>
         </div>
 
-        {/* Menu Item Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        {/* Menu Item Cards - Landscape Layout with Square Image and Information */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4">
           {filteredMenuItems.map((item) => (
             <div
               key={item.id}
-              className="rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow-lg transition-all group relative transform hover:-translate-y-1 duration-300"
+              className="rounded-lg overflow-hidden border border-[#DEB887]/30 bg-gradient-to-br from-[#F5EFE7] to-white shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1 duration-300"
             >
-              {/* Delete Button at Top Right */}
-              <button
-                onClick={() => handleDeleteMenuItem(item.id)}
-                className="absolute top-3 right-3 h-7 w-7 flex items-center justify-center rounded-lg bg-red-100 text-red-600 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-all z-10 opacity-80 hover:opacity-100"
-                title="Delete Menu Item"
-              >
-                <Trash className="h-3.5 w-3.5" />
-              </button>
-
-              {/* Menu Item Image */}
-              <div className="relative h-48 w-full overflow-hidden">
-                <img
-                  src={item.image ? `/${item.image}` : "https://via.placeholder.com/300x200?text=No+Image"}
-                  alt={item.name}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://via.placeholder.com/300x200?text=Image+Error";
-                  }}
-                />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                  <h3 className="text-sm font-semibold text-white truncate">{item.menuname}</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded text-white text-xs">
-                      <PhilippinePeso className="h-3 w-3" />
-                      <span>{item.price}</span>
+              {/* Card Content - Landscape Layout */}
+              <div className="flex flex-row h-[180px]">
+                {/* Square Image Container - Left Side */}
+                <div className="w-[180px] h-[180px] relative flex-shrink-0 bg-gradient-to-r from-[#A67C52]/10 to-[#8B5A2B]/10">
+                  {/* Image */}
+                  <div className="absolute inset-0 overflow-hidden">
+                    <img
+                      src={item.image ? `/${item.image}` : "https://via.placeholder.com/200x200?text=No+Image"}
+                      alt={item.name}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://via.placeholder.com/200x200?text=Image+Error";
+                      }}
+                    />
+                    
+                    {/* Status Badge */}
+                    <div className="absolute top-2 left-2 z-10">
+                      {item.status === 'sold_out' ? (
+                        <div className="px-2 py-1 rounded-full text-[9px] font-medium bg-red-100 text-red-800 flex items-center shadow-sm">
+                          <XCircle className="h-2.5 w-2.5 mr-0.5" />
+                          Sold Out
+                        </div>
+                      ) : (
+                        <div className="px-2 py-1 rounded-full text-[9px] font-medium bg-green-100 text-green-800 flex items-center shadow-sm">
+                          <CheckCircle className="h-2.5 w-2.5 mr-0.5" />
+                          Available
+                        </div>
+                      )}
                     </div>
-                    {item.status === 'sold_out' ? (
-                      <div className="px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 flex items-center shadow-sm">
-                        <XCircle className="h-3 w-3 mr-0.5" />
-                        Sold Out
+                    
+                    {/* Image Overlay Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
+                    
+                    {/* Price Badge */}
+                    <div className="absolute bottom-2 left-2 z-10">
+                      <div className="flex items-center gap-0.5 bg-white/30 backdrop-blur-sm px-2 py-1 rounded-full text-white text-[10px] shadow-sm border border-white/10">
+                        <PhilippinePeso className="h-3 w-3" />
+                        <span className="font-bold">{item.price}</span>
                       </div>
-                    ) : (
-                      <div className="px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 flex items-center shadow-sm">
-                        <CheckCircle className="h-3 w-3 mr-0.5" />
-                        Available
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="p-3">
-                {/* Category and Prep Time */}
-                <div className="flex flex-wrap items-center text-xs text-gray-500 mb-3">
-                  <div className="flex items-center mr-2 bg-amber-50 px-2 py-1 rounded-md">
-                    <Tag className="h-3 w-3 mr-1 text-amber-600" />
-                    <span className="font-medium text-amber-700">{getCategoryLabel(item.category)}</span>
-                  </div>
-                  <div className="flex items-center bg-gray-50 px-2 py-1 rounded-md">
-                    <Clock className="h-3 w-3 mr-1 text-gray-500" />
-                    <span>{item.preperationtime} prep time</span>
+                    </div>
                   </div>
                 </div>
                 
-                {/* Description */}
-                <p className="text-xs text-gray-600 line-clamp-2 mb-3">{item.description}</p>
-
-                {/* Action Buttons */}
-                <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
+                {/* Information Section - Square Right Side */}
+                <div className="p-4 relative bg-gradient-to-br from-white to-[#F5EFE7]/20 w-[180px] h-[180px] flex flex-col">
+                  {/* Delete Button */}
                   <button
-                    onClick={() => {
-                      setSelectedMenuItem(item);
-                      setShowMenuItemDetails(true);
-                    }}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-3 py-2 text-xs font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                    onClick={() => handleDeleteMenuItem(item.id)}
+                    className="absolute top-2 right-2 h-6 w-6 flex items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition-all z-20 shadow-sm"
+                    title="Delete Menu Item"
                   >
-                    <Utensils className="h-4 w-4" />
-                    <span>View</span>
+                    <Trash className="h-3 w-3" />
                   </button>
-                  <button
-                    onClick={() => handleUpdateMenuItem(item)}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
-                  >
-                    <Edit className="h-4 w-4" />
-                    <span>Update</span>
-                  </button>
+                  
+                  {/* Menu Name with Icon */}
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-sm font-semibold text-[#5D3A1F] truncate">{item.menuname}</h3>
+                  </div>
+                  
+                  {/* Category Tag and Prep Time */}
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-1 text-[10px] text-[#8B5A2B]">
+                      <Tag className="h-3 w-3" />
+                      <span className="truncate max-w-[80px]">{getCategoryLabel(item.category)}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[10px] text-gray-500">
+                      <Clock className="h-3 w-3" />
+                      <span>{item.preperationtime}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Description */}
+                  <p className="text-[11px] text-gray-600 line-clamp-2 mb-auto">{item.description}</p>
+                  
+                  {/* Footer Effect */}
+                  <div className="mt-2 mb-2">
+                    <div className="h-px w-full bg-gradient-to-r from-[#DEB887]/30 to-transparent"></div>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      onClick={() => {
+                        setSelectedMenuItem(item);
+                        setShowMenuItemDetails(true);
+                      }}
+                      className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] px-2 py-1.5 h-8 text-[11px] font-medium text-white shadow-sm hover:from-[#8B5A2B] hover:to-[#6B4226] focus:outline-none focus:ring-1 focus:ring-[#A67C52] transition-all"
+                    >
+                      <Eye className="h-3 w-3" />
+                      <span>View Details</span>
+                    </button>
+                    <button
+                      onClick={() => handleUpdateMenuItem(item)}
+                      className="h-8 w-8 flex items-center justify-center rounded-lg border border-[#A67C52] bg-white text-[#8B5A2B] hover:bg-[#A67C52]/10 transition-all duration-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-[#A67C52]"
+                    >
+                      <Edit className="h-3 w-3" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -412,8 +436,8 @@ export default function Menu() {
 
         {filteredMenuItems.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12">
-            <div className="rounded-full bg-amber-100 p-3 mb-4">
-              <Utensils className="h-6 w-6 text-amber-600" />
+            <div className="rounded-full bg-[#A67C52]/20 p-3 mb-4">
+              <Utensils className="h-6 w-6 text-[#8B5A2B]" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-1">No menu items found</h3>
             <p className="text-sm text-gray-500 mb-4">There are no menu items matching your current filters.</p>
@@ -422,7 +446,7 @@ export default function Menu() {
                 setFilterCategory("all");
                 setSearchQuery("");
               }}
-              className="text-sm font-medium text-amber-600 hover:text-amber-800"
+              className="text-sm font-medium text-[#8B5A2B] hover:text-[#6B4226]"
             >
               Clear filters
             </button>

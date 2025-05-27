@@ -67,7 +67,7 @@ export default function PurchaseOrders({ auth }) {
 
   const getStatusColor = (status) => {
     const colors = {
-      pending: "bg-amber-100 text-amber-800",
+      pending: "bg-[#F5EFE7] text-[#8B5A2B]",
       received: "bg-green-100 text-green-800",
       delivered: "bg-blue-100 text-blue-800",
       cancelled: "bg-red-100 text-red-800"
@@ -78,7 +78,7 @@ export default function PurchaseOrders({ auth }) {
   const getStatusIcon = (status) => {
     switch (status) {
       case "pending":
-        return <Clock className="h-3 w-3 text-amber-600" />
+        return <Clock className="h-3 w-3 text-[#8B5A2B]" />
       case "received":
         return <CheckCircle className="h-3 w-3 text-green-600" />
       case "delivered":
@@ -183,7 +183,7 @@ export default function PurchaseOrders({ auth }) {
                 placeholder="Search orders..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#E5D3B3] transition-all"
               />
             </div>
             <div className="relative">
@@ -195,31 +195,31 @@ export default function PurchaseOrders({ auth }) {
               <div className="absolute right-0 mt-2 w-48 rounded-lg border border-gray-100 bg-white shadow-lg z-10 hidden">
                 <div className="p-2">
                   <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
                     onClick={() => setFilterStatus("all")}
                   >
                     All Status
                   </button>
                   <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
                     onClick={() => setFilterStatus("pending")}
                   >
                     Pending
                   </button>
                   <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
                     onClick={() => setFilterStatus("received")}
                   >
                     Received
                   </button>
                   <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
                     onClick={() => setFilterStatus("delivered")}
                   >
                     Delivered
                   </button>
                   <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-amber-50 text-gray-700"
+                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
                     onClick={() => setFilterStatus("cancelled")}
                   >
                     Cancelled
@@ -230,7 +230,7 @@ export default function PurchaseOrders({ auth }) {
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
+            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5D3A22] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
           >
             <Plus className="h-4 w-4" />
             <span>New Purchase Order</span>
@@ -240,31 +240,31 @@ export default function PurchaseOrders({ auth }) {
         {/* Status Tabs */}
         <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "all" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "all" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterStatus("all")}
           >
             All Status
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "pending" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "pending" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterStatus("pending")}
           >
             Pending
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "received" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "received" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterStatus("received")}
           >
             Received
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "delivered" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "delivered" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterStatus("delivered")}
           >
             Delivered
           </button>
           <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "cancelled" ? "text-amber-600 border-b-2 border-amber-600" : "text-gray-500 hover:text-gray-700"}`}
+            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "cancelled" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
             onClick={() => setFilterStatus("cancelled")}
           >
             Cancelled
@@ -300,13 +300,13 @@ export default function PurchaseOrders({ auth }) {
                     </p>
                   </div>
                   <div className="flex items-center gap-1 mb-1">
-                    <DollarSign className="h-3 w-3 text-amber-600" />
-                    <span className="font-medium text-xs text-amber-600">{formatCurrency(order.totalAmount)}</span>
+                    <DollarSign className="h-3 w-3 text-[#964B00]" />
+                    <span className="font-medium text-xs text-[#964B00]">{formatCurrency(order.totalAmount)}</span>
                   </div>
                   {order.status === "pending" && (
                     <div className="flex items-center gap-1">
                       <Calendar className="h-3 w-3 text-gray-400" />
-                      <p className="text-xs text-amber-600 font-medium">
+                      <p className="text-xs text-[#8B5A2B] font-medium">
                         Expected: {formatDate(order.expectedDeliveryDate)}
                       </p>
                     </div>
@@ -318,14 +318,14 @@ export default function PurchaseOrders({ auth }) {
                   <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
                     <button
                       onClick={() => openDetailsModal(order)}
-                      className="flex-1 flex items-center justify-center gap-1 rounded-md bg-gradient-to-r from-amber-600 to-amber-800 px-3 py-2 text-xs font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                      className="flex-1 flex items-center justify-center gap-1 rounded-md bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-3 py-2 text-xs font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5D3A22] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                     >
                       <Eye className="h-4 w-4" />
                       <span>View</span>
                     </button>
                     <button 
                       onClick={() => openUpdateModal(order)}
-                      className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all"
+                      className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#E5D3B3] bg-[#F5EFE7] px-3 py-2 text-xs font-medium text-[#8B5A2B] hover:bg-[#EAE0D5] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
                     >
                       <Edit className="h-4 w-4" />
                       <span>Update</span>
@@ -339,8 +339,8 @@ export default function PurchaseOrders({ auth }) {
         
         {filteredOrders.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12">
-            <div className="rounded-full bg-amber-100 p-3 mb-4">
-              <Package className="h-6 w-6 text-amber-600" />
+            <div className="rounded-full bg-[#F5EFE7] p-3 mb-4">
+              <Package className="h-6 w-6 text-[#8B5A2B]" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-1">No purchase orders found</h3>
             <p className="text-gray-500 text-center max-w-md">

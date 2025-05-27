@@ -135,7 +135,7 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-amber-50 px-4 py-4">
+        <div className="bg-[#F5EFE7] px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <h3 className="text-lg font-bold text-gray-900">Event Details</h3>
@@ -154,15 +154,15 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
             {/* Event Information */}
             <div className="space-y-5">
               {/* Event Type and Overview */}
-              <div className="bg-gradient-to-br from-amber-50 to-white rounded-lg border border-amber-100 shadow-sm p-4 relative overflow-hidden">
+              <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#E8DCCA] shadow-sm p-4 relative overflow-hidden">
                 {/* Decorative elements */}
-                <div className="absolute top-0 right-0 w-24 h-24 bg-amber-100 rounded-full -mr-12 -mt-12 opacity-40"></div>
-                <div className="absolute bottom-0 left-0 w-16 h-16 bg-amber-100 rounded-full -ml-8 -mb-8 opacity-30"></div>
+                <div className="absolute top-0 right-0 w-24 h-24 bg-[#F5EFE7] rounded-full -mr-12 -mt-12 opacity-40"></div>
+                <div className="absolute bottom-0 left-0 w-16 h-16 bg-[#F5EFE7] rounded-full -ml-8 -mb-8 opacity-30"></div>
                 
                 {/* Event Header with Type and Status */}
-                <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 pb-3 border-b border-amber-100">
+                <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 pb-3 border-b border-[#E8DCCA]">
                   <div className="flex items-center gap-4">
-                    <div className="p-2 bg-gradient-to-br from-amber-500 to-amber-600 rounded-lg shadow-md">
+                    <div className="p-2 bg-gradient-to-br from-[#8B5A2B] to-[#A67C52] rounded-lg shadow-md">
                       {event.eventType === 'wedding' ? (
                         <Calendar className="h-5 w-5 text-white" />
                       ) : event.eventType === 'corporate' ? (
@@ -173,7 +173,7 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
                     </div>
                     <div>
                       <h4 className="text-lg font-bold text-gray-900">{event.eventType.charAt(0).toUpperCase() + event.eventType.slice(1)}</h4>
-                      <p className="text-sm text-gray-600 mt-0.5">Organized by <span className="font-medium text-amber-700">{event.clientName}</span></p>
+                      <p className="text-sm text-gray-600 mt-0.5">Organized by <span className="font-medium text-[#8B5A2B]">{event.clientName}</span></p>
                     </div>
                   </div>
                   <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium shadow-sm ${getStatusInfo(event.status).color} transition-all duration-200 hover:shadow-md`}>
@@ -185,25 +185,25 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
                 <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs">
                   <div className="grid grid-cols-2 gap-1.5">
                     <div className="flex items-center">
-                      <Calendar className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
+                      <Calendar className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
                       <span className="text-gray-500">Date:</span>
                       <span className="text-gray-700 font-medium ml-1.5">{formatDate(event.date).split(',')[0]}</span>
                     </div>
                     
                     <div className="flex items-center">
-                      <Clock className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
+                      <Clock className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
                       <span className="text-gray-500">Time:</span>
                       <span className="text-gray-700 font-medium ml-1.5">{event.startTime} - {event.endTime}</span>
                     </div>
                     
                     <div className="flex items-center">
-                      <MapPin className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
+                      <MapPin className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
                       <span className="text-gray-500">Venue:</span>
                       <span className="text-gray-700 font-medium ml-1.5 truncate">{event.venue}</span>
                     </div>
                     
                     <div className="flex items-center">
-                      <Users className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
+                      <Users className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
                       <span className="text-gray-500">Guests:</span>
                       <span className="text-gray-700 font-medium ml-1.5">{event.guestCount}</span>
                     </div>
@@ -214,25 +214,25 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
               {/* Contact Information - Compact */}
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2">
                 <div className="flex items-center mb-2">
-                  <User className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
+                  <User className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
                   <h5 className="text-xs font-semibold text-gray-900">Contact Information</h5>
                 </div>
                 
                 <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs grid grid-cols-2 gap-2">
                   <div className="flex items-center">
-                    <User className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
+                    <User className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
                     <span className="text-gray-500">Name:</span>
                     <span className="text-gray-700 font-medium ml-1.5 truncate">{event.clientName}</span>
                   </div>
                   
                   <div className="flex items-center">
-                    <Phone className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
+                    <Phone className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
                     <span className="text-gray-500">Phone:</span>
                     <span className="text-gray-700 font-medium ml-1.5 truncate">{event.contactNumber}</span>
                   </div>
                   
                   <div className="flex items-center col-span-2">
-                    <Mail className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
+                    <Mail className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
                     <span className="text-gray-500">Email:</span>
                     <span className="text-gray-700 font-medium ml-1.5 truncate">{event.email}</span>
                   </div>
@@ -242,7 +242,7 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
               {/* Payment Details - Compact */}
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2">
                 <div className="flex items-center mb-2">
-                  <span className="text-amber-600 font- text-sm mr-1.5">₱</span>
+                  <span className="text-[#8B5A2B] font- text-sm mr-1.5">₱</span>
                   <h5 className="text-xs font-semibold text-gray-900">Payment Details</h5>
                 </div>
                 
@@ -280,7 +280,7 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
                     </div>
                     <div>
                       <span className="text-gray-500">Total:</span>
-                      <span className="text-amber-700 font-bold ml-1.5">
+                      <span className="text-[#8B5A2B] font-bold ml-1.5">
                         ₱{typeof event.totalAmount === 'number' ? event.totalAmount.toLocaleString() : (parseFloat(event.totalAmount || 0).toLocaleString())}
                       </span>
                     </div>
@@ -289,7 +289,7 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center">
                         <span className="text-gray-500">Payment Status:</span>
-                        <span className={`font-medium ml-1.5 flex items-center ${(event.paymentStatus || 'unpaid') === 'fully_paid' ? 'text-green-600' : (event.paymentStatus || 'unpaid') === 'deposit_paid' ? 'text-amber-600' : 'text-red-600'}`}>
+                        <span className={`font-medium ml-1.5 flex items-center ${(event.paymentStatus || 'unpaid') === 'fully_paid' ? 'text-green-600' : (event.paymentStatus || 'unpaid') === 'deposit_paid' ? 'text-[#8B5A2B]' : 'text-red-600'}`}>
                           {(event.paymentStatus || 'unpaid') === 'fully_paid' ? (
                             <>
                               <CheckCircle className="h-3 w-3 mr-0.5" />
@@ -340,7 +340,7 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
                         <button
                           onClick={() => handlePaymentChange('deposit_paid')}
                           disabled={isUpdatingPayment}
-                          className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-amber-500"
+                          className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md bg-[#F5EFE7] text-[#8B5A2B] hover:bg-[#F5EFE7] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#A67C52]"
                         >
                           {isUpdatingPayment ? (
                             <span>Updating...</span>
@@ -378,7 +378,7 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
               {/* Special Requests - Compact */}
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2">
                 <div className="flex items-center mb-2">
-                  <AlertTriangle className="h-3.5 w-3.5 text-amber-600 mr-1.5" />
+                  <AlertTriangle className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
                   <h5 className="text-xs font-semibold text-gray-900">Special Requests</h5>
                 </div>
                 
@@ -411,7 +411,7 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
                   <button 
                     onClick={() => handleStatusChange('pending')}
                     disabled={isChangingStatus}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-amber-600 to-amber-800 rounded-lg shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 transition-all disabled:opacity-70"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-lg shadow-sm hover:from-[#6B4226] hover:to-[#5A3921] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all disabled:opacity-70"
                   >
                     <AlertTriangle className="h-3.5 w-3.5" />
                     {isChangingStatus ? 'Updating...' : 'Mark as Pending'}

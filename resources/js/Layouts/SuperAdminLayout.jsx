@@ -152,6 +152,16 @@ export default function SuperAdminLayout({ children }) {
       ],
     },
     {
+      name: "Attendance",
+      icon: <Calendar size={20} />,
+      path: "/SuperAdmin/attendance",
+      id: "attendance",
+      submenu: [
+        { name: "Employee Schedule", path: "/SuperAdmin/attendance/schedule" },
+        { name: "Mark Attendance", path: "/SuperAdmin/attendance" },
+      ],
+    },
+    {
       name: "Rooms",
       icon: <Bed size={20} />,
       path: "/rooms",

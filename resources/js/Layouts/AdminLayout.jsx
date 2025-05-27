@@ -166,6 +166,16 @@ export default function AdminLayout({ children }) {
             ],
         },
         {
+            name: "Attendance",
+            icon: <Calendar size={20} />,
+            path: "",
+            id: "attendance",
+            submenu: [
+                { name: "Add Schedule", path: "/Admin/AdminAttendanceSchedule" },
+                { name: "Mark Attendance", path: "/Admin/AdminAttendanceMark" },
+            ],
+        },
+        {
             name: "Rooms",
             icon: <Bed size={20} />,
             path: "/rooms",
@@ -246,7 +256,7 @@ export default function AdminLayout({ children }) {
             id: "inventory",
             submenu: [
                 { name: "Add Inventory", path: "/Admin/AdminInventory" },
-                { name: "Purchase Orders", path: "/Admin/PurchaseOrders" },
+                { name: "Purchase Orders", path: "/Admin/AdminPurchaseOrders" },
             ],
         },
         {
@@ -276,8 +286,8 @@ export default function AdminLayout({ children }) {
                             onClick={() => toggleSubmenu(item.id)}
                             className={`group flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm transition-all ${
                                 activeItem === item.id
-                                    ? "bg-gradient-to-r from-amber-600 to-amber-900 text-white shadow-md"
-                                    : "text-gray-700 hover:bg-amber-50"
+                                    ? "bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white shadow-md"
+                                    : "text-white hover:bg-[#7C5E42]"
                             }`}
                         >
                             <div className="flex items-center gap-3">
@@ -285,7 +295,7 @@ export default function AdminLayout({ children }) {
                                     className={`${
                                         activeItem === item.id
                                             ? "text-white"
-                                            : "text-amber-600 group-hover:text-amber-700"
+                                            : "text-[#DEB887] group-hover:text-white"
                                     }`}
                                 >
                                     {item.icon}
@@ -300,15 +310,15 @@ export default function AdminLayout({ children }) {
                             />
                         </button>
                         {openSubmenu === item.id && (
-                            <div className="mt-1 ml-4 pl-4 border-l-2 border-amber-200">
+                            <div className="mt-1 ml-4 pl-4 border-l-2 border-[#A67C52]">
                                 {item.submenu.map((subItem, index) => (
                                     <CustomLink
                                         key={subItem.name}
                                         href={subItem.path}
-                                        className={`block rounded-lg px-3 py-2 text-sm hover:bg-amber-50 ${
+                                        className={`block rounded-lg px-3 py-2 text-sm hover:bg-[#7C5E42] ${
                                             url === subItem.path
-                                                ? "font-medium text-amber-700"
-                                                : "text-gray-700"
+                                                ? "font-medium text-[#DEB887]"
+                                                : "text-white"
                                         }`}
                                         onClick={() => {
                                             setActiveItem(item.id);
@@ -336,8 +346,8 @@ export default function AdminLayout({ children }) {
                         href={item.path}
                         className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all ${
                             activeItem === item.id
-                                ? "bg-gradient-to-r from-amber-600 to-amber-900 text-white shadow-md"
-                                : "text-gray-700 hover:bg-amber-50"
+                                ? "bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white shadow-md"
+                                : "text-white hover:bg-[#7C5E42]"
                         }`}
                         onClick={() => {
                             setActiveItem(item.id);
@@ -351,7 +361,7 @@ export default function AdminLayout({ children }) {
                             className={`${
                                 activeItem === item.id
                                     ? "text-white"
-                                    : "text-amber-600 group-hover:text-amber-700"
+                                    : "text-[#DEB887] group-hover:text-white"
                             }`}
                         >
                             {item.icon}
@@ -517,7 +527,7 @@ export default function AdminLayout({ children }) {
                                 <p className="text-sm font-medium text-white truncate max-w-[120px] lg:max-w-[180px]">
                                     {user?.name || "User"}
                                 </p>
-                                <p className="text-xs text-amber-600">
+                                <p className="text-xs text-[#DEB887]">
                                     {user?.role || "Hotel Staff"}
                                 </p>
                             </div>
@@ -538,7 +548,7 @@ export default function AdminLayout({ children }) {
                             <div className="relative">
                                 <div className="absolute inset-0 rounded-lg bg-[#6B4226] blur-[5px] opacity-20"></div>
                                 <div className="relative flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#A67C52] to-[#6B4226] text-white shadow-sm">
-                                    <Coffee size={16} />
+                                    <Crown size={16} />
                                 </div>
                             </div>
                             <span className="text-base sm:text-lg font-bold text-white">
@@ -585,7 +595,7 @@ export default function AdminLayout({ children }) {
                     <div className="border-t border-[#5D3A1F] p-3 sm:p-6">
                         <div className="flex items-center gap-3">
                             <div className="relative">
-                                <div className="absolute inset-0 rounded-xl bg-amber-800 blur-[5px] opacity-20"></div>
+                                <div className="absolute inset-0 rounded-xl bg-[#6B4226] blur-[5px] opacity-20"></div>
                                 <div className="relative h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-gradient-to-br from-[#A67C52] to-[#6B4226] flex items-center justify-center text-white shadow-md">
                                     <User size={isMobile ? 16 : 20} />
                                 </div>
@@ -594,7 +604,7 @@ export default function AdminLayout({ children }) {
                                 <p className="text-sm sm:font-medium text-white truncate">
                                     {user?.name || "User"}
                                 </p>
-                                <p className="text-xs text-amber-600">
+                                <p className="text-xs text-[#DEB887]">
                                     {user?.role || "Hotel Staff"}
                                 </p>
                             </div>
@@ -609,8 +619,8 @@ export default function AdminLayout({ children }) {
                 </div>
             </aside>
 
-            <main className="pt-16 sm:pt-20 lg:pt-32 px-2 sm:px-4 lg:pl-80 lg:px-8 pb-4 sm:pb-6 lg:pb-8 transition-all duration-300">
-                <div className="mx-auto max-w-7xl">{children}</div>
+            <main className="pt-16 sm:pt-20 lg:pt-32 px-3 sm:px-5 lg:pl-80 lg:px-8 pb-6 sm:pb-8 lg:pb-10 transition-all duration-300">
+                <div className="mx-auto max-w-7xl space-y-4 sm:space-y-6">{children}</div>
             </main>
 
             {/* Logout Modal */}
@@ -618,10 +628,10 @@ export default function AdminLayout({ children }) {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
                     <div className="w-full max-w-[90%] sm:max-w-md rounded-2xl bg-white p-4 sm:p-6 shadow-xl">
                         <div className="mb-4 text-center">
-                            <div className="mx-auto mb-4 flex h-14 sm:h-16 w-14 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-amber-50 to-amber-100">
+                            <div className="mx-auto mb-4 flex h-14 sm:h-16 w-14 sm:w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#A67C52]/20 to-[#8B5A2B]/20">
                                 <div className="relative">
-                                    <div className="absolute inset-0 rounded-xl bg-amber-800 blur-[5px] opacity-20"></div>
-                                    <div className="relative h-9 sm:h-10 w-9 sm:w-10 rounded-xl bg-gradient-to-br from-amber-600 to-amber-900 flex items-center justify-center text-white shadow-md">
+                                    <div className="absolute inset-0 rounded-xl bg-[#6B4226] blur-[5px] opacity-20"></div>
+                                    <div className="relative h-9 sm:h-10 w-9 sm:w-10 rounded-xl bg-gradient-to-br from-[#A67C52] to-[#6B4226] flex items-center justify-center text-white shadow-md">
                                         <User size={isMobile ? 20 : 24} />
                                     </div>
                                 </div>
@@ -637,7 +647,7 @@ export default function AdminLayout({ children }) {
                         <div className="mt-6 flex flex-col sm:flex-row gap-3">
                             <button
                                 onClick={closeLogoutModal}
-                                className="flex-1 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-200"
+                                className="flex-1 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20"
                             >
                                 Cancel
                             </button>
@@ -645,7 +655,7 @@ export default function AdminLayout({ children }) {
                                 href={route("logout")}
                                 method="post"
                                 as="button"
-                                className="flex-1 rounded-lg bg-gradient-to-r from-amber-600 to-amber-800 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:from-amber-700 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                className="flex-1 rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:from-[#8B5A2B] hover:to-[#6B4226] focus:outline-none focus:ring-2 focus:ring-[#A67C52]"
                             >
                                 Sign Out
                             </Link>

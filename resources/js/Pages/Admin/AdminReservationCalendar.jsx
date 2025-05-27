@@ -244,7 +244,7 @@ export default function AdminReservationCalendar() {
                   placeholder="Search events..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                  className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
                 />
               </div>
               <div className="relative">
@@ -270,7 +270,7 @@ export default function AdminReservationCalendar() {
                         <select 
                           value={statusFilter}
                           onChange={(e) => setStatusFilter(e.target.value)}
-                          className="w-full rounded-lg border border-gray-200 bg-white py-2 px-3 text-sm text-gray-700 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                          className="w-full rounded-lg border border-gray-200 bg-white py-2 px-3 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
                         >
                           <option value="all">All Statuses</option>
                           <option value="pending">Pending</option>
@@ -298,12 +298,12 @@ export default function AdminReservationCalendar() {
 
           {/* Calendar View */}
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-600 to-amber-800">
+            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#8B5A2B] to-[#6B4226]">
               <h2 className="text-lg font-medium text-white">Event Calendar</h2>
               <div className="flex items-center space-x-2">
                 <button 
                   onClick={goToPreviousMonth} 
-                  className="p-2 rounded-full hover:bg-amber-50 text-white hover:text-amber-600 transition-colors"
+                  className="p-2 rounded-full hover:bg-[#F5EFE7] text-white hover:text-[#8B5A2B] transition-colors"
                 >
                   <ChevronUp className="h-5 w-5" />
                 </button>
@@ -312,7 +312,7 @@ export default function AdminReservationCalendar() {
                 </span>
                 <button 
                   onClick={goToNextMonth} 
-                  className="p-2 rounded-full hover:bg-amber-50 text-white hover:text-amber-600 transition-colors"
+                  className="p-2 rounded-full hover:bg-[#F5EFE7] text-white hover:text-[#8B5A2B] transition-colors"
                 >
                   <ChevronDown className="h-5 w-5" />
                 </button>
@@ -321,7 +321,7 @@ export default function AdminReservationCalendar() {
 
             {loading ? (
               <div className="p-8 text-center">
-                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-amber-500 border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#8B5A2B] border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
                 <p className="mt-2 text-gray-600">Loading events...</p>
               </div>
             ) : error ? (
@@ -330,7 +330,7 @@ export default function AdminReservationCalendar() {
                 <p className="mt-2 text-gray-600">{error}</p>
                 <button 
                   onClick={fetchEvents}
-                  className="mt-4 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors"
+                  className="mt-4 px-4 py-2 bg-[#8B5A2B] text-white rounded-lg hover:bg-[#6B4226] transition-colors"
                 >
                   Retry
                 </button>
@@ -356,14 +356,14 @@ export default function AdminReservationCalendar() {
                           day.date.getDate() === new Date().getDate() &&
                           day.date.getMonth() === new Date().getMonth() &&
                           day.date.getFullYear() === new Date().getFullYear()
-                            ? "border-amber-500 bg-amber-50"
+                            ? "border-[#8B5A2B] bg-[#F5EFE7]"
                             : "border-gray-100"
                         }`}
                       >
                         <div className="flex justify-between items-start">
                           <span className="font-medium">{day.date.getDate()}</span>
                           {day.events.total > 0 && (
-                            <span className="text-xs bg-amber-100 text-amber-800 font-medium px-2 py-1 rounded-full">
+                            <span className="text-xs bg-[#F5EFE7] text-[#8B5A2B] font-medium px-2 py-1 rounded-full">
                               {day.events.total}
                             </span>
                           )}
