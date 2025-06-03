@@ -144,6 +144,12 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
 
   if (!show) return null
 
+  // Define reusable classes
+  const inputClasses = "w-full rounded-lg border border-[#DEB887]/30 bg-white px-4 py-2.5 text-[#5D3A1F] focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all placeholder:text-[#6B4226]/50 shadow-sm"
+  const labelClasses = "block text-sm font-medium text-[#5D3A1F] mb-1.5"
+  const iconWrapperClasses = "absolute left-4 top-1/2 -translate-y-1/2 text-[#8B5A2B]"
+  const errorClasses = "text-xs text-red-600 mt-1.5 font-medium"
+
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -427,27 +433,26 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
     }
   }
 
-  // Define reusable classes
-  const inputClasses = "w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all placeholder:text-gray-400"
-  const labelClasses = "block text-sm font-medium text-gray-700 mb-1.5"
-  const iconWrapperClasses = "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-  const errorClasses = "text-xs text-red-600 mt-1.5 font-medium"
+  // These classes are defined earlier in the file, so this block is removed to avoid duplicates
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-xl overflow-hidden border border-[#DEB887]/30 shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-[#F5EFE7] border-b border-[#E8DCCA] px-6 py-4">
+        <div className="bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-[#8B5A2B] to-[#A67C52] rounded-md shadow-sm">
+              <div className="p-2 bg-white/20 backdrop-blur-sm rounded-full shadow-md">
                 <Home className="h-5 w-5 text-white" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900">Update Room</h3>
+              <div>
+                <h3 className="text-lg font-bold text-white">Update Room</h3>
+                <p className="text-xs text-white/80">Modify room details and information</p>
+              </div>
             </div>
             <button 
               onClick={onClose} 
-              className="text-gray-400 hover:text-gray-600 transition-colors bg-white rounded-full p-1 hover:bg-gray-100"
+              className="text-white/80 hover:text-white transition-colors bg-white/10 backdrop-blur-sm rounded-full p-1.5 hover:bg-white/20 shadow-md"
             >
               <X className="h-5 w-5" />
             </button>
@@ -458,50 +463,57 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
   
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Info Banner */}
-            <div className="p-4 bg-[#F5EFE7] rounded-lg border border-[#E8DCCA] mb-6">
-              <h4 className="text-sm font-medium text-gray-800 mb-2">Room Information</h4>
-              <p className="text-xs text-gray-500">Update room details and images. You can add or remove images as needed.</p>
+            <div className="p-4 bg-gradient-to-r from-[#A67C52]/10 to-[#8B5A2B]/10 rounded-lg border border-[#DEB887]/30 mb-6 relative overflow-hidden">
+              <div className="absolute inset-0 opacity-5">
+                <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
+              </div>
+              <div className="relative z-10">
+                <div className="inline-flex items-center px-2 py-1 rounded-full bg-[#A67C52]/30 backdrop-blur-sm mb-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887] mr-1.5"></div>
+                  <span className="text-xs font-medium text-[#6B4226]">
+                    ROOM DETAILS
+                  </span>
+                </div>
+                <h4 className="text-sm font-medium text-[#5D3A1F] mb-1">Room Information</h4>
+                <p className="text-xs text-[#6B4226]/70">Update room details and images. You can add or remove images as needed. Required fields are marked with an asterisk (*).</p>
+              </div>
             </div>
             
             {/* Two-column layout for desktop */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left column - Image Upload */}
               <div className="lg:col-span-1">
-                <div className="flex flex-col p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <label className={labelClasses}>Room Images</label>
+                <div className="flex flex-col p-4 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm">
+                  <label className={labelClasses}>Room Images <span className="text-red-500">*</span></label>
                   
                   <div className="space-y-4 mb-3">
                     {/* Image 1 */}
                     <div className="relative">
-                      <h6 className="text-xs font-medium text-gray-500 mb-2">Image 1 (Main)</h6>
+                      <h6 className="text-xs font-medium text-[#6B4226]/70 mb-2">Main Image</h6>
                       {formData.image1 ? (
-                        <div className="relative aspect-video rounded-lg overflow-hidden border-2 border-gray-200 bg-white shadow-sm hover:shadow-md transition-all">
+                        <div className="relative aspect-video rounded-lg overflow-hidden border-2 border-[#DEB887]/50 bg-white shadow-sm hover:shadow-md transition-all group">
                           <img 
-                            src={formData.image1.preview} 
-                            alt="Room preview 1" 
-                            className="w-full h-full object-cover"
+                            src={formData.image1.preview || formData.image1} 
+                            alt="Room preview" 
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                           />
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1.5">
-                            <p className="text-white text-xs truncate">
-                              {formData.image1.existing ? 'Existing Image 1' : formData.image1.name}
-                            </p>
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <button
+                              type="button"
+                              onClick={() => removeImage('image1')}
+                              className="bg-white/80 backdrop-blur-sm p-2 rounded-full text-red-600 hover:bg-white transition-colors"
+                            >
+                              <Trash className="h-4 w-4" />
+                            </button>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => removeImage('image1')}
-                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-all shadow-md"
-                          >
-                            <Trash className="h-3 w-3" />
-                          </button>
                         </div>
                       ) : (
                         <div 
                           onClick={() => triggerFileInput(fileInputRef1)}
-                          className="aspect-video rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 cursor-pointer transition-all"
+                          className="aspect-video rounded-lg border-2 border-[#DEB887]/30 bg-gradient-to-br from-[#A67C52]/5 to-[#8B5A2B]/5 flex flex-col items-center justify-center cursor-pointer hover:border-[#DEB887]/50 transition-all shadow-sm hover:shadow-md"
                         >
-                          <Upload className="h-6 w-6 text-gray-400 mb-2" />
-                          <p className="text-xs text-gray-500 font-medium">Add Main Image</p>
-                          <p className="text-xs text-gray-400 mt-1">Click to browse</p>
+                          <Image className="h-8 w-8 text-[#8B5A2B]/70 mb-2" />
+                          <span className="text-xs text-[#6B4226]/70">Click to upload main image</span>
                         </div>
                       )}
                       <input
@@ -599,35 +611,31 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                     
                     {/* Image 4 */}
                     <div className="relative">
-                      <h6 className="text-xs font-medium text-gray-500 mb-2">Image 4</h6>
+                      <h6 className="text-xs font-medium text-[#6B4226]/70 mb-2">Image 4</h6>
                       {formData.image4 ? (
-                        <div className="relative aspect-video rounded-lg overflow-hidden border-2 border-gray-200 bg-white shadow-sm hover:shadow-md transition-all">
+                        <div className="relative aspect-video rounded-lg overflow-hidden border-2 border-[#DEB887]/50 bg-white shadow-sm hover:shadow-md transition-all group">
                           <img 
-                            src={formData.image4.preview} 
-                            alt="Room preview 4" 
-                            className="w-full h-full object-cover"
+                            src={formData.image4.preview || formData.image4} 
+                            alt="Room preview" 
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                           />
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1.5">
-                            <p className="text-white text-xs truncate">
-                              {formData.image4.existing ? 'Existing Image 4' : formData.image4.name}
-                            </p>
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <button
+                              type="button"
+                              onClick={() => removeImage('image4')}
+                              className="bg-white/80 backdrop-blur-sm p-2 rounded-full text-red-600 hover:bg-white transition-colors"
+                            >
+                              <Trash className="h-4 w-4" />
+                            </button>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => removeImage('image4')}
-                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-all shadow-md"
-                          >
-                            <Trash className="h-3 w-3" />
-                          </button>
                         </div>
                       ) : (
                         <div 
                           onClick={() => triggerFileInput(fileInputRef4)}
-                          className="aspect-video rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 cursor-pointer transition-all"
+                          className="aspect-video rounded-lg border-2 border-[#DEB887]/30 bg-gradient-to-br from-[#A67C52]/5 to-[#8B5A2B]/5 flex flex-col items-center justify-center cursor-pointer hover:border-[#DEB887]/50 transition-all shadow-sm hover:shadow-md"
                         >
-                          <Upload className="h-6 w-6 text-gray-400 mb-2" />
-                          <p className="text-xs text-gray-500 font-medium">Add Image 4</p>
-                          <p className="text-xs text-gray-400 mt-1">Click to browse</p>
+                          <Image className="h-8 w-8 text-[#8B5A2B]/70 mb-2" />
+                          <span className="text-xs text-[#6B4226]/70">Click to upload additional image</span>
                         </div>
                       )}
                       <input
@@ -656,7 +664,7 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {/* Room Number */}
                   <div>
-                    <label htmlFor="roomNumber" className={labelClasses}>Room Number</label>
+                    <label htmlFor="roomNumber" className={labelClasses}>Room Number <span className="text-red-500">*</span></label>
                     <div className="relative">
                       <div className={iconWrapperClasses}>
                         <Home className="h-4 w-4" />
@@ -676,24 +684,27 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                   
                   {/* Room Type */}
                   <div>
-                    <label htmlFor="roomType" className={labelClasses}>Room Type</label>
+                    <label htmlFor="roomType" className={labelClasses}>Room Type <span className="text-red-500">*</span></label>
                     <div className="relative" ref={roomTypeDropdownRef}>
                       <div 
-                        className={`${inputClasses} cursor-pointer flex items-center justify-between`}
+                        className={`${inputClasses} cursor-pointer flex items-center justify-between pl-10`}
                         onClick={() => setShowRoomTypeDropdown(!showRoomTypeDropdown)}
                       >
-                        <span className={formData.roomType ? "text-gray-700" : "text-gray-400"}>
+                        <span className={formData.roomType ? "text-[#5D3A1F]" : "text-[#6B4226]/50"}>
                           {formData.roomType ? 
                             formData.roomType.charAt(0).toUpperCase() + formData.roomType.slice(1) : 
                             "Select room type"}
                         </span>
-                        <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                        <svg className="h-5 w-5 text-[#8B5A2B]" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
                       </div>
+                      <div className={iconWrapperClasses}>
+                        <Home className="h-4 w-4" />
+                      </div>
                       
                       {showRoomTypeDropdown && (
-                        <div className="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg border border-gray-200 max-h-60 overflow-y-auto">
+                        <div className="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg border border-[#DEB887]/30 max-h-60 overflow-y-auto">
                           <div className="py-1">
                             {[
                               { value: "standard", label: "Standard" },
@@ -704,11 +715,7 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                             ].map((option) => (
                               <div
                                 key={option.value}
-                                className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#F5EFE7] ${
-                                  formData.roomType === option.value 
-                                    ? "bg-amber-50 text-[#8B5A2B]"
-                                    : "text-gray-700"
-                                }`}
+                                className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#F5EFE7] transition-colors ${formData.roomType === option.value ? 'bg-[#F5EFE7] text-[#5D3A1F] font-medium' : 'text-[#6B4226]/80'}`}
                                 onClick={() => {
                                   setFormData({
                                     ...formData,
@@ -735,7 +742,7 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                   
                   {/* Price */}
                   <div>
-                    <label htmlFor="price" className={labelClasses}>Price per Night ($)</label>
+                    <label htmlFor="price" className={labelClasses}>Price per Night ($) <span className="text-red-500">*</span></label>
                     <div className="relative">
                       <div className={iconWrapperClasses}>
                         <DollarSign className="h-4 w-4" />
@@ -757,7 +764,7 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                   
                   {/* Capacity */}
                   <div>
-                    <label htmlFor="capacity" className={labelClasses}>Capacity</label>
+                    <label htmlFor="capacity" className={labelClasses}>Capacity <span className="text-red-500">*</span></label>
                     <div className="relative" ref={capacityDropdownRef}>
                       <div className={iconWrapperClasses}>
                         <Users className="h-4 w-4" />
@@ -766,18 +773,18 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                         className={`${inputClasses} pl-10 cursor-pointer flex items-center justify-between`}
                         onClick={() => setShowCapacityDropdown(!showCapacityDropdown)}
                       >
-                        <span className={formData.capacity ? "text-gray-700" : "text-gray-400"}>
+                        <span className={formData.capacity ? "text-[#5D3A1F]" : "text-[#6B4226]/50"}>
                           {formData.capacity ? 
                             `${formData.capacity} ${formData.capacity === "1" ? "Person" : "People"}` : 
                             "Select capacity"}
                         </span>
-                        <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                        <svg className="h-5 w-5 text-[#8B5A2B]" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
                       </div>
                       
                       {showCapacityDropdown && (
-                        <div className="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg border border-gray-200 max-h-60 overflow-y-auto">
+                        <div className="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg border border-[#DEB887]/30 max-h-60 overflow-y-auto">
                           <div className="py-1">
                             {[
                               { value: "1", label: "1 Person" },
@@ -789,10 +796,10 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                             ].map((option) => (
                               <div
                                 key={option.value}
-                                className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#F5EFE7] ${
+                                className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#F5EFE7] transition-colors ${
                                   formData.capacity === option.value 
-                                    ? "bg-amber-50 text-[#8B5A2B]"
-                                    : "text-gray-700"
+                                    ? "bg-[#F5EFE7] text-[#5D3A1F] font-medium"
+                                    : "text-[#6B4226]/80"
                                 }`}
                                 onClick={() => {
                                   setFormData({
@@ -820,9 +827,9 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                   
                   {/* Description */}
                   <div className="sm:col-span-2">
-                    <label htmlFor="description" className={labelClasses}>Description</label>
+                    <label htmlFor="description" className={labelClasses}>Description <span className="text-red-500">*</span></label>
                     <div className="relative">
-                      <div className="absolute left-4 top-3 text-gray-400">
+                      <div className="absolute left-4 top-3 text-[#8B5A2B]">
                         <FileText className="h-4 w-4" />
                       </div>
                       <textarea
@@ -840,8 +847,8 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
                 </div>
                 
                 {/* Amenities */}
-                <div className="pt-4 border-t border-gray-100">
-                  <h4 className="text-sm font-medium text-gray-700 mb-3">Room Amenities</h4>
+                <div className="pt-4 border-t border-[#DEB887]/20">
+                  <h4 className="text-sm font-medium text-[#5D3A1F] mb-3">Room Amenities</h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     <label className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
                       <input
@@ -978,11 +985,11 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
             </div>
             
             {/* Action Buttons */}
-            <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200 mt-8">
+            <div className="flex items-center justify-end gap-3 pt-6 border-t border-[#DEB887]/20 mt-8">
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#E8DCCA] focus:ring-offset-2 transition-all"
+                className="rounded-lg border border-[#DEB887]/50 bg-white px-4 py-2 text-sm font-medium text-[#5D3A1F] shadow-sm hover:bg-[#F5EFE7] focus:outline-none focus:ring-2 focus:ring-[#E8DCCA] focus:ring-offset-2 transition-all"
                 disabled={isSubmitting}
               >
                 Cancel

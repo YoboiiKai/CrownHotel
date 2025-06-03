@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { Head } from '@inertiajs/react'
 import SuperAdminLayout from "@/Layouts/SuperAdminLayout"
@@ -16,7 +14,8 @@ import {
   Package,
   DollarSign,
   Tag,
-  AlertTriangle
+  AlertTriangle,
+  RefreshCw
 } from "lucide-react"
 import AddInventoryModal from "@/Components/SuperAdmin/AddInventoryModal"
 import UpdateInventoryModal from "@/Components/SuperAdmin/UpdateInventoryModal"
@@ -32,6 +31,7 @@ export default function SuperAdminInventory({ auth }) {
   const [filterCategory, setFilterCategory] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
   const [inventoryItems, setInventoryItems] = useState([])
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   // Load inventory items from API on component mount
   useEffect(() => {
@@ -39,13 +39,19 @@ export default function SuperAdminInventory({ auth }) {
   }, []);
 
   // Fetch inventory items from API
-  const fetchInventory = async () => {
+  const fetchInventory = async (showToast = false) => {
     try {
+      setIsRefreshing(true);
       const response = await axios.get(`/api/inventory?_t=${new Date().getTime()}`);
       setInventoryItems(response.data);
+      if (showToast) {
+        toast.success("Inventory data refreshed successfully!");
+      }
     } catch (error) {
       console.error("Error fetching inventory items:", error);
       toast.error("Failed to fetch inventory items. Please try again later.");
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
@@ -115,192 +121,269 @@ export default function SuperAdminInventory({ auth }) {
       <Head title="Inventory Management" />
       <ToastContainer position="top-right" hideProgressBar />
       <div className="mx-auto max-w-6xl">
-        <div className="bg-white p-6 rounded-lg shadow-md overflow-auto">
-          {/* Action Bar */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <div className="relative flex-1 sm:flex-none sm:w-64">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search inventory..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#E5D3B3] transition-all"
-                />
+
+        {/* Combined Action Bar with Search, Filter, and Add Button */}
+        <div className="bg-white rounded-xl shadow-md border border-[#DEB887]/30 p-4 mb-8 mt-5">
+          <div className="flex flex-col lg:flex-row gap-4 items-center">
+            {/* Search Bar */}
+            <div className="relative w-full lg:flex-1">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B5A2B]">
+                <Search className="h-4 w-4" />
               </div>
+              <input
+                type="text"
+                placeholder="Search inventory..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-lg border border-[#DEB887]/30 bg-white py-2.5 pl-10 pr-4 text-sm text-[#5D3A1F] placeholder-[#8B5A2B]/40 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
+              />
             </div>
-            <button
-              onClick={() => setShowNewItemForm(true)}
-              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5D3A22] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Add New Item</span>
-            </button>
+            
+            {/* Filter Tabs */}
+            <div className="flex items-center gap-2 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0 hide-scrollbar">
+              <button
+                onClick={() => setFilterCategory("all")}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${filterCategory === "all" ? "bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white shadow-md" : "bg-white border border-[#DEB887]/30 text-[#8B5A2B] hover:bg-[#F5EFE7]"}`}
+              >
+                All Items
+              </button>
+              <button
+                onClick={() => setFilterCategory("food")}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${filterCategory === "food" ? "bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white shadow-md" : "bg-white border border-[#DEB887]/30 text-[#8B5A2B] hover:bg-[#F5EFE7]"}`}
+              >
+                Food & Beverage
+              </button>
+              <button
+                onClick={() => setFilterCategory("housekeeping")}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${filterCategory === "housekeeping" ? "bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white shadow-md" : "bg-white border border-[#DEB887]/30 text-[#8B5A2B] hover:bg-[#F5EFE7]"}`}
+              >
+                Housekeeping
+              </button>
+              <button
+                onClick={() => setFilterCategory("equipment")}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${filterCategory === "equipment" ? "bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white shadow-md" : "bg-white border border-[#DEB887]/30 text-[#8B5A2B] hover:bg-[#F5EFE7]"}`}
+              >
+                Equipment
+              </button>
+              <button
+                onClick={() => setFilterCategory("amenities")}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${filterCategory === "amenities" ? "bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white shadow-md" : "bg-white border border-[#DEB887]/30 text-[#8B5A2B] hover:bg-[#F5EFE7]"}`}
+              >
+                Guest Amenities
+              </button>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2 w-full lg:w-auto">
+              <button
+                onClick={() => fetchInventory(true)}
+                disabled={isRefreshing}
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-white border border-[#DEB887]/30 text-[#8B5A2B] hover:bg-[#F5EFE7] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+                <span>Refresh</span>
+              </button>
+              
+              <button
+                onClick={() => setShowNewItemForm(true)}
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Add Item</span>
+              </button>
+            </div>
           </div>
+        </div>
 
-          {/* Category Tabs */}
-          <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
-            <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "all" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-              onClick={() => setFilterCategory("all")}
+        {/* Inventory Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {filteredItems.map((item) => (
+            <div
+              key={item.id}
+              className="rounded-lg overflow-hidden border border-[#DEB887]/30 bg-gradient-to-br from-[#F5EFE7] to-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 relative"
             >
-              All Categories
-            </button>
-            <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "food" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-              onClick={() => setFilterCategory("food")}
-            >
-              Food & Beverage
-            </button>
-            <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "housekeeping" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-              onClick={() => setFilterCategory("housekeeping")}
-            >
-              Housekeeping
-            </button>
-            <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "equipment" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-              onClick={() => setFilterCategory("equipment")}
-            >
-              Equipment
-            </button>
-            <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "amenities" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-              onClick={() => setFilterCategory("amenities")}
-            >
-              Guest Amenities
-            </button>
-          </div>
-
-          {/* Inventory Item Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-            {filteredItems.map((item) => {
-              const stockStatus = getStockStatus(item)
-              return (
-                <div
-                  key={item.id}
-                  className="rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md"
+              <div className="absolute top-3 right-3 z-10">
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.confirm('Are you sure you want to delete this item?')) {
+                      deleteInventory(item.id);
+                    }
+                  }}
+                  className="h-7 w-7 flex items-center justify-center rounded-full bg-red-100/80 text-red-600 hover:bg-red-200 transition-all opacity-80 hover:opacity-100 shadow-sm"
+                  title="Delete Item"
                 >
-                  {/* Item Image */}
-                  <div className="relative h-36 w-full overflow-hidden">
-                    <img
-                      src={item.image ? `/${item.image}` : "/images/placeholder-item.jpg"}
-                      alt={item.itemName}
-                      className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
-                    />
-                    <div className="absolute top-2 right-2">
-                      <div className={`px-2 py-0.5 rounded-full text-xs font-medium ${stockStatus.color}`}>
-                        {stockStatus.status === "out-of-stock" 
-                          ? "Out of Stock" 
-                          : stockStatus.status === "low-stock" 
-                            ? "Low Stock" 
-                            : "In Stock"}
-                      </div>
+                  <Trash className="h-3.5 w-3.5" />
+                </button>
+              </div>
+              
+              <div className="p-3">
+                <div className="flex items-center mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#A67C52] to-[#8B5A2B] shadow-md text-white">
+                      <Package className="h-5 w-5" />
                     </div>
-                  </div>
-                  
-                  <div className="p-3">
-                    {/* Item Info */}
-                    <div className="mb-3">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="text-sm font-semibold text-gray-900 truncate">{item.itemName}</h3>
-                        <div className="flex items-center gap-0.5">
-                          <DollarSign className="h-3 w-3 text-[#964B00]" />
-                          <span className="font-medium text-xs text-[#964B00]">{item.price.toFixed(2)}</span>
-                        </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-[#5D3A1F] truncate">
+                        {item.itemName}
+                      </h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium flex items-center ${
+                          item.quantity <= 0 
+                            ? "bg-red-100 text-red-800" 
+                            : item.quantity <= item.minStockLevel 
+                              ? "bg-amber-100 text-amber-800"
+                              : "bg-green-100 text-green-800"
+                        }`}>
+                          {item.quantity <= 0 ? "Out of Stock" : item.quantity <= item.minStockLevel ? "Low Stock" : "In Stock"}
+                        </span>
                       </div>
-                      <div className="flex items-center gap-1 mb-1">
-                        <Tag className="h-3 w-3 text-gray-400" />
-                        <p className="text-xs text-gray-500 truncate">{getCategoryLabel(item.category)}</p>
-                      </div>
-                      <div className="flex items-center gap-1 mb-2">
-                        <Package className="h-3 w-3 text-gray-400" />
-                        <p className="text-xs text-gray-500">
-                          {item.quantity} {item.unit} {item.quantity < item.minStockLevel && (
-                            <span className="text-[#8B5A2B] font-medium">
-                              (Min: {item.minStockLevel})
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    {/* Action Buttons */}
-                    <div className="flex items-center gap-1 pt-2 border-t border-gray-100">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedItem(item)
-                          setShowItemDetails(true)
-                        }}
-                        className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-2 py-1.5 text-xs font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5D3A22] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
-                      >
-                        <Eye className="h-3 w-3" />
-                        <span>View</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedItem(item)
-                          setShowUpdateItemForm(true)
-                        }}
-                        className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#E5D3B3] bg-[#F5EFE7] px-2 py-1.5 text-xs font-medium text-[#8B5A2B] hover:bg-[#EAE0D5] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
-                      >
-                        <Edit className="h-3 w-3" />
-                        <span>Update</span>
-                      </button>
                     </div>
                   </div>
                 </div>
-              )
-            })}
-          </div>
-          
-          {filteredItems.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12">
-              <div className="rounded-full bg-[#F5EFE7] p-3 mb-4">
-                <Package className="h-6 w-6 text-[#8B5A2B]" />
+                
+                <div className="space-y-3 mb-4">
+                  <p className="text-sm text-[#6B4226]/80 line-clamp-2">
+                    {item.description || 'No description available'}
+                  </p>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-sm text-[#6B4226]/80">
+                        <DollarSign className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                        <span>Unit Price</span>
+                      </div>
+                      <span className="text-sm font-medium text-[#5D3A1F]">
+                        ₱{parseFloat(item.price).toFixed(2)} / {item.unit}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-sm text-[#6B4226]/80">
+                        <Tag className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                        <span>Category</span>
+                      </div>
+                      <span className="text-sm font-medium text-[#5D3A1F]">
+                        {getCategoryLabel(item.category)}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-sm text-[#6B4226]/80">
+                        <Package className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                        <span>Stock</span>
+                      </div>
+                      <span className="text-sm font-medium text-[#5D3A1F]">
+                        {item.quantity} {item.unit}
+                        {item.quantity < item.minStockLevel && (
+                          <span className="text-amber-600 font-medium ml-1">
+                            (Min: {item.minStockLevel})
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="pt-1">
+                    <div className="h-1.5 w-full rounded-full bg-[#E8DCCA] overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full ${
+                          item.quantity <= 0 
+                            ? 'bg-red-400' 
+                            : item.quantity <= item.minStockLevel 
+                              ? 'bg-amber-400'
+                              : 'bg-green-400'
+                        }`} 
+                        style={{ 
+                          width: `${Math.min(100, Math.max(5, (item.quantity / (item.minStockLevel * 1.5)) * 100))}%` 
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2 border-t border-[#DEB887]/30 pt-3">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSelectedItem(item);
+                      setShowItemDetails(true);
+                    }}
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-[#8B5A2B] to-[#A67C52] rounded-md hover:shadow-md transition-all duration-200"
+                  >
+                    <Eye className="h-3.5 w-3.5" />
+                    <span>View Details</span>
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSelectedItem(item);
+                      setShowUpdateItemForm(true);
+                    }}
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#5D3A1F] bg-white border border-[#DEB887]/50 rounded-md hover:bg-[#F5EFE7] transition-all duration-200"
+                  >
+                    <Edit className="h-3.5 w-3.5" />
+                    <span>Update</span>
+                  </button>
+                </div>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-1">No inventory items found</h3>
-              <p className="text-sm text-gray-500 mb-4">There are no items matching your current filters.</p>
+            </div>
+          ))}
+        </div>
+
+        {filteredItems.length === 0 && (
+          <div className="col-span-full flex flex-col items-center justify-center py-12 px-4 text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#F5EFE7] mb-4">
+              <Package className="h-6 w-6 text-[#8B5A2B]" />
+            </div>
+            <h3 className="text-base font-medium text-[#5D3A1F] mb-1">No inventory items found</h3>
+            <p className="text-sm text-[#6B4226]/80 mb-4 max-w-xs">
+              {searchQuery || filterCategory !== 'all' 
+                ? 'No items match your current filters.' 
+                : 'No inventory items have been added yet.'}
+            </p>
+            {(searchQuery || filterCategory !== 'all') && (
               <button
                 onClick={() => {
-                  setFilterCategory("all")
-                  setSearchQuery("")
+                  setFilterCategory("all");
+                  setSearchQuery("");
                 }}
-                className="text-sm font-medium text-[#8B5A2B] hover:text-[#6B4226]"
+                className="inline-flex items-center rounded-md bg-[#8B5A2B] px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-[#6B4226] focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:ring-offset-2 transition-colors duration-200"
               >
                 Clear filters
               </button>
-            </div>
-          )}
-        </div>
-
-        {/* Modals */}
-        <AddInventoryModal
-          show={showNewItemForm}
-          onClose={() => setShowNewItemForm(false)}
-          onSubmit={fetchInventory}
-        />
-
-        <UpdateInventoryModal
-          show={showUpdateItemForm}
-          onClose={() => setShowUpdateItemForm(false)}
-          onSubmit={fetchInventory}
-          item={selectedItem}
-        />
-
-        <InventoryDetailsModal
-          show={showItemDetails}
-          onClose={() => setShowItemDetails(false)}
-          item={selectedItem}
-          onStatusChange={(updatedItem) => {
-            handleInventoryStatusChange(updatedItem);
-          }}
-          onDelete={deleteInventory}
-        />
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Modals */}
+      <AddInventoryModal
+        show={showNewItemForm}
+        onClose={() => setShowNewItemForm(false)}
+        onSubmit={fetchInventory}
+      />
+
+      <UpdateInventoryModal
+        show={showUpdateItemForm}
+        onClose={() => setShowUpdateItemForm(false)}
+        onSubmit={fetchInventory}
+        item={selectedItem}
+      />
+
+      <InventoryDetailsModal
+        show={showItemDetails}
+        onClose={() => setShowItemDetails(false)}
+        item={selectedItem}
+        onStatusChange={(updatedItem) => {
+          handleInventoryStatusChange(updatedItem);
+        }}
+        onDelete={deleteInventory}
+      />
     </SuperAdminLayout>
-  )
+  );
 }

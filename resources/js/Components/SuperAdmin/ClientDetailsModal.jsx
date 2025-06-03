@@ -68,58 +68,67 @@ export default function ClientDetailsModal({ show, onClose, client, onStatusChan
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl overflow-tr border border-gray-200 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-4">
-            <h3 className="text-xl font-bold text-gray-900">Client Details</h3>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-xl overflow-tr border border-[#DEB887]/30 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] px-6 py-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white/20 backdrop-blur-sm rounded-full shadow-md">
+                <Building className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white">Client Details</h3>
+                <p className="text-xs text-white/80">View client account information</p>
+              </div>
+            </div>
+            <button 
+              onClick={onClose} 
+              className="text-white/80 hover:text-white transition-colors bg-white/10 backdrop-blur-sm rounded-full p-1.5 hover:bg-white/20 shadow-md"
+            >
               <X className="h-5 w-5" />
             </button>
           </div>
+        </div>
+        <div className="p-6">
 
           {/* Client Profile Header */}
-          <div className="flex items-center gap-4 p-5 bg-[#F5EFE7] rounded-lg border border-[#D2B48C] mb-6">
-            {client.image ? (
-              <div className="h-20 w-20 rounded-full overflow-hidden">
-                <img 
-                  src={`/${client.image}`} 
-                  alt={client.name}
-                  className="h-full w-full object-cover"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                  }}
-                />
-              </div>
-            ) : (
-              <div className="h-20 w-20 rounded-full bg-[#E8DCCA] flex items-center justify-center text-[#6B4226] font-semibold text-2xl">
-                {client.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-              </div>
-            )}
-            <div>
-              <h4 className="text-xl font-semibold text-gray-900">{client.name}</h4>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">
-                <span className={`text-sm px-2 py-0.5 rounded-full inline-flex items-center gap-1 ${
-                  client.status === "active" 
-                    ? "bg-green-100 text-green-800" 
-                    : "bg-red-100 text-red-800"
-                }`}>
-                  {client.status === "active" ? (
-                    <Check className="h-3 w-3" />
-                  ) : (
-                    <Ban className="h-3 w-3" />
-                  )}
-                  <span>{client.status === "active" ? "Active" : "Inactive"}</span>
-                </span>
-                <span className="text-sm bg-[#E8DCCA] text-[#6B4226] px-2 py-0.5 rounded-full">
-                  {client.clientType === "corporate" ? "Corporate Client" : "Individual Client"}
-                </span>
+          <div className="p-5 bg-gradient-to-r from-[#A67C52]/10 to-[#8B5A2B]/10 rounded-lg border border-[#DEB887]/30 mb-6 relative overflow-hidden">
+            <div className="absolute inset-0 opacity-5">
+              <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
+            </div>
+            <div className="relative z-10 flex items-center gap-4">
+              {client.image ? (
+                <div className="h-20 w-20 rounded-full overflow-hidden border-2 border-[#DEB887]/50 shadow-md">
+                  <img 
+                    src={`/${client.image}`} 
+                    alt={client.name}
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="h-20 w-20 rounded-full bg-gradient-to-br from-[#A67C52]/20 to-[#8B5A2B]/20 flex items-center justify-center border-2 border-[#DEB887]/50 shadow-md">
+                  <Building className="h-10 w-10 text-[#8B5A2B]" />
+                </div>
+              )}
+              <div>
+                <div className="inline-flex items-center px-2 py-1 rounded-full bg-[#A67C52]/30 backdrop-blur-sm mb-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887] mr-1.5"></div>
+                  <span className="text-xs font-medium text-[#6B4226]">
+                    {client.status === "active" ? "ACTIVE CLIENT" : "INACTIVE CLIENT"}
+                  </span>
+                </div>
+                <h4 className="text-lg font-semibold text-[#5D3A1F]">{client.name}</h4>
+                <span className="text-sm text-[#6B4226]/70">{client.email}</span>
               </div>
             </div>
           </div>
 
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 mb-6">
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 mb-6">
               {error}
             </div>
           )}
@@ -128,40 +137,51 @@ export default function ClientDetailsModal({ show, onClose, client, onStatusChan
           <div className="space-y-6">
             {/* Contact Information */}
             <div className="space-y-4">
-              <h4 className="text-sm font-medium text-gray-700 border-b border-gray-200 pb-2">Contact Information</h4>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+                <h4 className="text-sm font-medium text-[#5D3A1F]">Contact Information</h4>
+              </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Mail className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
+                <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                    <Mail className="h-5 w-5 text-[#8B5A2B]" />
+                  </div>
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">Email Address</p>
-                    <p className="text-sm font-medium text-gray-800">{client.email}</p>
+                    <p className="text-xs text-[#6B4226]/70 mb-1">Email Address</p>
+                    <p className="text-sm font-medium text-[#5D3A1F]">{client.email}</p>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Phone className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
+                <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                    <Phone className="h-5 w-5 text-[#8B5A2B]" />
+                  </div>
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">Phone Number</p>
-                    <p className="text-sm font-medium text-gray-800">{client.phone || "Not provided"}</p>
+                    <p className="text-xs text-[#6B4226]/70 mb-1">Phone Number</p>
+                    <p className="text-sm font-medium text-[#5D3A1F]">{client.phonenumber || "Not provided"}</p>
                   </div>
                 </div>
 
                 {client.company && (
-                  <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Building className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
+                  <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                      <Building className="h-5 w-5 text-[#8B5A2B]" />
+                    </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Company</p>
-                      <p className="text-sm font-medium text-gray-800">{client.company}</p>
+                      <p className="text-xs text-[#6B4226]/70 mb-1">Company</p>
+                      <p className="text-sm font-medium text-[#5D3A1F]">{client.company}</p>
                     </div>
                   </div>
                 )}
                 
-                <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <MapPin className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
+                <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                    <MapPin className="h-5 w-5 text-[#8B5A2B]" />
+                  </div>
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">Address</p>
-                    <p className="text-sm font-medium text-gray-800">
+                    <p className="text-xs text-[#6B4226]/70 mb-1">Address</p>
+                    <p className="text-sm font-medium text-[#5D3A1F]">
                       {client.address ? (
                         <>
                           {client.address}
@@ -178,24 +198,31 @@ export default function ClientDetailsModal({ show, onClose, client, onStatusChan
               </div>
             </div>
 
-            {/* Stay History */}
+            {/* Account Information */}
             <div className="space-y-4">
-              <h4 className="text-sm font-medium text-gray-700 border-b border-gray-200 pb-2">Stay History</h4>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+                <h4 className="text-sm font-medium text-[#5D3A1F]">Stay History</h4>
+              </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <User className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
+                <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                    <User className="h-5 w-5 text-[#8B5A2B]" />
+                  </div>
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">Total Stays</p>
-                    <p className="text-sm font-medium text-gray-800">{client.totalStays || 0}</p>
+                    <p className="text-xs text-[#6B4226]/70 mb-1">Total Stays</p>
+                    <p className="text-sm font-medium text-[#5D3A1F]">{client.totalStays || 0}</p>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <CreditCard className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
+                <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                    <CreditCard className="h-5 w-5 text-[#8B5A2B]" />
+                  </div>
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">Total Spent</p>
-                    <p className="text-sm font-medium text-gray-800">
+                    <p className="text-xs text-[#6B4226]/70 mb-1">Total Spent</p>
+                    <p className="text-sm font-medium text-[#5D3A1F]">
                       {new Intl.NumberFormat('en-US', {
                         style: 'currency',
                         currency: 'USD'
@@ -204,22 +231,26 @@ export default function ClientDetailsModal({ show, onClose, client, onStatusChan
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Calendar className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
+                <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                    <Calendar className="h-5 w-5 text-[#8B5A2B]" />
+                  </div>
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">Last Stay</p>
-                    <p className="text-sm font-medium text-gray-800">
+                    <p className="text-xs text-[#6B4226]/70 mb-1">Last Stay</p>
+                    <p className="text-sm font-medium text-[#5D3A1F]">
                       {client.lastStay ? formatDate(client.lastStay) : 'No stays yet'}
                     </p>
                   </div>
                 </div>
                 
-                <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Calendar className="h-5 w-5 text-[#8B5A2B] mt-0.5" />
+                <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                    <Calendar className="h-5 w-5 text-[#8B5A2B]" />
+                  </div>
                   <div>
-                    <p className="text-xs text-gray-500 mb-1">Client Since</p>
-                    <p className="text-sm font-medium text-gray-800">
-                      {client.createdAt ? formatDate(client.createdAt) : 'N/A'}
+                    <p className="text-xs text-[#6B4226]/70 mb-1">Client Since</p>
+                    <p className="text-sm font-medium text-[#5D3A1F]">
+                      {client.created_at ? formatDate(client.created_at) : 'N/A'}
                     </p>
                   </div>
                 </div>
@@ -227,18 +258,33 @@ export default function ClientDetailsModal({ show, onClose, client, onStatusChan
             </div>
 
             {/* Account Actions */}
-            <div className="space-y-4">
-              <h4 className="text-sm font-medium text-gray-700 border-b border-gray-200 pb-2">Account Actions</h4>
+            <div className="space-y-4 pt-6 border-t border-[#DEB887]/30">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+                <h4 className="text-sm font-medium text-[#5D3A1F]">Account Actions</h4>
+              </div>
               
               <div className="flex flex-wrap gap-3">
                 {client.status === "inactive" ? (
-                  <button
+                  <button 
                     onClick={handleActivate}
                     disabled={isActivating}
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#8B5A2B] rounded-lg hover:bg-[#6B4226] focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:ring-offset-1 disabled:opacity-50 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-all duration-300 disabled:opacity-70"
                   >
-                    <Check className="h-4 w-4" />
-                    {isActivating ? "Activating..." : "Activate Account"}
+                    {isActivating ? (
+                      <span className="flex items-center gap-2">
+                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Activating...
+                      </span>
+                    ) : (
+                      <>
+                        <Check className="h-4 w-4" />
+                        Activate Account
+                      </>
+                    )}
                   </button>
                 ) : (
                   <button

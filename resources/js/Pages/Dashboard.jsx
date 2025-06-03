@@ -84,27 +84,13 @@ const SuperAdminDashboard = () => {
                                     performance metrics and ensure exceptional
                                     service quality.</span>
                                 </p>
-
-                                <div className="flex flex-wrap gap-2 sm:gap-3 mt-4">
-                                    <button className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white shadow-md hover:shadow-lg transition-all duration-300 flex items-center">
-                                        <UserCog className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />{" "}
-                                        <span className="whitespace-nowrap">System Settings</span>
-                                    </button>
-                                    <button className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg border border-[#DEB887]/30 text-[#DEB887] hover:bg-white/10 transition-all duration-300 flex items-center">
-                                        <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />{" "}
-                                        <span className="whitespace-nowrap">View Reports</span>
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     </div>
-                    {/* Decorative Elements */}
                     <div className="absolute top-0 right-0 w-24 sm:w-32 md:w-40 h-24 sm:h-32 md:h-40 bg-[#DEB887] opacity-20 rounded-full -mt-12 sm:-mt-16 md:-mt-20 -mr-12 sm:-mr-16 md:-mr-20 blur-3xl"></div>
                     <div className="absolute bottom-0 left-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 bg-[#A67C52] opacity-20 rounded-full -mb-8 sm:-mb-10 -ml-8 sm:-ml-10 blur-3xl"></div>
                 </div>
             </div>
-
-            {/* Stats Cards */}
             <div className="relative z-10 p-6">
                 <div className="flex items-center mb-6">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#A67C52] to-[#8B5A2B] shadow-md mr-3">
@@ -116,7 +102,6 @@ const SuperAdminDashboard = () => {
                     <div className="ml-4 h-px flex-grow bg-gradient-to-r from-[#A67C52] to-transparent"></div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-                    {/* Room Occupancy Card */}
                     <div className="rounded-lg overflow-hidden border border-[#DEB887]/30 bg-gradient-to-br from-[#F5EFE7] to-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
                         <div className="p-3">
                             <div className="flex items-center justify-between">

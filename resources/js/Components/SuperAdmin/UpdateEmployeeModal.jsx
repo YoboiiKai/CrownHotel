@@ -9,7 +9,7 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
     email: "",
     phonenumber: "",
     department: "",
-    jobtitle: "",
+    job_title: "", 
     salary: "",
     address: "",
     password: "",
@@ -37,7 +37,7 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
     }
   }, [])
 
-  // Load employee data when the modal opens
+  // Load employee data when the modal opens or when employee changes
   useEffect(() => {
     if (show && employee) {
       setFormData({
@@ -45,7 +45,7 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
         email: employee.email || "",
         phonenumber: employee.phonenumber || "",
         department: employee.department || "",
-        job_title: employee.job_title || "",
+        job_title: employee.job_title || "", // Ensure this matches the initial state property name
         salary: employee.salary ? String(employee.salary) : "",
         address: employee.address || "",
         password: "",
@@ -133,7 +133,7 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
       email: "",
       phonenumber: "",
       department: "",
-      job_title: "",
+      job_title: "", // Ensure this matches the initial state property name
       salary: "",
       address: "",
       password: "",
@@ -153,7 +153,6 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
     } else {
       setIsSubmitting(true)
       
-      // Create FormData object for file upload
       const formDataToSend = new FormData()
       formDataToSend.append("name", formData.name)
       formDataToSend.append("email", formData.email)
@@ -166,14 +165,13 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
         formDataToSend.append("password", formData.password)
         formDataToSend.append("password_confirmation", formData.password_confirmation)
       }
-      formDataToSend.append("_method", "PUT") // For Laravel method spoofing
+      formDataToSend.append("_method", "PUT") 
       
-      // Add image if selected
+
       if (fileInputRef.current && fileInputRef.current.files[0]) {
         formDataToSend.append("image", fileInputRef.current.files[0])
       }
-      
-      // Send data to the API
+
       axios.post(`/api/employees/${employee.id}`, formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -202,26 +200,25 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
     }
   }
 
-  const inputClasses = "w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-[#6B4226] focus:border-[#A67C52] focus:outline-none focus:ring-2 focus:ring-[#E8DCCA] transition-all placeholder:text-gray-400"
-  const labelClasses = "block text-sm font-medium text-[#6B4226] mb-1.5"
-  const iconWrapperClasses = "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+  const inputClasses = "w-full rounded-lg border border-[#DEB887]/30 bg-white px-4 py-2.5 text-[#5D3A1F] focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all placeholder:text-[#6B4226]/50 shadow-sm"
+  const labelClasses = "block text-sm font-medium text-[#5D3A1F] mb-1.5"
+  const iconWrapperClasses = "absolute left-4 top-1/2 -translate-y-1/2 text-[#8B5A2B]"
   const errorClasses = "text-xs text-red-600 mt-1.5 font-medium"
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl overflow-tr border border-gray-200 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto">
-        {/* Header */}
-        <div className="bg-[#F5EFE7] border-b border-[#E8DCCA] px-6 py-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-xl overflow-hidden border border-[#DEB887]/30 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] px-6 py-5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] rounded-md shadow-sm">
-                <User className="h-5 w-5 text-white" />
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <div className="p-1.5 bg-gradient-to-br from-[#A67C52] to-[#8B5A2B] rounded-full shadow-sm">
+                <Users className="h-4 w-4 text-white" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900">Update Employee</h3>
-            </div>
+              Update Employee
+            </h3>
             <button 
               onClick={onClose} 
-              className="text-gray-400 hover:text-gray-600 transition-colors bg-white rounded-full p-1 hover:bg-[#F0E4CC]"
+              className="text-white/80 hover:text-white transition-colors bg-white/10 backdrop-blur-sm rounded-full p-1.5 hover:bg-white/20 shadow-md"
             >
               <X className="h-5 w-5" />
             </button>
@@ -230,31 +227,52 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
 
         <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Info Banner */}
-            <div className="p-4 bg-[#F5EFE7] rounded-lg border border-[#D2B48C] mb-6">
-              <h4 className="text-sm font-medium text-gray-800 mb-2">Employee Information</h4>
-              <p className="text-xs text-gray-500">Update employee details for {employee.name}.</p>
+            <div className="p-4 bg-gradient-to-r from-[#A67C52]/10 to-[#8B5A2B]/10 rounded-lg border border-[#DEB887]/30 mb-6 relative overflow-hidden">
+              <div className="absolute inset-0 opacity-5">
+                <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
+              </div>
+              <div className="relative z-10">
+                <div className="inline-flex items-center px-2 py-1 rounded-full bg-[#A67C52]/30 backdrop-blur-sm mb-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887] mr-1.5"></div>
+                  <span className="text-xs font-medium text-[#6B4226]">
+                    EMPLOYEE DETAILS
+                  </span>
+                </div>
+                <h4 className="text-sm font-medium text-[#5D3A1F] mb-1">Update Employee Information</h4>
+                <p className="text-xs text-[#6B4226]/70">Update employee record for {employee.name}. All fields marked with an asterisk (*) are required.</p>
+              </div>
             </div>
 
-            {/* Two-column layout for desktop */}
+            {errors.general && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 shadow-sm">
+                {errors.general}
+              </div>
+            )}
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Left column - Image Upload */}
               <div className="lg:col-span-1">
-                <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <div className="w-32 h-32 mb-3 rounded-full border-2 border-gray-300 flex items-center justify-center overflow-hidden bg-white">
+                <div className="flex flex-col items-center p-5 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-md">
+                  <div className="w-32 h-32 mb-4 rounded-full border-2 border-[#DEB887]/50 flex items-center justify-center overflow-hidden bg-white shadow-md group relative">
                     {imagePreview ? (
                       <img 
-                      src={`/${employee.image}`}
+                        src={imagePreview} 
                         alt="Profile Preview" 
-                        className="h-full w-full object-cover" 
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" 
                       />
                     ) : (
-                      <User className="h-16 w-16 text-gray-400" />
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#A67C52]/10 to-[#8B5A2B]/10">
+                        <User className="h-16 w-16 text-[#8B5A2B]/70" />
+                      </div>
                     )}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <div className="bg-white/80 backdrop-blur-sm p-2 rounded-full">
+                        <Upload className="h-5 w-5 text-[#5D3A1F]" />
+                      </div>
+                    </div>
                   </div>
                   <label 
                     htmlFor="image-upload" 
-                    className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-sm font-medium text-[#6B4226] hover:bg-[#E8DCCA] focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:ring-offset-2 transition-all cursor-pointer border border-gray-200 w-full justify-center mt-2"
+                    className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] px-4 py-2 text-sm font-medium text-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 transition-all cursor-pointer w-full justify-center mt-2 shadow-md"
                   >
                     <Upload className="h-4 w-4" />
                     Update Photo
@@ -267,7 +285,7 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                     onChange={handleImageChange}
                     ref={fileInputRef}
                   />
-                  <p className="mt-2 text-xs text-gray-500 text-center">Upload a new profile photo (optional)</p>
+                  <p className="mt-3 text-xs text-[#6B4226]/70 text-center">Upload a new profile photo (optional)</p>
 
                   {errors.image && (
                     <p className={errorClasses}>{errors.image}</p>
@@ -275,10 +293,8 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                 </div>
               </div>
 
-              {/* Right column - Form Fields */}
               <div className="lg:col-span-2 space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  {/* Name Input */}
                   <div>
                     <label htmlFor="name" className={labelClasses}>Full Name</label>
                     <div className="relative">
@@ -298,7 +314,6 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                     </div>
                   </div>
 
-                  {/* Email Input */}
                   <div>
                     <label htmlFor="email" className={labelClasses}>Email Address</label>
                     <div className="relative">
@@ -318,7 +333,6 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                     </div>
                   </div>
 
-                  {/* Phone Input */}
                   <div>
                     <label htmlFor="phonenumber" className={labelClasses}>Phone Number</label>
                     <div className="relative">
@@ -338,7 +352,6 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                     </div>
                   </div>
 
-                  {/* Department Select */}
                   <div>
                     <label htmlFor="department" className={labelClasses}>Department</label>
                     <div className="relative" ref={departmentDropdownRef}>
@@ -349,24 +362,35 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                         className={`${inputClasses} pl-10 cursor-pointer flex items-center justify-between`}
                         onClick={() => setShowDepartmentDropdown(!showDepartmentDropdown)}
                       >
-                        <span className={formData.department ? "text-[#6B4226]" : "text-gray-400"}>
-                          {formData.department || "Select department"}
+                        <span className={formData.department ? "text-[#5D3A1F]" : "text-[#6B4226]/50"}>
+                          {formData.department || "Select"}
                         </span>
-                        <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                        <svg className="h-5 w-5 text-[#8B5A2B]" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
                       </div>
                       
                       {showDepartmentDropdown && (
-                        <div className="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg border border-gray-200 max-h-60 overflow-y-auto">
+                        <div className="absolute z-10 mt-1 w-full rounded-md bg-white shadow-lg border border-[#DEB887]/30 max-h-60 overflow-y-auto">
                           <div className="py-1">
-                            {departments.map((department) => (
+                            {[
+                              { id: 1, name: "Front Office" },
+                              { id: 2, name: "Housekeeping" },
+                              { id: 3, name: "Food and Beverage" },
+                              { id: 4, name: "Kitchen" },
+                              { id: 5, name: "Maintenance" },
+                              { id: 6, name: "Security" },
+                              { id: 7, name: "Human Resources" },
+                              { id: 8, name: "Sales and Marketing" },
+                              { id: 9, name: "Accounting" },
+                              { id: 10, name: "IT Department" }
+                            ].map((department) => (
                               <div
                                 key={department.id}
                                 className={`px-4 py-2 text-sm cursor-pointer hover:bg-[#F5EFE7] ${
                                   formData.department === department.name 
-                                    ? "bg-[#F5EFE7] text-[#8B5A2B]"
-                                    : "text-[#6B4226]"
+                                    ? "bg-gradient-to-r from-[#A67C52]/10 to-[#8B5A2B]/10 text-[#5D3A1F] font-medium"
+                                    : "text-[#5D3A1F]"
                                 }`}
                                 onClick={() => {
                                   setFormData({
@@ -392,9 +416,8 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                     </div>
                   </div>
 
-                  {/* Job Title Input */}
                   <div>
-                    <label htmlFor="jobtitle" className={labelClasses}>Job Title</label>
+                    <label htmlFor="job_title" className={labelClasses}>Job Title</label>
                     <div className="relative">
                       <div className={iconWrapperClasses}>
                         <Briefcase className="h-4 w-4" />
@@ -403,7 +426,7 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                         type="text"
                         id="job_title"
                         name="job_title"
-                        value={formData.job_title}
+                        value={formData.job_title || ""}
                         onChange={handleInputChange}
                         placeholder="Manager"
                         className={`${inputClasses} pl-10`}
@@ -412,7 +435,6 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                     </div>
                   </div>
 
-                  {/* Salary Input */}
                   <div>
                     <label htmlFor="salary" className={labelClasses}>Salary</label>
                     <div className="relative">
@@ -432,7 +454,6 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                     </div>
                   </div>
 
-                  {/* Address Input */}
                   <div className="sm:col-span-2">
                     <label htmlFor="address" className={labelClasses}>Address</label>
                     <div className="relative">
@@ -446,13 +467,12 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                         value={formData.address}
                         onChange={handleInputChange}
                         placeholder="123 Main St, City, Country"
-                        className={`${inputClasses} pl-10 min-h-[40px] border border-gray-300 rounded-md focus:border-[#A67C52] focus:ring-2 focus:ring-[#E8DCCA] transition-all`}
+                        className={`${inputClasses} pl-10`}
                       />
                       {errors.address && <p className={errorClasses}>{errors.address}</p>}
                     </div>
                   </div>
                 </div>
-                {/* Password Input */}
                 <div className="sm:col-span-2">
                   <label htmlFor="password" className={labelClasses}>Password</label>
                   <div className="relative">
@@ -471,7 +491,6 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
                     {errors.password && <p className={errorClasses}>{errors.password}</p>}
                   </div>
                 </div>
-                {/* Password Confirmation Input */}
                 <div className="sm:col-span-2">
                   <label htmlFor="password_confirmation" className={labelClasses}>Confirm Password</label>
                   <div className="relative">
@@ -493,14 +512,21 @@ export default function UpdateEmployeeModal({ show, onClose, employee, departmen
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200 mt-8">
+            <div className="flex items-center justify-end gap-3 pt-6 border-t border-[#DEB887]/30 mt-8">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-lg shadow-sm hover:from-[#7C5124] hover:to-[#5A371F] focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:ring-offset-1 transition-all disabled:opacity-70"
+                className="px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all duration-300 disabled:opacity-70"
               >
-                {isSubmitting ? "Updating..." : "Update Employee"}
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Updating...
+                  </span>
+                ) : "Update Employee"}
               </button>
             </div>
           </form>

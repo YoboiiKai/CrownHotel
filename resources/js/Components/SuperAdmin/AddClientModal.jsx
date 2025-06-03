@@ -1,5 +1,5 @@
 import { useState, useRef } from "react"
-import { User, Mail, Phone, Building, MapPin, Globe, Home, Shield, X, Upload } from "lucide-react"
+import { X, User, Mail, Phone, Building, Upload, Lock } from "lucide-react"
 import axios from "axios"
 import { toast } from "react-toastify"
 
@@ -61,6 +61,9 @@ export default function AddClientModal({ show, onClose, onSubmit, fetchClients }
     if (!formData.phonenumber.trim()) {
       newErrors.phonenumber = "Phone number is required"
     }
+    if (!formData.address.trim()) {
+      newErrors.address = "Address is required"
+    }
     if (!formData.password) {
       newErrors.password = "Password is required"
     } else if (formData.password.length < 8) {
@@ -105,7 +108,6 @@ export default function AddClientModal({ show, onClose, onSubmit, fetchClients }
       formDataToSend.append("address", formData.address)
       formDataToSend.append("password", formData.password)
       formDataToSend.append("password_confirmation", formData.password_confirmation)
-      formDataToSend.append("role", "client")
       
       // Add image if selected
       if (fileInputRef.current && fileInputRef.current.files[0]) {
@@ -146,26 +148,29 @@ export default function AddClientModal({ show, onClose, onSubmit, fetchClients }
     }
   }
 
-  const inputClasses = "w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-gray-700 focus:border-[#A67C52] focus:outline-none focus:ring-2 focus:ring-[#E8DCCA] transition-all placeholder:text-gray-400"
-  const labelClasses = "block text-sm font-medium text-gray-700 mb-1.5"
-  const iconWrapperClasses = "absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+  const inputClasses = "w-full rounded-lg border border-[#DEB887]/30 bg-white px-4 py-2.5 text-[#5D3A1F] focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all placeholder:text-[#6B4226]/50 shadow-sm"
+  const labelClasses = "block text-sm font-medium text-[#5D3A1F] mb-1.5"
+  const iconWrapperClasses = "absolute left-4 top-1/2 -translate-y-1/2 text-[#8B5A2B]"
   const errorClasses = "text-xs text-red-600 mt-1.5 font-medium"
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-xl overflow-hidden border border-[#DEB887]/30 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-[#F5EFE7] border-b border-[#E8DCCA] px-6 py-4">
+        <div className="bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] rounded-md shadow-sm">
-                <User className="h-5 w-5 text-white" />
+              <div className="p-2 bg-white/20 backdrop-blur-sm rounded-full shadow-md">
+                <Building className="h-5 w-5 text-white" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900">Add New Client</h3>
+              <div>
+                <h3 className="text-lg font-bold text-white">Add New Client</h3>
+                <p className="text-xs text-white/80">Create a new client account</p>
+              </div>
             </div>
             <button 
               onClick={onClose} 
-              className="text-gray-400 hover:text-gray-600 transition-colors bg-white rounded-full p-1 hover:bg-[#E8DCCA] focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:ring-offset-2 transition-all"
+              className="text-white/80 hover:text-white transition-colors bg-white/10 backdrop-blur-sm rounded-full p-1.5 hover:bg-white/20 shadow-md"
             >
               <X className="h-5 w-5" />
             </button>
@@ -175,13 +180,24 @@ export default function AddClientModal({ show, onClose, onSubmit, fetchClients }
         <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Info Banner */}
-            <div className="p-4 bg-[#F5EFE7] rounded-lg border border-[#D2B48C] mb-6">
-              <h4 className="text-sm font-medium text-gray-800 mb-2">Client Information</h4>
-              <p className="text-xs text-gray-500">Create a new client account with the following details.</p>
+            <div className="p-4 bg-gradient-to-r from-[#A67C52]/10 to-[#8B5A2B]/10 rounded-lg border border-[#DEB887]/30 mb-6 relative overflow-hidden">
+              <div className="absolute inset-0 opacity-5">
+                <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
+              </div>
+              <div className="relative z-10">
+                <div className="inline-flex items-center px-2 py-1 rounded-full bg-[#A67C52]/30 backdrop-blur-sm mb-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887] mr-1.5"></div>
+                  <span className="text-xs font-medium text-[#6B4226]">
+                    CLIENT DETAILS
+                  </span>
+                </div>
+                <h4 className="text-sm font-medium text-[#5D3A1F] mb-1">Client Information</h4>
+                <p className="text-xs text-[#6B4226]/70">Create a new client account with the following details.</p>
+              </div>
             </div>
 
             {errors.general && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 shadow-sm">
                 {errors.general}
               </div>
             )}
@@ -190,21 +206,28 @@ export default function AddClientModal({ show, onClose, onSubmit, fetchClients }
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Left column - Image Upload */}
               <div className="lg:col-span-1">
-                <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <div className="w-32 h-32 mb-3 rounded-full border-2 border-gray-300 flex items-center justify-center overflow-hidden bg-white">
+                <div className="flex flex-col items-center p-5 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-md">
+                  <div className="w-32 h-32 mb-4 rounded-full border-2 border-[#DEB887]/50 flex items-center justify-center overflow-hidden bg-white shadow-md group relative">
                     {imagePreview ? (
                       <img 
                         src={imagePreview} 
                         alt="Profile Preview" 
-                        className="h-full w-full object-cover" 
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" 
                       />
                     ) : (
-                      <User className="h-16 w-16 text-gray-400" />
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#A67C52]/10 to-[#8B5A2B]/10">
+                        <Building className="h-16 w-16 text-[#8B5A2B]/70" />
+                      </div>
                     )}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <div className="bg-white/80 backdrop-blur-sm p-2 rounded-full">
+                        <Upload className="h-5 w-5 text-[#5D3A1F]" />
+                      </div>
+                    </div>
                   </div>
                   <label 
                     htmlFor="image-upload" 
-                    className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-[#F0E4CC] focus:outline-none focus:ring-2 focus:ring-[#964B00] focus:ring-offset-2 transition-all cursor-pointer border border-gray-200 w-full justify-center mt-2"
+                    className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] px-4 py-2 text-sm font-medium text-white hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 transition-all cursor-pointer w-full justify-center mt-2 shadow-md"
                   >
                     <Upload className="h-4 w-4" />
                     Upload Photo
@@ -217,7 +240,7 @@ export default function AddClientModal({ show, onClose, onSubmit, fetchClients }
                     onChange={handleImageChange}
                     ref={fileInputRef}
                   />
-                  <p className="mt-2 text-xs text-gray-500 text-center">Upload a profile photo (optional)</p>
+                  <p className="mt-3 text-xs text-[#6B4226]/70 text-center">Upload a company logo (optional)</p>
 
                   {errors.image && (
                     <p className={errorClasses}>{errors.image}</p>
@@ -230,7 +253,7 @@ export default function AddClientModal({ show, onClose, onSubmit, fetchClients }
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {/* Name Input */}
                   <div>
-                    <label htmlFor="name" className={labelClasses}>Full Name</label>
+                    <label htmlFor="name" className={labelClasses}>Client Name</label>
                     <div className="relative">
                       <div className={iconWrapperClasses}>
                         <User className="h-4 w-4" />
@@ -241,11 +264,51 @@ export default function AddClientModal({ show, onClose, onSubmit, fetchClients }
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        className={`${inputClasses} pl-10 ${errors.name ? 'border-red-500' : ''}`}
+                        className={`${inputClasses} pl-10`}
                         placeholder="John Doe"
                       />
+                      {errors.name && <p className={errorClasses}>{errors.name}</p>}
                     </div>
-                    {errors.name && <p className={`${errorClasses} mt-1`}>{errors.name}</p>}
+                  </div>
+
+                  {/* Address Input */}
+                  <div>
+                    <label htmlFor="address" className={labelClasses}>Address</label>
+                    <div className="relative">
+                      <div className={iconWrapperClasses}>
+                        <Building className="h-4 w-4" />
+                      </div>
+                      <input
+                        type="text"
+                        id="address"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        className={`${inputClasses} pl-10`}
+                        placeholder="123 Main St, City"
+                      />
+                      {errors.address && <p className={errorClasses}>{errors.address}</p>}
+                    </div>
+                  </div>
+
+                  {/* Email Input */}
+                  <div>
+                    <label htmlFor="email" className={labelClasses}>Email Address</label>
+                    <div className="relative">
+                      <div className={iconWrapperClasses}>
+                        <Mail className="h-4 w-4" />
+                      </div>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className={`${inputClasses} pl-10`}
+                        placeholder="john@example.com"
+                      />
+                      {errors.email && <p className={errorClasses}>{errors.email}</p>}
+                    </div>
                   </div>
 
                   {/* Phone Input */}
@@ -261,51 +324,11 @@ export default function AddClientModal({ show, onClose, onSubmit, fetchClients }
                         name="phonenumber"
                         value={formData.phonenumber}
                         onChange={handleInputChange}
-                        className={`${inputClasses} pl-10 ${errors.phonenumber ? 'border-red-500' : ''}`}
+                        className={`${inputClasses} pl-10`}
                         placeholder="+1 (555) 000-0000"
                       />
+                      {errors.phonenumber && <p className={errorClasses}>{errors.phonenumber}</p>}
                     </div>
-                    {errors.phonenumber && <p className={`${errorClasses} mt-1`}>{errors.phonenumber}</p>}
-                  </div>
-
-                  {/* Address Input */}
-                  <div className="sm:col-span-2">
-                    <label htmlFor="address" className={labelClasses}>Address</label>
-                    <div className="relative">
-                      <div className={iconWrapperClasses}>
-                        <MapPin className="h-4 w-4" />
-                      </div>
-                      <input
-                        type="text"
-                        id="address"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        className={`${inputClasses} pl-10 ${errors.address ? 'border-red-500' : ''}`}
-                        placeholder="123 Main St"
-                      />
-                    </div>
-                    {errors.address && <p className={`${errorClasses} mt-1`}>{errors.address}</p>}
-                  </div>
-
-                  {/* Email Input */}
-                  <div className="sm:col-span-2">
-                    <label htmlFor="email" className={labelClasses}>Email Address</label>
-                    <div className="relative">
-                      <div className={iconWrapperClasses}>
-                        <Mail className="h-4 w-4" />
-                      </div>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className={`${inputClasses} pl-10 ${errors.email ? 'border-red-500' : ''}`}
-                        placeholder="johndoe@example.com"
-                      />
-                    </div>
-                    {errors.email && <p className={`${errorClasses} mt-1`}>{errors.email}</p>}
                   </div>
 
                   {/* Password Input */}
@@ -313,7 +336,7 @@ export default function AddClientModal({ show, onClose, onSubmit, fetchClients }
                     <label htmlFor="password" className={labelClasses}>Password</label>
                     <div className="relative">
                       <div className={iconWrapperClasses}>
-                        <Shield className="h-4 w-4" />
+                        <Lock className="h-4 w-4" />
                       </div>
                       <input
                         type="password"
@@ -321,11 +344,11 @@ export default function AddClientModal({ show, onClose, onSubmit, fetchClients }
                         name="password"
                         value={formData.password}
                         onChange={handleInputChange}
-                        className={`${inputClasses} pl-10 ${errors.password ? 'border-red-500' : ''}`}
+                        className={`${inputClasses} pl-10`}
                         placeholder="••••••••"
                       />
+                      {errors.password && <p className={errorClasses}>{errors.password}</p>}
                     </div>
-                    {errors.password && <p className={`${errorClasses} mt-1`}>{errors.password}</p>}
                   </div>
 
                   {/* Password Confirmation Input */}
@@ -333,7 +356,7 @@ export default function AddClientModal({ show, onClose, onSubmit, fetchClients }
                     <label htmlFor="password_confirmation" className={labelClasses}>Confirm Password</label>
                     <div className="relative">
                       <div className={iconWrapperClasses}>
-                        <Shield className="h-4 w-4" />
+                        <Lock className="h-4 w-4" />
                       </div>
                       <input
                         type="password"
@@ -341,24 +364,39 @@ export default function AddClientModal({ show, onClose, onSubmit, fetchClients }
                         name="password_confirmation"
                         value={formData.password_confirmation}
                         onChange={handleInputChange}
-                        className={`${inputClasses} pl-10 ${errors.password_confirmation ? 'border-red-500' : ''}`}
+                        className={`${inputClasses} pl-10`}
                         placeholder="••••••••"
                       />
+                      {errors.password_confirmation && <p className={errorClasses}>{errors.password_confirmation}</p>}
                     </div>
-                    {errors.password_confirmation && <p className={`${errorClasses} mt-1`}>{errors.password_confirmation}</p>}
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200 mt-8">
+            <div className="flex items-center justify-end gap-3 pt-6 border-t border-[#DEB887]/30 mt-8">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2.5 text-sm font-medium text-[#5D3A1F] bg-white border border-[#DEB887]/50 rounded-lg shadow-sm hover:bg-[#F5EFE7] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
+              >
+                Cancel
+              </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-lg shadow-sm hover:from-[#7C5124] hover:to-[#5A371F] focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:ring-offset-1 transition-all disabled:opacity-70"
+                className="px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all duration-300 disabled:opacity-70"
               >
-                {isSubmitting ? "Creating..." : "Create Client"}
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Creating...
+                  </span>
+                ) : "Create Client"}
               </button>
             </div>
           </form>

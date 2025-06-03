@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SuperAdminLayout from "@/Layouts/SuperAdminLayout";
+import { Head } from "@inertiajs/react";
 import {
   Plus,
   Trash,
@@ -125,201 +126,166 @@ export default function Menu() {
 
   return (
     <SuperAdminLayout>
+      <Head title="Menu Management" />
       <ToastContainer position="top-right" hideProgressBar />
       <div className="mx-auto max-w-6xl">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="relative flex-1 sm:flex-none sm:w-64">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        {/* Combined Action Bar with Search, Filter, and Add Button */}
+        <div className="bg-white rounded-xl shadow-md border border-[#DEB887]/30 p-4 mb-8">
+          <div className="flex flex-col lg:flex-row gap-4 items-center">
+            {/* Search Bar */}
+            <div className="relative w-full lg:flex-1">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B5A2B]">
+                <Search className="h-4 w-4" />
+              </div>
               <input
                 type="text"
-                placeholder="Search menu..."
+                placeholder="Search menu items..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
+                className="w-full rounded-lg border border-[#DEB887]/30 bg-white py-2.5 pl-10 pr-4 text-sm text-[#5D3A1F] placeholder-[#8B5A2B]/40 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
               />
             </div>
-            <div className="relative">
-              <button 
+            
+            {/* Category Filter Dropdown */}
+            <div className="relative w-full lg:w-auto">
+              <button
                 onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-                className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+                className="flex items-center justify-between gap-2 w-full lg:w-64 rounded-lg border border-[#DEB887]/30 bg-white px-4 py-2.5 text-sm text-[#5D3A1F] focus:outline-none focus:border-[#8B5A2B] focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
               >
-                <Filter className="h-4 w-4 text-gray-400" />
-                <span>Filter</span>
-                <ChevronDown className="h-4 w-4 text-gray-400" />
+                <div className="flex items-center gap-2">
+                  <Filter className="h-4 w-4 text-[#8B5A2B]" />
+                  <span>
+                    {filterCategory === "all" ? "All Categories" : getCategoryLabel(filterCategory)}
+                  </span>
+                </div>
+                <ChevronDown className="h-4 w-4 text-[#8B5A2B]" />
               </button>
+              
               {showFilterDropdown && (
-                <div className="absolute right-0 mt-2 w-48 rounded-lg border border-gray-100 bg-white shadow-lg z-10">
-                  <div className="p-2 max-h-80 overflow-y-auto">
+                <div className="absolute z-10 mt-2 w-full lg:w-64 rounded-lg border border-[#DEB887]/30 bg-white shadow-lg max-h-80 overflow-y-auto">
+                  <div className="p-2">
                     <button
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm ${filterCategory === "all" ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white" : "text-[#5D3A1F] hover:bg-[#F5EFE7]"}`}
                       onClick={() => {
-                        setFilterCategory("brandy");
+                        setFilterCategory("all");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
-                      Brandy
+                      All Categories
                     </button>
                     <button
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm ${filterCategory === "breakfast" ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white" : "text-[#5D3A1F] hover:bg-[#F5EFE7]"}`}
                       onClick={() => {
-                        setFilterCategory("whiskey");
+                        setFilterCategory("breakfast");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
-                      Whiskey
+                      Breakfast
                     </button>
                     <button
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm ${filterCategory === "seafood" ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white" : "text-[#5D3A1F] hover:bg-[#F5EFE7]"}`}
                       onClick={() => {
-                        setFilterCategory("vodka");
+                        setFilterCategory("seafood");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
-                      Vodka
+                      Seafood
                     </button>
                     <button
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm ${filterCategory === "chicken" ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white" : "text-[#5D3A1F] hover:bg-[#F5EFE7]"}`}
                       onClick={() => {
-                        setFilterCategory("wine");
+                        setFilterCategory("chicken");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
-                      Wine
+                      Chicken
                     </button>
                     <button
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm ${filterCategory === "pork" ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white" : "text-[#5D3A1F] hover:bg-[#F5EFE7]"}`}
                       onClick={() => {
-                        setFilterCategory("tequila");
+                        setFilterCategory("pork");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
-                      Tequila
+                      Pork
                     </button>
                     <button
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm ${filterCategory === "pasta" ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white" : "text-[#5D3A1F] hover:bg-[#F5EFE7]"}`}
                       onClick={() => {
-                        setFilterCategory("rum");
+                        setFilterCategory("pasta");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
-                      Rum
+                      Pasta
                     </button>
                     <button
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm ${filterCategory === "vegetables" ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white" : "text-[#5D3A1F] hover:bg-[#F5EFE7]"}`}
                       onClick={() => {
-                        setFilterCategory("beer");
+                        setFilterCategory("vegetables");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
-                      Beer
+                      Vegetables
                     </button>
                     <button
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm ${filterCategory === "snacks" ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white" : "text-[#5D3A1F] hover:bg-[#F5EFE7]"}`}
                       onClick={() => {
-                        setFilterCategory("soju");
+                        setFilterCategory("snacks");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
-                      Soju
+                      Snacks
                     </button>
                     <button
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm ${filterCategory === "coffee" ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white" : "text-[#5D3A1F] hover:bg-[#F5EFE7]"}`}
                       onClick={() => {
-                        setFilterCategory("gin");
+                        setFilterCategory("coffee");
                         setShowFilterDropdown(false);
                       }}
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
                     >
-                      Gin
+                      Coffee
+                    </button>
+                    <button
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm ${filterCategory === "cocktails" ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white" : "text-[#5D3A1F] hover:bg-[#F5EFE7]"}`}
+                      onClick={() => {
+                        setFilterCategory("cocktails");
+                        setShowFilterDropdown(false);
+                      }}
+                    >
+                      CockTails
+                    </button>
+                    <button
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm ${filterCategory === "tower" ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white" : "text-[#5D3A1F] hover:bg-[#F5EFE7]"}`}
+                      onClick={() => {
+                        setFilterCategory("tower");
+                        setShowFilterDropdown(false);
+                      }}
+                    >
+                      Tower
+                    </button>
+                    <button
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm ${filterCategory === "beverages" ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white" : "text-[#5D3A1F] hover:bg-[#F5EFE7]"}`}
+                      onClick={() => {
+                        setFilterCategory("beverages");
+                        setShowFilterDropdown(false);
+                      }}
+                    >
+                      Beverages
                     </button>
                   </div>
                 </div>
               )}
             </div>
+            
+            {/* Add Button */}
+            <button
+              onClick={() => setShowAddMenuForm(true)}
+              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:shadow-md transition-all duration-200 w-full lg:w-auto justify-center"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Add Menu Item</span>
+            </button>
           </div>
-          <button
-            onClick={() => setShowAddMenuForm(true)}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#8B5A2B] hover:to-[#6B4226] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Add New Menu Item</span>
-          </button>
-        </div>
-
-        {/* Category Tabs */}
-        <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "all" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("all")}
-          >
-            All Items
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "breakfast" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("breakfast")}
-          >
-            Breakfast
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "seafood" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("seafood")}
-          >
-            Seafood
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "chicken" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("chicken")}
-          >
-            Chicken
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "pork" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("pork")}
-          >
-            Pork
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "pasta" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("pasta")}
-          >
-            Pasta
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "vegetables" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("vegetables")}
-          >
-            Vegetables
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "snacks" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("snacks")}
-          >
-            Snacks
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "coffee" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("coffee")}
-          >
-            Coffee
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "cocktails" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("cocktails")}
-          >
-            CockTails
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "tower" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("tower")}
-          >
-            Tower
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterCategory === "beverages" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterCategory("beverages")}
-          >
-            Beverages
-          </button>
         </div>
 
         {/* Menu Item Cards - Landscape Layout with Square Image and Information */}
@@ -435,8 +401,8 @@ export default function Menu() {
         </div>
 
         {filteredMenuItems.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12">
-            <div className="rounded-full bg-[#A67C52]/20 p-3 mb-4">
+          <div className="flex flex-col items-center justify-center py-12 bg-white rounded-xl shadow-md border border-[#DEB887]/30 mt-8">
+            <div className="rounded-full bg-[#E8DCCA] p-3 mb-4">
               <Utensils className="h-6 w-6 text-[#8B5A2B]" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-1">No menu items found</h3>
@@ -446,7 +412,7 @@ export default function Menu() {
                 setFilterCategory("all");
                 setSearchQuery("");
               }}
-              className="text-sm font-medium text-[#8B5A2B] hover:text-[#6B4226]"
+              className="text-sm font-medium text-[#8B5A2B] hover:text-[#5A371F]"
             >
               Clear filters
             </button>

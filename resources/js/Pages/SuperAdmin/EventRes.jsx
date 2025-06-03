@@ -91,12 +91,32 @@ export default function EventRes() {
   // Helper function to get status label and color
   const getStatusInfo = (status) => {
     const statusInfo = {
-      confirmed: { label: "Confirmed", color: "bg-green-100 text-green-800" },
-      pending: { label: "Pending", color: "bg-[#F5EFE7] text-[#6B4226]" },
-      cancelled: { label: "Cancelled", color: "bg-red-100 text-red-800" },
-      completed: { label: "Completed", color: "bg-blue-100 text-blue-800" }
+      confirmed: { 
+        label: "Confirmed", 
+        color: "bg-green-500/90 text-white",
+        icon: <CheckCircle className="h-4 w-4 text-green-500" />
+      },
+      pending: { 
+        label: "Pending", 
+        color: "bg-amber-500/90 text-white",
+        icon: <AlertCircle className="h-4 w-4 text-amber-500" />
+      },
+      cancelled: { 
+        label: "Cancelled", 
+        color: "bg-red-500/90 text-white",
+        icon: <X className="h-4 w-4 text-red-500" />
+      },
+      completed: { 
+        label: "Completed", 
+        color: "bg-blue-500/90 text-white",
+        icon: <CheckCircle className="h-4 w-4 text-blue-500" />
+      }
     };
-    return statusInfo[status] || { label: status, color: "bg-gray-100 text-gray-800" };
+    return statusInfo[status] || { 
+      label: status, 
+      color: "bg-gray-500/90 text-white",
+      icon: <AlertCircle className="h-4 w-4 text-gray-500" />
+    };
   };
 
   // Handle form input changes
@@ -132,176 +152,185 @@ export default function EventRes() {
       <ToastContainer position="top-right" hideProgressBar />
       <Head title="Event Reservations" />
       
-      <div className="mx-auto max-w-7xl">
-        {/* Action Bar */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="relative flex-1 sm:flex-none sm:w-64">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+      <div className="mx-auto max-w-6xl">
+        {/* Combined Action Bar with Search, Filter, and Add Button */}
+        <div className="bg-white rounded-xl shadow-md border border-[#DEB887]/30 p-4 mb-8 mt-5">
+          <div className="flex flex-col lg:flex-row gap-4 items-center">
+            {/* Search Bar */}
+            <div className="relative w-full lg:flex-1">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B5A2B]">
+                <Search className="h-4 w-4" />
+              </div>
               <input
                 type="text"
                 placeholder="Search events..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
+                className="w-full rounded-lg border border-[#DEB887]/30 bg-white py-2.5 pl-10 pr-4 text-sm text-[#5D3A1F] placeholder-[#8B5A2B]/40 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
               />
             </div>
-            <div className="relative">
-              <div className="absolute right-0 mt-2 w-48 rounded-lg border border-gray-100 bg-white shadow-lg z-10 hidden">
-                <div className="p-2">
-                  <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
-                    onClick={() => setFilterStatus("all")}
-                  >
-                    All Events
-                  </button>
-                  <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
-                    onClick={() => setFilterStatus("pending")}
-                  >
-                    Pending
-                  </button>
-                  <button
-                    className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#F5EFE7] text-gray-700"
-                    onClick={() => setFilterStatus("confirmed")}
-                  >
-                    Confirmed
-                  </button>
-                </div>
+            
+            {/* Status Filter Tabs */}
+            <div className="flex items-center justify-center w-full lg:w-auto">
+              <div className="inline-flex bg-[#F5EFE7]/50 rounded-lg p-1 border border-[#DEB887]/20">
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "all" 
+                    ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setFilterStatus("all")}
+                >
+                  All
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "pending" 
+                    ? "bg-gradient-to-r from-[#F59E0B]/90 to-[#F59E0B]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setFilterStatus("pending")}
+                >
+                  Pending
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "confirmed" 
+                    ? "bg-gradient-to-r from-[#4CAF50]/90 to-[#4CAF50]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setFilterStatus("confirmed")}
+                >
+                  Confirmed
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "completed" 
+                    ? "bg-gradient-to-r from-[#3B82F6]/90 to-[#3B82F6]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setFilterStatus("completed")}
+                >
+                  Completed
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "cancelled" 
+                    ? "bg-gradient-to-r from-[#EF4444]/90 to-[#EF4444]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setFilterStatus("cancelled")}
+                >
+                  Cancelled
+                </button>
               </div>
             </div>
+            
+            {/* Add Button */}
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:shadow-md transition-all duration-200 w-full lg:w-auto justify-center"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Add New Event</span>
+            </button>
           </div>
-          
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5A3921] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Add New Event</span>
-          </button>
-        </div>
-
-        {/* Status Tabs */}
-        <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "all" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterStatus("all")}
-          >
-            All Events
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "pending" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterStatus("pending")}
-          >
-            Pending
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "confirmed" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterStatus("confirmed")}
-          >
-            Confirmed
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "completed" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterStatus("completed")}
-          >
-            Completed
-          </button>
-          <button
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${filterStatus === "cancelled" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-            onClick={() => setFilterStatus("cancelled")}
-          >
-            Cancelled
-          </button>
         </div>
 
 
         {/* Event Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEvents.map((event) => (
             <div
               key={event.id}
-              className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all overflow-hidden group relative transform hover:-translate-y-1 duration-300"
+              className="bg-white rounded-xl border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all overflow-hidden group relative transform hover:-translate-y-1 duration-300"
             >
               {/* Card Header with Status Badge */}
-              <div className="relative bg-gradient-to-r from-[#F5EFE7] to-white p-2.5 border-b border-[#E8DCCA]">
-                <div className="absolute top-0 right-0 h-16 w-16 bg-[#F5EFE7] rounded-full -mr-8 -mt-8 opacity-30"></div>
+              <div className="relative bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] p-4">
+                <div className="absolute top-0 right-0 h-20 w-20 bg-white/10 rounded-full -mr-10 -mt-10 opacity-20"></div>
                 
                 <div className="flex items-center justify-between relative z-10">
-                  <div className="flex items-center gap-1.5">
-                    <div className="p-1 bg-gradient-to-r from-[#8B5A2B] to-[#A67C52] rounded-md shadow-sm">
-                      <Calendar className="h-3 w-3 text-white" />
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 bg-white/20 rounded-lg shadow-sm">
+                      <Calendar className="h-4 w-4 text-white" />
                     </div>
-                    <span className="text-xs font-medium text-[#6B4226]">
+                    <span className="text-sm font-medium text-white">
                       {getEventTypeLabel(event.event_type || event.eventType)}
                     </span>
                   </div>
-                  <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium flex items-center ${getStatusInfo(event.status).color}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center 
+                    ${event.status === 'confirmed' ? 'bg-green-500/90 text-white' : 
+                      event.status === 'cancelled' ? 'bg-red-500/90 text-white' : 
+                      event.status === 'completed' ? 'bg-blue-500/90 text-white' : 
+                      'bg-amber-500/90 text-white'}`}>
                     {event.status === "confirmed" ? (
-                      <CheckCircle className="h-2.5 w-2.5 mr-0.5" />
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                    ) : event.status === "cancelled" ? (
+                      <X className="h-3 w-3 mr-1" />
                     ) : (
-                      <X className="h-2.5 w-2.5 mr-0.5" />
+                      <AlertCircle className="h-3 w-3 mr-1" />
                     )}
                     {getStatusInfo(event.status).label}
                   </span>
                 </div>
               </div>
               
-              <div className="p-3 relative">
+              <div className="p-4 relative">
                 {/* Delete Button */}
                 <button
                   onClick={() => deleteEvent(event.id)}
-                  className="absolute top-2 right-2 h-6 w-6 flex items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-200 focus:outline-none focus:ring-1 focus:ring-red-500 focus:ring-offset-1 transition-all z-10 opacity-80 hover:opacity-100 shadow-sm"
+                  className="absolute top-3 right-3 h-7 w-7 flex items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-200 focus:outline-none focus:ring-1 focus:ring-red-500 focus:ring-offset-1 transition-all z-10 opacity-80 hover:opacity-100 shadow-sm"
                   title="Delete Event"
                 >
-                  <Trash className="h-3 w-3" />
+                  <Trash className="h-3.5 w-3.5" />
                 </button>
 
                 {/* Client Information */}
-                <div className="flex items-center gap-2.5 mb-3">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-r from-[#F5EFE7] to-[#E5D3B3] flex items-center justify-center text-[#8B5A2B] font-semibold text-sm flex-shrink-0 border border-[#E8DCCA] group-hover:border-[#A67C52] transition-all shadow-sm">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-12 w-12 rounded-full bg-gradient-to-r from-[#F5EFE7] to-[#E5D3B3] flex items-center justify-center text-[#5D3A1F] font-semibold text-sm flex-shrink-0 border border-[#DEB887]/30 group-hover:border-[#A67C52] transition-all shadow-sm">
                     {(event.client_name || event.clientName).split(' ').map(n => n[0]).join('').toUpperCase()}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-semibold text-gray-900 truncate group-hover:text-[#8B5A2B] transition-colors">
+                    <h3 className="text-sm font-semibold text-[#5D3A1F] truncate group-hover:text-[#8B5A2B] transition-colors">
                       {event.client_name || event.clientName}
                     </h3>
-                    <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                      <div className="flex items-center gap-0.5 bg-[#F5EFE7] px-1.5 py-0.5 rounded text-xs">
+                    <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                      <div className="flex items-center gap-1 bg-[#F5EFE7]/70 px-2 py-1 rounded-full text-xs">
+                        <DollarSign className="h-3 w-3 text-[#8B5A2B]" />
                         <span className="text-xs text-[#8B5A2B] font-medium">₱{(event.total_amount || event.totalAmount).toLocaleString()}</span>
                       </div>
-                      <div className="flex items-center gap-0.5 bg-gray-100 px-1.5 py-0.5 rounded text-xs">
-                        <Users className="h-3 w-3 text-gray-600" />
-                        <span className="text-xs text-gray-600 font-medium">{event.guest_count || event.guestCount}</span>
+                      <div className="flex items-center gap-1 bg-[#F5EFE7]/50 px-2 py-1 rounded-full text-xs">
+                        <Users className="h-3 w-3 text-[#8B5A2B]" />
+                        <span className="text-xs text-[#8B5A2B] font-medium">{event.guest_count || event.guestCount}</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Event Details */}
-                <div className="space-y-1 mb-3 bg-gray-50 p-2.5 rounded border border-gray-100 text-xs">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Calendar className="h-3 w-3 text-[#8B5A2B] flex-shrink-0" />
+                <div className="space-y-2 mb-4 bg-[#F5EFE7]/20 p-3 rounded-lg border border-[#DEB887]/20 text-xs">
+                  <div className="flex items-center gap-2 text-[#5D3A1F]/80">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#F5EFE7]">
+                      <Calendar className="h-3 w-3 text-[#8B5A2B]" />
+                    </div>
                     <p className="truncate">{formatDate(event.date)}</p>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Clock className="h-3 w-3 text-[#8B5A2B] flex-shrink-0" />
+                  <div className="flex items-center gap-2 text-[#5D3A1F]/80">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#F5EFE7]">
+                      <Clock className="h-3 w-3 text-[#8B5A2B]" />
+                    </div>
                     <p className="">{event.start_time || event.startTime} - {event.end_time || event.endTime}</p>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <MapPin className="h-3 w-3 text-[#8B5A2B] flex-shrink-0" />
+                  <div className="flex items-center gap-2 text-[#5D3A1F]/80">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#F5EFE7]">
+                      <MapPin className="h-3 w-3 text-[#8B5A2B]" />
+                    </div>
                     <p className="truncate">{event.venue}</p>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
+                <div className="flex items-center gap-2 pt-3 border-t border-[#DEB887]/20">
                   <button
                     onClick={() => {
                       setSelectedEvent(event);
                       setShowEventDetails(true);
                     }}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-md bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-2 py-1.5 text-xs font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5A3921] focus:outline-none focus:ring-1 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
+                    className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:shadow-md transition-all duration-300"
                   >
                     <Eye className="h-3 w-3" />
                     <span>View</span>
@@ -316,7 +345,7 @@ export default function EventRes() {
                       // Set update modal to true
                       setShowUpdateModal(true);
                     }}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-md border border-[#E8DCCA] bg-[#F5EFE7] px-2 py-1.5 text-xs font-medium text-[#8B5A2B] hover:bg-[#E5D3B3] focus:outline-none focus:ring-1 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
+                    className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#DEB887]/30 bg-white px-3 py-1.5 text-xs font-medium text-[#8B5A2B] hover:bg-[#F5EFE7]/50 transition-all duration-300"
                   >
                     <Edit className="h-3 w-3" />
                     <span>Update</span>
@@ -328,18 +357,18 @@ export default function EventRes() {
         </div>
 
         {filteredEvents.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12">
-            <div className="rounded-full bg-[#F5EFE7] p-3 mb-4">
-              <Calendar className="h-6 w-6 text-[#8B5A2B]" />
+          <div className="flex flex-col items-center justify-center py-12 bg-white rounded-xl shadow-md border border-[#DEB887]/30 mt-8">
+            <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-[#A67C52]/20 to-[#8B5A2B]/20 shadow-sm mb-4">
+              <Calendar className="h-8 w-8 text-[#8B5A2B]" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">No events found</h3>
-            <p className="text-sm text-gray-500 mb-4">There are no events matching your current filters.</p>
+            <h3 className="text-xl font-bold text-[#5D3A1F] mb-2">No events found</h3>
+            <p className="text-sm text-[#8B5A2B]/70 mb-5 text-center max-w-md">There are no events matching your current filters.</p>
             <button
               onClick={() => {
                 setFilterStatus("all");
                 setSearchQuery("");
               }}
-              className="text-sm font-medium text-[#8B5A2B] hover:text-[#6B4226]"
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#5D3A1F]/90 to-[#8B5A2B]/90 text-white text-sm font-medium hover:shadow-md transition-all duration-200"
             >
               Clear filters
             </button>

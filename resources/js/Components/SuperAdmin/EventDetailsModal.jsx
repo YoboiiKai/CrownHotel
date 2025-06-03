@@ -133,16 +133,16 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+      <div className="bg-white rounded-xl overflow-hidden border border-[#DEB887]/30 shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-[#F5EFE7] px-4 py-4">
+        <div className="bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <h3 className="text-lg font-bold text-gray-900">Event Details</h3>
+              <h3 className="text-xl font-bold text-white">Event Details</h3>
             </div>
             <button 
               onClick={onClose} 
-              className="text-gray-400 hover:text-gray-600 transition-colors bg-white rounded-full p-1 hover:bg-gray-100"
+              className="text-white/70 hover:text-white transition-colors bg-white/10 rounded-full p-1.5 hover:bg-white/20"
             >
               <X className="h-5 w-5" />
             </button>
@@ -154,162 +154,203 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
             {/* Event Information */}
             <div className="space-y-5">
               {/* Event Type and Overview */}
-              <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#E8DCCA] shadow-sm p-4 relative overflow-hidden">
+              <div className="bg-gradient-to-br from-[#F5EFE7]/30 to-white rounded-lg border border-[#DEB887]/30 shadow-sm p-5 relative overflow-hidden">
                 {/* Decorative elements */}
-                <div className="absolute top-0 right-0 w-24 h-24 bg-[#F5EFE7] rounded-full -mr-12 -mt-12 opacity-40"></div>
-                <div className="absolute bottom-0 left-0 w-16 h-16 bg-[#F5EFE7] rounded-full -ml-8 -mb-8 opacity-30"></div>
+                <div className="absolute top-0 right-0 w-28 h-28 bg-[#F5EFE7]/50 rounded-full -mr-14 -mt-14 opacity-40"></div>
+                <div className="absolute bottom-0 left-0 w-20 h-20 bg-[#F5EFE7]/50 rounded-full -ml-10 -mb-10 opacity-30"></div>
                 
                 {/* Event Header with Type and Status */}
-                <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 pb-3 border-b border-[#E8DCCA]">
+                <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 pb-3 border-b border-[#DEB887]/20">
                   <div className="flex items-center gap-4">
-                    <div className="p-2 bg-gradient-to-br from-[#8B5A2B] to-[#A67C52] rounded-lg shadow-md">
+                    <div className="p-2.5 bg-gradient-to-br from-[#5D3A1F] to-[#8B5A2B] rounded-xl shadow-md">
                       {event.eventType === 'wedding' ? (
-                        <Calendar className="h-5 w-5 text-white" />
+                        <Calendar className="h-6 w-6 text-white" />
                       ) : event.eventType === 'corporate' ? (
                         <Users className="h-6 w-6 text-white" />
                       ) : (
-                        <Calendar className="h-5 w-5 text-white" />
+                        <Calendar className="h-6 w-6 text-white" />
                       )}
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-gray-900">{event.eventType.charAt(0).toUpperCase() + event.eventType.slice(1)}</h4>
-                      <p className="text-sm text-gray-600 mt-0.5">Organized by <span className="font-medium text-[#8B5A2B]">{event.clientName}</span></p>
+                      <h4 className="text-lg font-bold text-[#5D3A1F]">{event.eventType.charAt(0).toUpperCase() + event.eventType.slice(1)}</h4>
+                      <p className="text-sm text-[#8B5A2B]/70 mt-0.5">Organized by <span className="font-medium text-[#8B5A2B]">{event.clientName}</span></p>
                     </div>
                   </div>
-                  <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium shadow-sm ${getStatusInfo(event.status).color} transition-all duration-200 hover:shadow-md`}>
-                    {getStatusInfo(event.status).label}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {getStatusInfo(event.status).icon}
+                    <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium shadow-sm 
+                      ${event.status === 'confirmed' ? 'bg-gradient-to-r from-green-500/90 to-green-600/90 text-white' : 
+                        event.status === 'cancelled' ? 'bg-gradient-to-r from-red-500/90 to-red-600/90 text-white' : 
+                        event.status === 'completed' ? 'bg-gradient-to-r from-blue-500/90 to-blue-600/90 text-white' : 
+                        'bg-gradient-to-r from-amber-500/90 to-amber-600/90 text-white'} 
+                      transition-all duration-200 hover:shadow-md`}>
+                      {getStatusInfo(event.status).label}
+                    </span>
+                  </div>
                 </div>
                 
-                {/* Event Details - Compact */}
-                <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs">
-                  <div className="grid grid-cols-2 gap-1.5">
+                {/* Event Details - Enhanced */}
+                <div className="bg-white rounded-lg p-3 border border-[#DEB887]/20 text-sm shadow-sm">
+                  <div className="grid grid-cols-2 gap-3">
                     <div className="flex items-center">
-                      <Calendar className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                      <span className="text-gray-500">Date:</span>
-                      <span className="text-gray-700 font-medium ml-1.5">{formatDate(event.date).split(',')[0]}</span>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE7] mr-2">
+                        <Calendar className="h-4 w-4 text-[#8B5A2B]" />
+                      </div>
+                      <div>
+                        <span className="text-[#5D3A1F]/60 text-xs">Date</span>
+                        <p className="text-[#5D3A1F] font-medium">{formatDate(event.date).split(',')[0]}</p>
+                      </div>
                     </div>
                     
                     <div className="flex items-center">
-                      <Clock className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                      <span className="text-gray-500">Time:</span>
-                      <span className="text-gray-700 font-medium ml-1.5">{event.startTime} - {event.endTime}</span>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE7] mr-2">
+                        <Clock className="h-4 w-4 text-[#8B5A2B]" />
+                      </div>
+                      <div>
+                        <span className="text-[#5D3A1F]/60 text-xs">Time</span>
+                        <p className="text-[#5D3A1F] font-medium">{event.startTime} - {event.endTime}</p>
+                      </div>
                     </div>
                     
                     <div className="flex items-center">
-                      <MapPin className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                      <span className="text-gray-500">Venue:</span>
-                      <span className="text-gray-700 font-medium ml-1.5 truncate">{event.venue}</span>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE7] mr-2">
+                        <MapPin className="h-4 w-4 text-[#8B5A2B]" />
+                      </div>
+                      <div>
+                        <span className="text-[#5D3A1F]/60 text-xs">Venue</span>
+                        <p className="text-[#5D3A1F] font-medium truncate">{event.venue}</p>
+                      </div>
                     </div>
                     
                     <div className="flex items-center">
-                      <Users className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                      <span className="text-gray-500">Guests:</span>
-                      <span className="text-gray-700 font-medium ml-1.5">{event.guestCount}</span>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE7] mr-2">
+                        <Users className="h-4 w-4 text-[#8B5A2B]" />
+                      </div>
+                      <div>
+                        <span className="text-[#5D3A1F]/60 text-xs">Guests</span>
+                        <p className="text-[#5D3A1F] font-medium">{event.guestCount}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
               
-              {/* Contact Information - Compact */}
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2">
-                <div className="flex items-center mb-2">
-                  <User className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                  <h5 className="text-xs font-semibold text-gray-900">Contact Information</h5>
+              {/* Contact Information - Enhanced */}
+              <div className="bg-white rounded-lg border border-[#DEB887]/30 shadow-sm p-4">
+                <div className="flex items-center mb-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-[#5D3A1F] to-[#8B5A2B] shadow-sm mr-2">
+                    <User className="h-3.5 w-3.5 text-white" />
+                  </div>
+                  <h5 className="text-sm font-semibold text-[#5D3A1F]">Contact Information</h5>
                 </div>
                 
-                <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs grid grid-cols-2 gap-2">
+                <div className="bg-[#F5EFE7]/20 rounded-lg p-3 border border-[#DEB887]/20 text-sm grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div className="flex items-center">
-                    <User className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                    <span className="text-gray-500">Name:</span>
-                    <span className="text-gray-700 font-medium ml-1.5 truncate">{event.clientName}</span>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <Phone className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                    <span className="text-gray-500">Phone:</span>
-                    <span className="text-gray-700 font-medium ml-1.5 truncate">{event.contactNumber}</span>
-                  </div>
-                  
-                  <div className="flex items-center col-span-2">
-                    <Mail className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                    <span className="text-gray-500">Email:</span>
-                    <span className="text-gray-700 font-medium ml-1.5 truncate">{event.email}</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Payment Details - Compact */}
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2">
-                <div className="flex items-center mb-2">
-                  <span className="text-[#8B5A2B] font- text-sm mr-1.5">₱</span>
-                  <h5 className="text-xs font-semibold text-gray-900">Payment Details</h5>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs">
-                  <div className="grid grid-cols-2 gap-2 mb-2">
-                    <div className="flex items-center">
-                      <span className="text-gray-500">Package:</span>
-                      <span className="text-gray-700 font-medium ml-1.5 truncate">{event.packageType}</span>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE7] mr-2">
+                      <User className="h-4 w-4 text-[#8B5A2B]" />
                     </div>
-                    
-                    <div className="flex items-center justify-end">
-                      <span className="text-gray-500">Deposit:</span>
-                      <span className={`font-medium ml-1.5 flex items-center ${event.depositPaid ? 'text-green-600' : 'text-red-600'}`}>
-                        {event.depositPaid ? (
-                          <>
-                            <CheckCircle className="h-3 w-3 mr-0.5" />
-                            Paid
-                          </>
-                        ) : (
-                          <>
-                            <XCircle className="h-3 w-3 mr-0.5" />
-                            Not Paid
-                          </>
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between border-t border-gray-200 pt-2 mb-2">
                     <div>
-                      <span className="text-gray-500">Deposit:</span>
-                      <span className="text-gray-700 font-medium ml-1.5">
+                      <span className="text-[#5D3A1F]/60 text-xs">Client Name</span>
+                      <p className="text-[#5D3A1F] font-medium truncate">{event.clientName}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE7] mr-2">
+                      <Phone className="h-4 w-4 text-[#8B5A2B]" />
+                    </div>
+                    <div>
+                      <span className="text-[#5D3A1F]/60 text-xs">Phone Number</span>
+                      <p className="text-[#5D3A1F] font-medium truncate">{event.contactNumber}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center col-span-1 md:col-span-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE7] mr-2">
+                      <Mail className="h-4 w-4 text-[#8B5A2B]" />
+                    </div>
+                    <div>
+                      <span className="text-[#5D3A1F]/60 text-xs">Email Address</span>
+                      <p className="text-[#5D3A1F] font-medium truncate">{event.email}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Payment Details - Enhanced */}
+              <div className="bg-white rounded-lg border border-[#DEB887]/30 shadow-sm p-4">
+                <div className="flex items-center mb-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-[#5D3A1F] to-[#8B5A2B] shadow-sm mr-2">
+                    <DollarSign className="h-3.5 w-3.5 text-white" />
+                  </div>
+                  <h5 className="text-sm font-semibold text-[#5D3A1F]">Payment Details</h5>
+                </div>
+                
+                <div className="bg-[#F5EFE7]/20 rounded-lg p-3 border border-[#DEB887]/20 text-sm">
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div className="flex items-center">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE7] mr-2">
+                        <Calendar className="h-4 w-4 text-[#8B5A2B]" />
+                      </div>
+                      <div>
+                        <span className="text-[#5D3A1F]/60 text-xs">Package Type</span>
+                        <p className="text-[#5D3A1F] font-medium truncate">{event.packageType}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE7] mr-2">
+                        {event.depositPaid ? (
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <XCircle className="h-4 w-4 text-red-600" />
+                        )}
+                      </div>
+                      <div>
+                        <span className="text-[#5D3A1F]/60 text-xs">Deposit Status</span>
+                        <p className={`font-medium ${event.depositPaid ? 'text-green-600' : 'text-red-600'}`}>
+                          {event.depositPaid ? 'Paid' : 'Not Paid'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between border-t border-[#DEB887]/20 pt-3 mb-3 px-2">
+                    <div className="bg-white px-3 py-2 rounded-lg shadow-sm border border-[#DEB887]/20">
+                      <span className="text-[#5D3A1F]/60 text-xs block">Deposit Amount</span>
+                      <span className="text-[#5D3A1F] font-medium text-lg">
                         ₱{typeof event.depositAmount === 'number' ? event.depositAmount.toLocaleString() : (parseFloat(event.depositAmount || 0).toLocaleString())}
                       </span>
                     </div>
-                    <div>
-                      <span className="text-gray-500">Total:</span>
-                      <span className="text-[#8B5A2B] font-bold ml-1.5">
+                    <div className="bg-gradient-to-r from-[#8B5A2B]/10 to-[#A67C52]/10 px-3 py-2 rounded-lg shadow-sm border border-[#DEB887]/30">
+                      <span className="text-[#5D3A1F]/60 text-xs block">Total Amount</span>
+                      <span className="text-[#8B5A2B] font-bold text-lg">
                         ₱{typeof event.totalAmount === 'number' ? event.totalAmount.toLocaleString() : (parseFloat(event.totalAmount || 0).toLocaleString())}
                       </span>
                     </div>
                   </div>
-                                    <div className="flex flex-col border-t border-gray-200 pt-2">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center">
-                        <span className="text-gray-500">Payment Status:</span>
-                        <span className={`font-medium ml-1.5 flex items-center ${(event.paymentStatus || 'unpaid') === 'fully_paid' ? 'text-green-600' : (event.paymentStatus || 'unpaid') === 'deposit_paid' ? 'text-[#8B5A2B]' : 'text-red-600'}`}>
+                  
+                  <div className="flex flex-col border-t border-[#DEB887]/20 pt-3">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F5EFE7]">
                           {(event.paymentStatus || 'unpaid') === 'fully_paid' ? (
-                            <>
-                              <CheckCircle className="h-3 w-3 mr-0.5" />
-                              Fully Paid
-                            </>
+                            <CheckCircle className="h-4 w-4 text-green-600" />
                           ) : (event.paymentStatus || 'unpaid') === 'deposit_paid' ? (
-                            <>
-                              <AlertTriangle className="h-3 w-3 mr-0.5" />
-                              Deposit Paid
-                            </>
+                            <AlertTriangle className="h-4 w-4 text-amber-600" />
                           ) : (
-                            <>
-                              <XCircle className="h-3 w-3 mr-0.5" />
-                              Unpaid
-                            </>
+                            <XCircle className="h-4 w-4 text-red-600" />
                           )}
-                        </span>
+                        </div>
+                        <div>
+                          <span className="text-[#5D3A1F]/60 text-xs">Payment Status</span>
+                          <p className={`font-medium ${(event.paymentStatus || 'unpaid') === 'fully_paid' ? 'text-green-600' : (event.paymentStatus || 'unpaid') === 'deposit_paid' ? 'text-amber-600' : 'text-red-600'}`}>
+                            {(event.paymentStatus || 'unpaid') === 'fully_paid' ? 'Fully Paid' : (event.paymentStatus || 'unpaid') === 'deposit_paid' ? 'Deposit Paid' : 'Unpaid'}
+                          </p>
+                        </div>
                       </div>
                       {event.paymentStatus === 'fully_paid' && (
-                        <span className="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+                        <span className="px-3 py-1 bg-gradient-to-r from-green-500/90 to-green-600/90 text-white text-xs font-medium rounded-full shadow-sm">
                           Paid in Full
                         </span>
                       )}
@@ -322,13 +363,13 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
                         <button
                           onClick={() => handlePaymentChange('unpaid')}
                           disabled={isUpdatingPayment}
-                          className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-500"
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gradient-to-r from-red-500/10 to-red-600/10 text-red-600 border border-red-200 hover:bg-gradient-to-r hover:from-red-500/20 hover:to-red-600/20 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-red-500 shadow-sm hover:shadow"
                         >
                           {isUpdatingPayment ? (
                             <span>Updating...</span>
                           ) : (
                             <>
-                              <XCircle className="h-3 w-3" />
+                              <XCircle className="h-3.5 w-3.5" />
                               <span>Mark as Unpaid</span>
                             </>
                           )}
@@ -336,17 +377,17 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
                       )}
                       
                       {/* Button to mark deposit as paid */}
-                      {event.paymentStatus === 'unpaid' && (
+                      {event.paymentStatus !== 'deposit_paid' && (
                         <button
                           onClick={() => handlePaymentChange('deposit_paid')}
                           disabled={isUpdatingPayment}
-                          className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md bg-[#F5EFE7] text-[#8B5A2B] hover:bg-[#F5EFE7] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#A67C52]"
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gradient-to-r from-amber-500/10 to-amber-600/10 text-amber-600 border border-amber-200 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-amber-600/20 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-amber-500 shadow-sm hover:shadow"
                         >
                           {isUpdatingPayment ? (
                             <span>Updating...</span>
                           ) : (
                             <>
-                              <CheckCircle className="h-3 w-3" />
+                              <AlertTriangle className="h-3.5 w-3.5" />
                               <span>Mark Deposit Paid</span>
                             </>
                           )}
@@ -358,13 +399,13 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
                         <button
                           onClick={() => handlePaymentChange('fully_paid')}
                           disabled={isUpdatingPayment}
-                          className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md bg-green-50 text-green-600 hover:bg-green-100 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-green-500"
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gradient-to-r from-green-500/10 to-green-600/10 text-green-600 border border-green-200 hover:bg-gradient-to-r hover:from-green-500/20 hover:to-green-600/20 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-green-500 shadow-sm hover:shadow"
                         >
                           {isUpdatingPayment ? (
                             <span>Updating...</span>
                           ) : (
                             <>
-                              <CheckCircle className="h-3 w-3" />
+                              <CheckCircle className="h-3.5 w-3.5" />
                               <span>Mark as Fully Paid</span>
                             </>
                           )}
@@ -375,15 +416,17 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
                 </div>
               </div>
               
-              {/* Special Requests - Compact */}
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2">
-                <div className="flex items-center mb-2">
-                  <AlertTriangle className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                  <h5 className="text-xs font-semibold text-gray-900">Special Requests</h5>
+              {/* Special Requests - Enhanced */}
+              <div className="bg-white rounded-lg border border-[#DEB887]/30 shadow-sm p-4">
+                <div className="flex items-center mb-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-[#5D3A1F] to-[#8B5A2B] shadow-sm mr-2">
+                    <AlertTriangle className="h-3.5 w-3.5 text-white" />
+                  </div>
+                  <h5 className="text-sm font-semibold text-[#5D3A1F]">Special Requests</h5>
                 </div>
                 
-                <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs">
-                  <p className="text-gray-700 italic">
+                <div className="bg-[#F5EFE7]/20 rounded-lg p-3 border border-[#DEB887]/20 text-sm">
+                  <p className="text-[#5D3A1F]/80 italic">
                     {event.specialRequests || 'No special requests provided.'}
                   </p>
                 </div>
@@ -392,7 +435,7 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
           </div>
           
           {/* Footer */}
-          <div className="flex flex-col pt-3 border-t border-gray-100 mt-4">
+          <div className="flex flex-col pt-4 border-t border-[#DEB887]/20 mt-5">
             {/* Status Management */}
             <div className="mb-4">
               <div className="flex flex-wrap gap-3">
@@ -400,9 +443,9 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
                   <button 
                     onClick={() => handleStatusChange('confirmed')}
                     disabled={isChangingStatus}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-green-600 to-green-800 rounded-lg shadow-sm hover:from-green-700 hover:to-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-all disabled:opacity-70"
+                    className="flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-gradient-to-r from-green-500 to-green-600 rounded-lg shadow-sm hover:shadow-md hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-all duration-200 disabled:opacity-70"
                   >
-                    <CheckCircle className="h-3.5 w-3.5" />
+                    <CheckCircle className="h-4 w-4" />
                     {isChangingStatus ? 'Updating...' : 'Confirm Event'}
                   </button>
                 )}
@@ -411,9 +454,9 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
                   <button 
                     onClick={() => handleStatusChange('pending')}
                     disabled={isChangingStatus}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-lg shadow-sm hover:from-[#6B4226] hover:to-[#5A3921] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all disabled:opacity-70"
+                    className="flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] rounded-lg shadow-sm hover:shadow-md hover:from-[#8B5A2B] hover:to-[#A67C52] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all duration-200 disabled:opacity-70"
                   >
-                    <AlertTriangle className="h-3.5 w-3.5" />
+                    <AlertTriangle className="h-4 w-4" />
                     {isChangingStatus ? 'Updating...' : 'Mark as Pending'}
                   </button>
                 )}
@@ -422,18 +465,18 @@ export default function EventDetailsModal({ event, show, onClose, onStatusChange
                   <button 
                     onClick={() => handleStatusChange('cancelled')}
                     disabled={isChangingStatus}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-red-600 to-red-800 rounded-lg shadow-sm hover:from-red-700 hover:to-red-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-all disabled:opacity-70"
+                    className="flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-white bg-gradient-to-r from-red-500 to-red-600 rounded-lg shadow-sm hover:shadow-md hover:from-red-600 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-all duration-200 disabled:opacity-70"
                   >
-                    <XCircle className="h-3.5 w-3.5" />
+                    <XCircle className="h-4 w-4" />
                     {isChangingStatus ? 'Updating...' : 'Cancel Event'}
                   </button>
                 )}
                 
                 <button
                   onClick={onClose}
-                  className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg shadow-sm hover:from-gray-200 hover:to-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-1 transition-all"
+                  className="ml-auto flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-[#5D3A1F] bg-gradient-to-r from-[#F5EFE7]/50 to-[#F5EFE7]/80 border border-[#DEB887]/30 rounded-lg shadow-sm hover:shadow-md hover:from-[#F5EFE7]/80 hover:to-[#F5EFE7] focus:outline-none focus:ring-2 focus:ring-[#DEB887]/50 focus:ring-offset-1 transition-all duration-200"
                 >
-                  <X className="h-3.5 w-3.5" />
+                  <X className="h-4 w-4" />
                   Close
                 </button>
               </div>

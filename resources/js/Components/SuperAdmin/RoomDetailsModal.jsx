@@ -34,6 +34,7 @@ export default function RoomDetailsModal({
 }) {
   const [isChangingStatus, setIsChangingStatus] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [error, setError] = useState(null);
 
   if (!show || !room) return null;
 
@@ -69,6 +70,7 @@ export default function RoomDetailsModal({
 
   const handleStatusChange = (newStatus) => {
     setIsChangingStatus(true);
+    setError(null);
     
     // Call the API to update the status
     axios.post(`/api/superadmin/rooms/${room.id}/status`, {
@@ -80,9 +82,12 @@ export default function RoomDetailsModal({
       if (typeof onStatusChange === 'function') {
         onStatusChange({...room, status: newStatus});
       }
+      toast.success(`Room status updated to ${newStatus} successfully!`);
     })
     .catch(error => {
       console.error('Error updating room status:', error);
+      setError("Failed to update room status. Please try again.");
+      toast.error("Failed to update room status. Please try again.");
     })
     .finally(() => {
       setIsChangingStatus(false);
@@ -90,34 +95,64 @@ export default function RoomDetailsModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl overflow-hidden border border-[#E8DCCA] shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-xl overflow-hidden border border-[#DEB887]/30 shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-[#F5EFE7] px-4 py-4">
+        <div className="bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <h3 className="text-lg font-bold text-gray-900">Room Details</h3>
+              <div className="p-2 bg-white/20 backdrop-blur-sm rounded-full shadow-md">
+                <Home className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white">Room Details</h3>
+                <p className="text-xs text-white/80">View room information and status</p>
+              </div>
             </div>
             <button 
               onClick={onClose} 
-              className="text-gray-400 hover:text-gray-600 transition-colors bg-white rounded-full p-1 hover:bg-[#E8DCCA]"
+              className="text-white/80 hover:text-white transition-colors bg-white/10 backdrop-blur-sm rounded-full p-1.5 hover:bg-white/20 shadow-md"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
         </div>
 
-        <div className="p-4">
-          <div className="grid grid-cols-1 gap-6">
-            {/* Room Information */}
-            <div className="space-y-5">
-              {/* Room Image Carousel with Status Badge */}
-              <div className="relative h-64 w-full overflow-hidden rounded-lg group">
-                {/* Status Badge */}
-                <span className={`absolute top-2 right-2 z-10 inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium shadow-sm ${getStatusColor(room.status)} transition-all duration-200 hover:shadow-md`}>
+        <div className="p-6">
+          {/* Error Message */}
+          {error && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 mb-6">
+              {error}
+            </div>
+          )}
+          
+          {/* Room Profile Header */}
+          <div className="p-5 bg-gradient-to-r from-[#A67C52]/10 to-[#8B5A2B]/10 rounded-lg border border-[#DEB887]/30 mb-6 relative overflow-hidden">
+            <div className="absolute inset-0 opacity-5">
+              <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
+            </div>
+            <div className="relative z-10">
+              <div className="inline-flex items-center px-2 py-1 rounded-full bg-[#A67C52]/30 backdrop-blur-sm mb-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887] mr-1.5"></div>
+                <span className="text-xs font-medium text-[#6B4226]">
+                  ROOM {room.roomNumber}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <h4 className="text-lg font-medium text-[#5D3A1F] mb-1">{getRoomTypeLabel(room.roomType)}</h4>
+                <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium shadow-sm ${getStatusColor(room.status)} transition-all duration-200 hover:shadow-md`}>
                   {room.status === 'available' ? 'Available' : 'Maintenance'}
                 </span>
-                
+              </div>
+              <p className="text-sm text-[#6B4226]/70">Room details and amenities information</p>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            {/* Room Information */}
+            <div className="space-y-5">
+              {/* Room Image Carousel */}
+              <div className="relative h-64 w-full overflow-hidden rounded-lg group border border-[#DEB887]/30 shadow-sm">
                 <img
                   src={images[currentImageIndex]}
                   alt={`Room ${room.roomNumber} - Image ${currentImageIndex + 1}`}
@@ -127,15 +162,15 @@ export default function RoomDetailsModal({
                 {/* Navigation Arrows */}
                 <button
                   onClick={previousImage}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-black/70"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 backdrop-blur-sm p-2 rounded-full text-[#5D3A1F] opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white shadow-sm hover:shadow-md"
                 >
-                  <ChevronLeft className="h-5 w-5" />
+                  <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
                   onClick={nextImage}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-black/70"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 backdrop-blur-sm p-2 rounded-full text-[#5D3A1F] opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white shadow-sm hover:shadow-md"
                 >
-                  <ChevronRight className="h-5 w-5" />
+                  <ChevronRight className="h-4 w-4" />
                 </button>
 
                 {/* Image Indicators */}
@@ -153,48 +188,68 @@ export default function RoomDetailsModal({
               </div>
 
               <div className="grid grid-cols-1 gap-6">
-                {/* Room Details Card */}
-                <div className="bg-white rounded-lg border border-[#E8DCCA] shadow-sm p-2">
-                  <div className="flex items-center mb-2">
-                    <Home className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                    <h5 className="text-xs font-semibold text-gray-900">Room Information</h5>
+                {/* Room Details */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+                    <h4 className="text-sm font-medium text-[#5D3A1F]">Room Information</h4>
                   </div>
                   
-                  <div className="bg-gray-50 rounded-lg p-2 border border-[#E8DCCA] text-xs grid grid-cols-1 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Room Number */}
-                    <div className="flex items-center">
-                      <span className="text-gray-500">Room Number:</span>
-                      <span className="text-[#8B5A2B] font-medium ml-1.5">{room.roomNumber}</span>
+                    <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                        <Home className="h-5 w-5 text-[#8B5A2B]" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-[#6B4226]/70 mb-1">Room Number</p>
+                        <p className="text-sm font-medium text-[#5D3A1F]">{room.roomNumber}</p>
+                      </div>
                     </div>
                     
                     {/* Room Type */}
-                    <div className="flex items-center">
-                      <span className="text-gray-500">Type:</span>
-                      <span className="text-[#8B5A2B] font-medium ml-1.5">{getRoomTypeLabel(room.roomType)}</span>
+                    <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                        <Tag className="h-5 w-5 text-[#8B5A2B]" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-[#6B4226]/70 mb-1">Room Type</p>
+                        <p className="text-sm font-medium text-[#5D3A1F]">{getRoomTypeLabel(room.roomType)}</p>
+                      </div>
                     </div>
                     
                     {/* Price */}
-                    <div className="flex items-center">
-                      <span className="text-gray-500">Price:</span>
-                      <span className="text-[#8B5A2B] font-medium ml-1.5">₱{room.price}/night</span>
+                    <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                        <DollarSign className="h-5 w-5 text-[#8B5A2B]" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-[#6B4226]/70 mb-1">Price per Night</p>
+                        <p className="text-sm font-medium text-[#5D3A1F]">₱{room.price}</p>
+                      </div>
                     </div>
                     
                     {/* Capacity */}
-                    <div className="flex items-center">
-                      <span className="text-gray-500">Capacity:</span>
-                      <span className="text-[#8B5A2B] font-medium ml-1.5">{room.capacity} {room.capacity === 1 ? 'Person' : 'People'}</span>
+                    <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                        <Users className="h-5 w-5 text-[#8B5A2B]" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-[#6B4226]/70 mb-1">Capacity</p>
+                        <p className="text-sm font-medium text-[#5D3A1F]">{room.capacity} {room.capacity === 1 ? 'Person' : 'People'}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
                 
-                {/* Amenities Card */}
-                <div className="bg-white rounded-lg border border-[#E8DCCA] shadow-sm p-2">
-                  <div className="flex items-center mb-2">
-                    <Tag className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                    <h5 className="text-xs font-semibold text-gray-900">Amenities</h5>
+                {/* Amenities */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+                    <h4 className="text-sm font-medium text-[#5D3A1F]">Room Amenities</h4>
                   </div>
                   
-                  <div className="bg-gray-50 rounded-lg p-2 border border-[#E8DCCA] text-xs">
+                  <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm p-4 space-y-3">
                     {(() => {
                       let amenities = room.amenities;
                       if (typeof amenities === "string") {
@@ -276,18 +331,26 @@ export default function RoomDetailsModal({
                   </div>
                 </div>
                 
-                {/* Description Card */}
+                {/* Description */}
                 {room.description && (
-                  <div className="bg-white rounded-lg border border-[#E8DCCA] shadow-sm p-2 col-span-1 md:col-span-2">
-                    <div className="flex items-center mb-2">
-                      <AlertTriangle className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                      <h5 className="text-xs font-semibold text-gray-900">Room Description</h5>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+                      <h4 className="text-sm font-medium text-[#5D3A1F]">Room Description</h4>
                     </div>
                     
-                    <div className="bg-gray-50 rounded-lg p-2 border border-[#E8DCCA] text-xs">
-                      <p className="text-[#8B5A2B] italic">
-                        {room.description || 'No description provided.'}
-                      </p>
+                    <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                          <AlertTriangle className="h-5 w-5 text-[#8B5A2B]" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-[#6B4226]/70 mb-1">Description</p>
+                          <p className="text-sm text-[#5D3A1F]">
+                            {room.description || 'No description provided.'}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -295,19 +358,34 @@ export default function RoomDetailsModal({
             </div>
           </div>
           
-          {/* Footer */}
-          <div className="flex flex-col pt-3 border-t border-[#E8DCCA] mt-4">
-            {/* Status Management */}
-            <div className="mb-4">
-              <div className="flex flex-wrap gap-3">
+          {/* Room Status Management */}
+          <div className="space-y-4 pt-6 border-t border-[#DEB887]/30 mt-6">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+              <h4 className="text-sm font-medium text-[#5D3A1F]">Room Status Management</h4>
+            </div>
+            
+            <div className="flex flex-wrap gap-3">
                 {room.status !== 'available' && (
                   <button 
                     onClick={() => handleStatusChange('available')}
                     disabled={isChangingStatus}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-green-600 to-green-800 rounded-lg shadow-sm hover:from-green-700 hover:to-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-all disabled:opacity-70"
+                    className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-all duration-300 disabled:opacity-70"
                   >
-                    <CheckCircle className="h-3.5 w-3.5" />
-                    {isChangingStatus ? 'Updating...' : 'Mark as Available'}
+                    {isChangingStatus ? (
+                      <span className="flex items-center gap-2">
+                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Updating...
+                      </span>
+                    ) : (
+                      <>
+                        <CheckCircle className="h-4 w-4" />
+                        Mark as Available
+                      </>
+                    )}
                   </button>
                 )}
                 
@@ -315,13 +393,24 @@ export default function RoomDetailsModal({
                   <button 
                     onClick={() => handleStatusChange('maintenance')}
                     disabled={isChangingStatus}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-lg shadow-sm hover:from-[#6B4226] hover:to-[#5A3921] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all disabled:opacity-70"
+                    className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[#F44336] to-[#C62828] rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-all duration-300 disabled:opacity-70"
                   >
-                    <AlertTriangle className="h-3.5 w-3.5" />
-                    {isChangingStatus ? 'Updating...' : 'Set to Maintenance'}
+                    {isChangingStatus ? (
+                      <span className="flex items-center gap-2">
+                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Updating...
+                      </span>
+                    ) : (
+                      <>
+                        <AlertTriangle className="h-4 w-4" />
+                        Set to Maintenance
+                      </>
+                    )}
                   </button>
                 )}
-              </div>
             </div>
           </div>
         </div>

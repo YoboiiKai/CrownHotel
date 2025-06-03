@@ -233,168 +233,210 @@ export default function ReservationCalendar() {
   return (
     <SuperAdminLayout>
       <div className="mx-auto max-w-6xl">
-        <div className="space-y-6">
-          {/* Action Bar */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <div className="relative flex-1 sm:flex-none sm:w-64">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search events..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
-                />
+        {/* Combined Action Bar with Search, Filter, and Navigation */}
+        <div className="bg-white rounded-xl shadow-md border border-[#DEB887]/30 p-4 mb-8 mt-5">
+          <div className="flex flex-col lg:flex-row gap-4 items-center">
+            {/* Search Bar */}
+            <div className="relative w-full lg:flex-1">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B5A2B]">
+                <Search className="h-4 w-4" />
               </div>
-              <div className="relative">
-                <button 
-                  onClick={() => setFilterOpen(!filterOpen)}
-                  className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-100 transition-all"
+              <input
+                type="text"
+                placeholder="Search events..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-lg border border-[#DEB887]/30 bg-white py-2.5 pl-10 pr-4 text-sm text-[#5D3A1F] placeholder-[#8B5A2B]/40 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
+              />
+            </div>
+            
+            {/* Status Filter Tabs */}
+            <div className="flex items-center justify-center w-full lg:w-auto">
+              <div className="inline-flex bg-[#F5EFE7]/50 rounded-lg p-1 border border-[#DEB887]/20">
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${statusFilter === "all" 
+                    ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setStatusFilter("all")}
                 >
-                  <Filter className="h-4 w-4 text-gray-400" />
-                  <span>Filter</span>
-                  {filterOpen ? (
-                    <ChevronUp className="h-4 w-4 text-gray-400" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4 text-gray-400" />
-                  )}
+                  All
                 </button>
                 
-                {filterOpen && (
-                  <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-10">
-                    <div className="space-y-4">
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                        <select 
-                          value={statusFilter}
-                          onChange={(e) => setStatusFilter(e.target.value)}
-                          className="w-full rounded-lg border border-gray-200 bg-white py-2 px-3 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
-                        >
-                          <option value="all">All Statuses</option>
-                          <option value="pending">Pending</option>
-                          <option value="confirmed">Confirmed</option>
-                          <option value="cancelled">Cancelled</option>
-                          <option value="completed">Completed</option>
-                        </select>
-                      </div>
-                      
-                      <button
-                        onClick={() => {
-                          setStatusFilter('all')
-                          setSearchQuery('')
-                        }}
-                        className="w-full py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors"
-                      >
-                        Reset Filters
-                      </button>
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${statusFilter === "pending" 
+                    ? "bg-gradient-to-r from-[#F59E0B]/90 to-[#F59E0B]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setStatusFilter("pending")}
+                >
+                  Pending
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${statusFilter === "confirmed" 
+                    ? "bg-gradient-to-r from-[#4CAF50]/90 to-[#4CAF50]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setStatusFilter("confirmed")}
+                >
+                  Confirmed
+                </button>
+                
+                {/* Additional Status Filter Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setFilterOpen(!filterOpen)}
+                    className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${statusFilter === "cancelled" || statusFilter === "completed" 
+                      ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm" 
+                      : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  >
+                    <div className="flex items-center gap-1">
+                      <span>More</span>
+                      {filterOpen ? (
+                        <ChevronUp className="h-3 w-3" />
+                      ) : (
+                        <ChevronDown className="h-3 w-3" />
+                      )}
                     </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Calendar View */}
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#8B5A2B] to-[#6B4226]">
-              <h2 className="text-lg font-medium text-white">Event Calendar</h2>
-              <div className="flex items-center space-x-2">
-                <button 
-                  onClick={goToPreviousMonth} 
-                  className="p-2 rounded-full hover:bg-[#F5EFE7] text-white hover:text-[#8B5A2B] transition-colors"
-                >
-                  <ChevronUp className="h-5 w-5" />
-                </button>
-                <span className="font-medium text-white">
-                  {selectedDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
-                </span>
-                <button 
-                  onClick={goToNextMonth} 
-                  className="p-2 rounded-full hover:bg-[#F5EFE7] text-white hover:text-[#8B5A2B] transition-colors"
-                >
-                  <ChevronDown className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
-
-            {loading ? (
-              <div className="p-8 text-center">
-                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#8B5A2B] border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-                <p className="mt-2 text-gray-600">Loading events...</p>
-              </div>
-            ) : error ? (
-              <div className="p-8 text-center">
-                <AlertCircle className="h-8 w-8 text-red-500 mx-auto" />
-                <p className="mt-2 text-gray-600">{error}</p>
-                <button 
-                  onClick={fetchEvents}
-                  className="mt-4 px-4 py-2 bg-[#8B5A2B] text-white rounded-lg hover:bg-[#6B4226] transition-colors"
-                >
-                  Retry
-                </button>
-              </div>
-            ) : (
-              <div className="p-4 overflow-x-auto">
-                <div className="min-w-[768px]">
-                  <div className="grid grid-cols-7 mb-2">
-                    {weekDays.map((day) => (
-                      <div key={day} className="py-2 text-center text-sm font-medium text-gray-500">
-                        {day}
+                  </button>
+                  
+                  {filterOpen && (
+                    <div className="absolute right-0 mt-2 w-40 rounded-lg border border-[#DEB887]/30 bg-white shadow-lg z-10">
+                      <div className="p-1">
+                        <button
+                          className={`w-full rounded-md px-3 py-2 text-left text-xs sm:text-sm transition-all duration-200 ${statusFilter === "cancelled" 
+                            ? "bg-gradient-to-r from-[#EF4444]/90 to-[#EF4444]/70 text-white" 
+                            : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                          onClick={() => {
+                            setStatusFilter("cancelled");
+                            setFilterOpen(false);
+                          }}
+                        >
+                          Cancelled
+                        </button>
+                        
+                        <button
+                          className={`w-full rounded-md px-3 py-2 text-left text-xs sm:text-sm transition-all duration-200 ${statusFilter === "completed" 
+                            ? "bg-gradient-to-r from-[#3B82F6]/90 to-[#3B82F6]/70 text-white" 
+                            : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                          onClick={() => {
+                            setStatusFilter("completed");
+                            setFilterOpen(false);
+                          }}
+                        >
+                          Completed
+                        </button>
                       </div>
-                    ))}
-                  </div>
-
-                  <div className="grid grid-cols-7 gap-1">
-                    {calendarDays.map((day, index) => (
-                      <div
-                        key={index}
-                        className={`min-h-[100px] border rounded-lg p-2 ${
-                          day.isCurrentMonth ? "bg-white" : "bg-gray-50 text-gray-400"
-                        } ${
-                          day.date.getDate() === new Date().getDate() &&
-                          day.date.getMonth() === new Date().getMonth() &&
-                          day.date.getFullYear() === new Date().getFullYear()
-                            ? "border-[#8B5A2B] bg-[#F5EFE7]"
-                            : "border-gray-100"
-                        }`}
-                      >
-                        <div className="flex justify-between items-start">
-                          <span className="font-medium">{day.date.getDate()}</span>
-                          {day.events.total > 0 && (
-                            <span className="text-xs bg-[#F5EFE7] text-[#8B5A2B] font-medium px-2 py-1 rounded-full">
-                              {day.events.total}
-                            </span>
-                          )}
-                        </div>
-
-                        {day.events.total > 0 && (
-                          <div className="mt-2 space-y-1">
-                            {day.events.items.map((event, eventIndex) => (
-                              <div 
-                                key={eventIndex}
-                                onClick={() => handleEventClick(event)}
-                                className={`flex items-center text-xs p-1 rounded cursor-pointer hover:bg-gray-100 ${
-                                  event.status === 'confirmed' ? 'text-green-700 bg-green-50' :
-                                  event.status === 'cancelled' ? 'text-red-700 bg-red-50' :
-                                  event.status === 'completed' ? 'text-blue-700 bg-blue-50' :
-                                  'text-gray-700 bg-gray-50'
-                                }`}
-                              >
-                                {getEventIcon(event.eventType)}
-                                <span className="ml-1 truncate">{event.clientName}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
+            </div>
+            
+            {/* Month Navigation */}
+            <div className="flex items-center gap-2 w-full lg:w-auto">
+              <button
+                onClick={goToPreviousMonth}
+                className="px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border border-[#DEB887]/50 bg-[#F5EFE7]/50 text-[#8B5A2B] hover:bg-[#F5EFE7] shadow-sm hover:shadow-md flex items-center justify-center gap-1"
+              >
+                <ChevronUp className="h-4 w-4" />
+                <span>Previous</span>
+              </button>
+              
+              <div className="px-4 py-2 text-sm font-medium rounded-lg bg-[#F5EFE7]/80 text-[#5D3A1F] border border-[#DEB887]/20">
+                {selectedDate.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+              </div>
+              
+              <button
+                onClick={goToNextMonth}
+                className="px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 border border-[#DEB887]/50 bg-[#F5EFE7]/50 text-[#8B5A2B] hover:bg-[#F5EFE7] shadow-sm hover:shadow-md flex items-center justify-center gap-1"
+              >
+                <span>Next</span>
+                <ChevronDown className="h-4 w-4" />
+              </button>
+            </div>
           </div>
+        </div>
+
+        {/* Calendar View */}
+        <div className="bg-white rounded-xl shadow-md border border-[#DEB887]/30 overflow-hidden">
+          <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B]">
+            <h2 className="text-lg font-semibold text-white">Monthly View</h2>
+          </div>
+
+          {loading ? (
+            <div className="p-8 text-center">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#8B5A2B] border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+              <p className="mt-2 text-gray-600">Loading events...</p>
+            </div>
+          ) : error ? (
+            <div className="p-8 text-center">
+              <AlertCircle className="h-8 w-8 text-red-500 mx-auto" />
+              <p className="mt-2 text-gray-600">{error}</p>
+              <button 
+                onClick={fetchEvents}
+                className="mt-4 px-4 py-2 bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white rounded-lg hover:shadow-md transition-all duration-200"
+              >
+                Retry
+              </button>
+            </div>
+          ) : (
+            <div className="p-4 overflow-x-auto">
+              <div className="min-w-[768px]">
+                <div className="grid grid-cols-7 mb-2">
+                  {weekDays.map((day) => (
+                    <div key={day} className="py-2 text-center text-sm font-medium text-[#5D3A1F]/70">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-7 gap-1">
+                  {calendarDays.map((day, index) => (
+                    <div
+                      key={index}
+                      className={`min-h-[100px] border rounded-lg p-2 ${
+                        day.isCurrentMonth ? "bg-white" : "bg-[#F5EFE7]/20 text-[#5D3A1F]/40"
+                      } ${
+                        day.date.getDate() === new Date().getDate() &&
+                        day.date.getMonth() === new Date().getMonth() &&
+                        day.date.getFullYear() === new Date().getFullYear()
+                          ? "border-[#8B5A2B] bg-[#F5EFE7]/40"
+                          : "border-[#DEB887]/20"
+                      }`}
+                    >
+                      <div className="flex justify-between items-start">
+                        <span className="font-medium text-[#5D3A1F]">{day.date.getDate()}</span>
+                        {day.events.total > 0 && (
+                          <span className="text-xs bg-[#8B5A2B]/10 text-[#8B5A2B] font-medium px-2 py-1 rounded-full">
+                            {day.events.total}
+                          </span>
+                        )}
+                      </div>
+
+                      {day.events.total > 0 && (
+                        <div className="mt-2 space-y-1">
+                          {day.events.items.map((event, eventIndex) => (
+                            <div 
+                              key={eventIndex}
+                              onClick={() => handleEventClick(event)}
+                              className={`flex items-center text-xs p-1 rounded cursor-pointer hover:bg-[#F5EFE7]/50 transition-all duration-200 ${
+                                event.status === 'confirmed' ? 'text-green-700 bg-green-50/70' :
+                                event.status === 'cancelled' ? 'text-red-700 bg-red-50/70' :
+                                event.status === 'completed' ? 'text-blue-700 bg-blue-50/70' :
+                                'text-[#5D3A1F]/70 bg-[#F5EFE7]/30'
+                              }`}
+                            >
+                              {getEventIcon(event.eventType)}
+                              <span className="ml-1 truncate">{event.clientName}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       

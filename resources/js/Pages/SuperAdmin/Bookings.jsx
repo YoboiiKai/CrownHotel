@@ -17,7 +17,11 @@ import {
   PhilippinePeso,
   Trash,
   X,
-  CheckCircle
+  CheckCircle,
+  Clock,
+  LogIn,
+  LogOut,
+  MessageSquare
 } from "lucide-react";
 import BookingDetailsModal from "@/Components/SuperAdmin/BookingDetailsModal";
 import UpdateBookingModal from "@/Components/SuperAdmin/UpdateBookingModal";
@@ -279,9 +283,8 @@ export default function Bookings() {
 
   return (
     <SuperAdminLayout>
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={true} newestOnTop />
+      <ToastContainer position="top-right" hideProgressBar />
       <div className="mx-auto max-w-6xl">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Bookings Management</h1>
 
         {/* Booking Details Modal */}
         {showBookingDetails && (
@@ -317,269 +320,284 @@ export default function Bookings() {
           />
         )}
 
-        {/* Action Bar */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="relative flex-1 sm:flex-none sm:w-64">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        {/* Combined Action Bar with Search, Filter, and Add Button */}
+        <div className="bg-white rounded-xl shadow-md border border-[#DEB887]/30 p-4 mb-8 mt-5">
+          <div className="flex flex-col lg:flex-row gap-4 items-center">
+            {/* Search Bar */}
+            <div className="relative w-full lg:flex-1">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B5A2B]">
+                <Search className="h-4 w-4" />
+              </div>
               <input
                 type="text"
                 placeholder="Search bookings..."
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
+                className="w-full rounded-lg border border-[#DEB887]/30 bg-white py-2.5 pl-10 pr-4 text-sm text-[#5D3A1F] placeholder-[#8B5A2B]/40 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
               />
             </div>
-            <div className="relative">
-              <button 
-                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-                className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
-              >
-                <Filter className="h-4 w-4 text-gray-400" />
-                <span>Filter</span>
-                <ChevronDown className="h-4 w-4 text-gray-400" />
-              </button>
-              {isFilterDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 rounded-lg border border-gray-100 bg-white shadow-lg z-10">
-                  <div className="p-2">
-                    <button
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
-                      onClick={() => {
-                        setStatusFilter("all");
-                        setIsFilterDropdownOpen(false);
-                      }}
-                    >
-                      All Bookings
-                    </button>
-                    <button
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
-                      onClick={() => {
-                        setStatusFilter("pending");
-                        setIsFilterDropdownOpen(false);
-                      }}
-                    >
-                      Pending
-                    </button>
-                    <button
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
-                      onClick={() => {
-                        setStatusFilter("confirmed");
-                        setIsFilterDropdownOpen(false);
-                      }}
-                    >
-                      Confirmed
-                    </button>
-                    <button
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
-                      onClick={() => {
-                        setStatusFilter("checked_in");
-                        setIsFilterDropdownOpen(false);
-                      }}
-                    >
-                      Checked In
-                    </button>
-                    <button
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
-                      onClick={() => {
-                        setStatusFilter("checked_out");
-                        setIsFilterDropdownOpen(false);
-                      }}
-                    >
-                      Checked Out
-                    </button>
-                    <button
-                      className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-[#A67C52]/10 text-gray-700"
-                      onClick={() => {
-                        setStatusFilter("cancelled");
-                        setIsFilterDropdownOpen(false);
-                      }}
-                    >
-                      Cancelled
-                    </button>
-                  </div>
+            
+            {/* Status Filter Tabs */}
+            <div className="flex items-center justify-center w-full lg:w-auto">
+              <div className="inline-flex bg-[#F5EFE7]/50 rounded-lg p-1 border border-[#DEB887]/20">
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${statusFilter === "all" 
+                    ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setStatusFilter("all")}
+                >
+                  All
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${statusFilter === "pending" 
+                    ? "bg-gradient-to-r from-[#F59E0B]/90 to-[#F59E0B]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setStatusFilter("pending")}
+                >
+                  Pending
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${statusFilter === "confirmed" 
+                    ? "bg-gradient-to-r from-[#4CAF50]/90 to-[#4CAF50]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setStatusFilter("confirmed")}
+                >
+                  Confirmed
+                </button>
+                
+                {/* Additional Status Filter Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                    className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${statusFilter === "checked_in" || statusFilter === "checked_out" || statusFilter === "cancelled" 
+                      ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm" 
+                      : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  >
+                    <div className="flex items-center gap-1">
+                      <span>More</span>
+                      <ChevronDown className="h-3 w-3" />
+                    </div>
+                  </button>
+                  
+                  {isFilterDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-40 rounded-lg border border-[#DEB887]/30 bg-white shadow-lg z-10">
+                      <div className="p-1">
+                        <button
+                          className={`w-full rounded-md px-3 py-2 text-left text-xs sm:text-sm transition-all duration-200 ${statusFilter === "checked_in" 
+                            ? "bg-gradient-to-r from-[#3B82F6]/90 to-[#3B82F6]/70 text-white" 
+                            : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                          onClick={() => {
+                            setStatusFilter("checked_in");
+                            setIsFilterDropdownOpen(false);
+                          }}
+                        >
+                          Checked In
+                        </button>
+                        
+                        <button
+                          className={`w-full rounded-md px-3 py-2 text-left text-xs sm:text-sm transition-all duration-200 ${statusFilter === "checked_out" 
+                            ? "bg-gradient-to-r from-[#6366F1]/90 to-[#6366F1]/70 text-white" 
+                            : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                          onClick={() => {
+                            setStatusFilter("checked_out");
+                            setIsFilterDropdownOpen(false);
+                          }}
+                        >
+                          Checked Out
+                        </button>
+                        
+                        <button
+                          className={`w-full rounded-md px-3 py-2 text-left text-xs sm:text-sm transition-all duration-200 ${statusFilter === "cancelled" 
+                            ? "bg-gradient-to-r from-[#EF4444]/90 to-[#EF4444]/70 text-white" 
+                            : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                          onClick={() => {
+                            setStatusFilter("cancelled");
+                            setIsFilterDropdownOpen(false);
+                          }}
+                        >
+                          Cancelled
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="flex gap-2 w-full lg:w-auto">
+              <button
+                onClick={() => setShowAddBookingForm(true)}
+                className="px-5 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm hover:shadow-md w-full lg:w-auto flex items-center justify-center gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Add Booking</span>
+              </button>
             </div>
           </div>
-          <div className="flex gap-2 w-full sm:w-auto">
-            <button
-              onClick={() => setShowCalendarModal(true)}
-              className="flex items-center gap-2 rounded-lg bg-white border border-[#A67C52] px-4 py-2 text-sm font-medium text-[#8B5A2B] shadow-sm hover:bg-[#F5EFE7] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/50 focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
-            >
-              <Calendar className="h-4 w-4" />
-              <span>View Calendar</span>
-            </button>
-            <button
-              onClick={() => setShowAddBookingForm(true)}
-              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#8B5A2B] hover:to-[#6B4226] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-2 transition-all w-full sm:w-auto justify-center"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Add New Booking</span>
-            </button>
+        </div>
+
+
+
+        {/* Page Title and Summary */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-[#5D3A1F] mb-1">Bookings Management</h1>
+            <p className="text-sm text-[#8B5A2B]/70">
+              {filteredBookings.length} {filteredBookings.length === 1 ? 'booking' : 'bookings'} found
+            </p>
           </div>
         </div>
-
-        {/* Status Tabs */}
-        <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
-          <button
-            onClick={() => handleStatusFilterChange("all")}
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${
-              statusFilter === "all"
-                ? "border-b-2 border-[#8B5A2B] text-[#8B5A2B]"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            All Bookings
-          </button>
-          <button
-            onClick={() => handleStatusFilterChange("pending")}
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${
-              statusFilter === "pending"
-                ? "border-b-2 border-[#8B5A2B] text-[#8B5A2B]"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Pending
-          </button>
-          <button
-            onClick={() => handleStatusFilterChange("confirmed")}
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${
-              statusFilter === "confirmed"
-                ? "border-b-2 border-[#8B5A2B] text-[#8B5A2B]"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Confirmed
-          </button>
-          <button
-            onClick={() => handleStatusFilterChange("checked_in")}
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${
-              statusFilter === "checked_in"
-                ? "border-b-2 border-[#8B5A2B] text-[#8B5A2B]"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Checked In
-          </button>
-          <button
-            onClick={() => handleStatusFilterChange("checked_out")}
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${
-              statusFilter === "checked_out"
-                ? "border-b-2 border-[#8B5A2B] text-[#8B5A2B]"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Checked Out
-          </button>
-          <button
-            onClick={() => handleStatusFilterChange("cancelled")}
-            className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${
-              statusFilter === "cancelled"
-                ? "border-b-2 border-[#8B5A2B] text-[#8B5A2B]"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Cancelled
-          </button>
-        </div>
-
+        
         {/* Empty State */}
         {filteredBookings.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="bg-gray-100 p-4 rounded-full mb-4">
-              <X className="h-8 w-8 text-gray-500" />
+          <div className="flex flex-col items-center justify-center py-16 bg-white rounded-xl shadow-md border border-[#DEB887]/30">
+            <div className="rounded-full bg-[#F5EFE7] p-4 mb-4">
+              <Calendar className="h-8 w-8 text-[#8B5A2B]" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">No bookings found</h3>
-            <p className="text-gray-500 mb-4">There are no bookings matching your search criteria.</p>
+            <h3 className="text-xl font-semibold text-[#5D3A1F] mb-2">No bookings found</h3>
+            <p className="text-sm text-[#8B5A2B]/70 mb-6 text-center max-w-md">
+              There are no bookings matching your current filters. Try adjusting your search criteria.
+            </p>
             <button
               onClick={() => {
                 setSearchTerm("");
                 setStatusFilter("all");
               }}
-              className="text-[#8B5A2B] font-medium hover:underline"
+              className="px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 border border-[#DEB887]/50 bg-[#F5EFE7]/50 text-[#8B5A2B] hover:bg-[#F5EFE7] shadow-sm"
             >
-              Clear filters
+              Clear all filters
             </button>
           </div>
         ) : (
           /* Bookings Grid */
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {filteredBookings.map((booking) => (
-              <div key={booking.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-all flex flex-col">
-                <div className="p-4 flex flex-col flex-grow">
-                  <div className="flex-grow">
-                    <div className="flex items-center justify-between mb-3">
-                      <div
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                          booking.bookingStatus
-                        )}`}
-                      >
-                        {booking.bookingStatus.charAt(0).toUpperCase() + booking.bookingStatus.slice(1).replace("_", " ")}
+              <div
+                key={booking.id}
+                className="rounded-lg overflow-hidden border border-[#DEB887]/30 bg-gradient-to-br from-[#F5EFE7] to-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 relative"
+              >
+                {/* Booking Number Badge */}
+                <div className="absolute top-3 left-3 z-10 bg-[#8B5A2B]/10 px-2 py-0.5 rounded-full text-xs font-medium text-[#8B5A2B] flex items-center">
+                  <Tag className="h-3 w-3 mr-1" />
+                  <span>#{booking.bookingNumber}</span>
+                </div>
+                
+                {/* Price Badge */}
+                <div className="absolute top-3 right-3 z-10 bg-[#8B5A2B]/10 px-2 py-0.5 rounded-full text-xs font-medium text-[#8B5A2B] flex items-center">
+                  <PhilippinePeso className="h-3 w-3 mr-1" />
+                  <span>{booking.totalAmount}</span>
+                </div>
+                
+
+                
+                <div className="p-3">
+                  {/* Guest Info */}
+                  <div className="flex items-center mb-3 mt-6">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#A67C52] to-[#8B5A2B] shadow-md text-white font-semibold text-sm">
+                        {booking.guestName.split(' ').map(n => n[0]).join('').toUpperCase()}
                       </div>
-                      <div className="flex items-center gap-1">
-                        <PhilippinePeso className="h-4 w-4 text-[#8B5A2B]" />
-                        <span className="font-medium text-[#8B5A2B]">{booking.totalAmount}</span>
+                      <div>
+                        <h3 className="text-sm font-semibold text-[#5D3A1F] truncate">
+                          {booking.guestName}
+                        </h3>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className={`px-2 py-0.5 rounded-full text-xs font-medium flex items-center ${getStatusColor(booking.bookingStatus)}`}>
+                            {booking.bookingStatus === "pending" && <Clock className="h-3 w-3 mr-1" />}
+                            {booking.bookingStatus === "confirmed" && <CheckCircle className="h-3 w-3 mr-1" />}
+                            {booking.bookingStatus === "checked_in" && <LogIn className="h-3 w-3 mr-1" />}
+                            {booking.bookingStatus === "checked_out" && <LogOut className="h-3 w-3 mr-1" />}
+                            {booking.bookingStatus === "cancelled" && <X className="h-3 w-3 mr-1" />}
+                            {booking.bookingStatus.charAt(0).toUpperCase() + booking.bookingStatus.slice(1).replace("_", " ")}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                      {booking.guestName}
-                    </h3>
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
-                      <Tag className="h-3 w-3 text-gray-400" />
-                      <span>#{booking.bookingNumber}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
-                      <Calendar className="h-3 w-3 text-gray-400" />
-                      <span>
-                        {formatDate(booking.checkInDate)} - {formatDate(booking.checkOutDate)}
-                      </span>
-                      <span className="text-xs text-gray-500">({booking.nights} {booking.nights === 1 ? "night" : "nights"})</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
-                      <Bed className="h-3 w-3 text-gray-400" />
-                      <span>
-                        Room {booking.roomNumber} ({getRoomTypeLabel(booking.roomType)})
-                      </span>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
-                      <Users className="h-3 w-3 text-gray-400" />
-                      <span>
-                        {booking.adults} {booking.adults === 1 ? "Adult" : "Adults"}
-                        {booking.children > 0 &&
-                          `, ${booking.children} ${booking.children === 1 ? "Child" : "Children"}`}
-                      </span>
-                    </div>
-                    
-                    {booking.specialRequests && (
-                      <div className="mb-4">
-                        <p className="text-sm text-gray-600 line-clamp-2">
-                          <span className="font-medium">Special requests: </span>
-                          {booking.specialRequests}
-                        </p>
-                      </div>
-                    )}
                   </div>
                   
-                  <div className="flex items-center gap-2 pt-2 mt-auto border-t border-gray-100">
-                    <button
-                      onClick={() => handleViewDetails(booking)}
-                      className="flex-1 flex items-center justify-center gap-1 rounded-md bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] px-3 py-2 text-xs font-medium text-white shadow-sm hover:from-[#8B5A2B] hover:to-[#6B4226] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
-                    >
-                      <Eye className="h-4 w-4" />
-                      <span>View</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setSelectedBooking(booking);
-                        setShowUpdateBookingForm(true);
-                      }}
-                      className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#A67C52]/30 bg-[#A67C52]/10 px-3 py-2 text-xs font-medium text-[#6B4226] hover:bg-[#A67C52]/20 focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
-                    >
-                      <Edit className="h-4 w-4" />
-                      <span>Update</span>
-                    </button>
+                  <div className="mt-3">
+                    <div className="flex flex-col gap-2">
+                      {/* Date Range */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                            <Calendar className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                          </div>
+                          <div className="text-xs text-[#6B4226]/70">
+                            <span>{formatDate(booking.checkInDate)} - {formatDate(booking.checkOutDate)}</span>
+                            <span className="text-xs text-[#8B5A2B]/60 ml-1">({booking.nights} {booking.nights === 1 ? "night" : "nights"})</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Room Info */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                            <Bed className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                          </div>
+                          <p className="text-xs text-[#6B4226]/70">
+                            Room {booking.roomNumber} ({getRoomTypeLabel(booking.roomType)})
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Guests Count */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                            <Users className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                          </div>
+                          <p className="text-xs text-[#6B4226]/70">
+                            {booking.adults} {booking.adults === 1 ? "Adult" : "Adults"}
+                            {booking.children > 0 &&
+                              `, ${booking.children} ${booking.children === 1 ? "Child" : "Children"}`}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Special Requests */}
+                      {booking.specialRequests && (
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                              <MessageSquare className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                            </div>
+                            <p className="text-xs text-[#6B4226]/70 truncate max-w-[180px]">
+                              {booking.specialRequests}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="mt-3 h-1 w-full rounded-full bg-[#F5EFE7] overflow-hidden">
+                      <div className="h-full rounded-full bg-gradient-to-r from-[#A67C52] to-[#DEB887] w-full"></div>
+                    </div>
+                    
+                    {/* Action Buttons */}
+                    <div className="flex items-center gap-2 mt-3">
+                      <button
+                        onClick={() => handleViewDetails(booking)}
+                        className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:shadow-md transition-all duration-300"
+                      >
+                        <Eye className="h-3 w-3" />
+                        <span>View</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedBooking(booking);
+                          setShowUpdateBookingForm(true);
+                        }}
+                        className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#DEB887]/30 bg-white px-3 py-1.5 text-xs font-medium text-[#8B5A2B] hover:bg-[#DEB887]/10 transition-all duration-300"
+                      >
+                        <Edit className="h-3 w-3" />
+                        <span>Update</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

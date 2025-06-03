@@ -52,7 +52,7 @@ const scrollbarStyles = `
   }
 `;
 
-export default function Menu() {
+export default function PosMenu() {
   // Menu items data
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -109,7 +109,7 @@ export default function Menu() {
   };
 
   // Filter menu items based on category and search query
-  const filteredMenuItems = menuItems.filter((item) => {
+  const filteredItems = menuItems.filter((item) => {
     // First check if item exists to prevent errors with undefined items
     if (!item) return false;
     
@@ -140,11 +140,11 @@ export default function Menu() {
             : cartItem
         )
       );
-      toast.success(`Added another ${item.menuname} to cart.`);
+      // Toast removed
     } else {
       // Add new item to cart with quantity 1
       setCart([...cart, { ...item, quantity: 1 }]);
-      toast.success(`${item.menuname} added to cart.`);
+      // Toast removed
     }
   };
 
@@ -193,8 +193,11 @@ export default function Menu() {
   };
 
   // Handle order submission
-  const handleOrderSubmit = () => {
-    if (cart.length === 0) return;
+  const handleOrderSubmit = async () => {
+    if (cart.length === 0) {
+      toast.error("Your cart is empty. Add items before placing an order.");
+      return;
+    }
     
     // Validate room or table number based on service type
     if (serviceType === 'room' && !roomNumber.trim()) {
@@ -212,6 +215,7 @@ export default function Menu() {
       const orderData = {
         items: cart.map(item => ({
           menu_id: item.id,
+          name: item.menuname,
           quantity: item.quantity,
           price: item.price,
           subtotal: item.price * item.quantity
@@ -227,6 +231,8 @@ export default function Menu() {
         is_senior_citizen: isSeniorCitizen,
         payment_method: paymentMethod
       };
+      
+      console.log('Submitting order data:', orderData);
       
       // If payment method is not cash, show payment form
       if (paymentMethod !== 'cash') {
@@ -250,7 +256,7 @@ export default function Menu() {
       }
       
       // If payment method is cash, submit order directly
-      submitOrderToServer(orderData);
+      await submitOrderToServer(orderData);
       
     } catch (error) {
       console.error('Error submitting order:', error);
@@ -260,16 +266,17 @@ export default function Menu() {
       setIsSubmitting(false);
     }
   };
-  
-  // Function to submit order to server after payment is processed
+
   const submitOrderToServer = async (orderData) => {
     try {
       // Send order to API
       const response = await axios.post('/api/orders', orderData);
+      console.log('Order response:', response.data);
       
       // Show success message
       setOrderSuccess(true);
       setShowOrderConfirmation(true);
+      toast.success("Order placed successfully!");
       
       // Reset payment status
       setPaymentStatus(null);
@@ -281,7 +288,16 @@ export default function Menu() {
       
     } catch (error) {
       console.error('Error submitting order to server:', error);
-      toast.error('Failed to submit your order. Please try again.');
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+        toast.error(`Failed to place order: ${error.response.data.message || 'Server error'}`);
+      } else if (error.request) {
+        console.error("Request error:", error.request);
+        toast.error("No response received from server. Please try again.");
+      } else {
+        toast.error(`Error: ${error.message}`);
+      }
       setPaymentStatus('failed');
     }
   };
@@ -352,7 +368,7 @@ export default function Menu() {
           <div className="h-[calc(100vh-220px)] overflow-y-auto pr-2 custom-scrollbar">
             {/* Menu Item Cards - Landscape Layout with Square Image and Information */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-3">
-              {filteredMenuItems.map((item) => (
+              {filteredItems.map((item) => (
                 <div
                   key={item.id}
                   className="rounded-lg overflow-hidden border border-[#DEB887]/30 bg-gradient-to-br from-[#F5EFE7] to-white shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1 duration-300"
@@ -364,12 +380,12 @@ export default function Menu() {
                       {/* Image */}
                       <div className="absolute inset-0 overflow-hidden">
                         <img
-                          src={item.image ? `/${item.image}` : "https://via.placeholder.com/200x200?text=No+Image"}
+                          src={item.image ? item.image.startsWith('/') ? item.image : `/${item.image}` : "https://via.placeholder.com/300x200?text=No+Image"}
                           alt={item.menuname}
-                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          className="w-full h-full object-cover"
                           onError={(e) => {
                             e.target.onerror = null;
-                            e.target.src = "https://via.placeholder.com/200x200?text=Image+Error";
+                            e.target.src = "https://via.placeholder.com/300x200?text=No+Image";
                           }}
                         />
                         
@@ -450,7 +466,7 @@ export default function Menu() {
               ))}
             </div>
 
-            {filteredMenuItems.length === 0 && (
+            {filteredItems.length === 0 && (
               <div className="flex flex-col items-center justify-center py-12">
                 <div className="rounded-full bg-[#F5EFE7] p-3 mb-4">
                   <Utensils className="h-6 w-6 text-[#8B5A2B]" />
@@ -500,12 +516,12 @@ export default function Menu() {
                         {/* Item Image */}
                         <div className="h-12 w-12 rounded-md overflow-hidden flex-shrink-0 shadow-sm border border-[#DEB887]/20">
                           <img 
-                            src={item.image ? `/${item.image}` : "https://via.placeholder.com/300x200?text=No+Image"} 
+                            src={item.image ? item.image.startsWith('/') ? item.image : `/${item.image}` : "https://via.placeholder.com/300x200?text=No+Image"} 
                             alt={item.menuname} 
-                            className="h-full w-full object-cover" 
+                            className="w-full h-full object-cover"
                             onError={(e) => {
                               e.target.onerror = null;
-                              e.target.src = "https://via.placeholder.com/200x200?text=Image+Error";
+                              e.target.src = "https://via.placeholder.com/300x200?text=No+Image";
                             }}
                           />
                         </div>

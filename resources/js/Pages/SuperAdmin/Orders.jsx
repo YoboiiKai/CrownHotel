@@ -19,7 +19,8 @@ import {
   Eye,
   Edit,
   Trash2,
-  Coffee
+  Coffee,
+  PhilippinePeso
 } from 'lucide-react';
 import OrderDetailsModal from '@/Components/SuperAdmin/OrderDetailsModal';
 import UpdateOrderModal from '@/Components/SuperAdmin/UpdateOrderModal';
@@ -172,191 +173,241 @@ const Orders = ({ auth }) => {
 
   return (
     <SuperAdminLayout
-    
       user={auth.user}
       header={
         <h2 className="font-semibold text-xl text-gray-800 leading-tight">Orders</h2>
       }
     >
-       <ToastContainer position="top-right" hideProgressBar />
+      <ToastContainer position="top-right" hideProgressBar />
       <Head title="Orders" />
-        <div className="mx-auto max-w-6xl">
-          {/* Action Bar */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <div className="relative flex-1 sm:flex-none sm:w-64">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search orders..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
-                />
+      <div className="mx-auto max-w-6xl">
+        {/* Combined Action Bar with Search, Filter, and Refresh Button */}
+        <div className="bg-white rounded-xl shadow-md border border-[#DEB887]/30 p-4 mb-8 mt-5">
+          <div className="flex flex-col lg:flex-row gap-4 items-center">
+            {/* Search Bar */}
+            <div className="relative w-full lg:flex-1">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B5A2B]">
+                <Search className="h-4 w-4" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search orders..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full rounded-lg border border-[#DEB887]/30 bg-white py-2.5 pl-10 pr-4 text-sm text-[#5D3A1F] placeholder-[#8B5A2B]/40 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
+              />
+            </div>
+            
+            {/* Status Filter Tabs */}
+            <div className="flex items-center justify-center w-full lg:w-auto">
+              <div className="inline-flex bg-[#F5EFE7]/50 rounded-lg p-1 border border-[#DEB887]/20">
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${statusFilter === "all" 
+                    ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setStatusFilter("all")}
+                >
+                  All
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${statusFilter === "pending" 
+                    ? "bg-gradient-to-r from-[#F44336]/90 to-[#F44336]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setStatusFilter("pending")}
+                >
+                  Pending
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${statusFilter === "processing" 
+                    ? "bg-gradient-to-r from-[#3B82F6]/90 to-[#3B82F6]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setStatusFilter("processing")}
+                >
+                  Processing
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${statusFilter === "completed" 
+                    ? "bg-gradient-to-r from-[#4CAF50]/90 to-[#4CAF50]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setStatusFilter("completed")}
+                >
+                  Completed
+                </button>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Status Tabs */}
-          <div className="flex overflow-x-auto border-b border-gray-200 mb-6">
-            <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "all" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-              onClick={() => setStatusFilter("all")}
-            >
-              All Orders
-            </button>
-            <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "pending" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-              onClick={() => setStatusFilter("pending")}
-            >
-              Pending
-            </button>
-            <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "processing" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-              onClick={() => setStatusFilter("processing")}
-            >
-              Processing
-            </button>
-            <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "completed" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-              onClick={() => setStatusFilter("completed")}
-            >
-              Completed
-            </button>
-            <button
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${statusFilter === "cancelled" ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]" : "text-gray-500 hover:text-gray-700"}`}
-              onClick={() => setStatusFilter("cancelled")}
-            >
-              Cancelled
-            </button>
-          </div>
-
-          {/* Orders List */}
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredOrders.length === 0 ? (
-              <div className="col-span-full flex flex-col items-center justify-center py-12">
-                <div className="rounded-full bg-[#F5EFE7] p-3 mb-4">
-                  <Utensils className="h-6 w-6 text-[#8B5A2B]" />
-                </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-1">No orders found</h3>
-                <p className="text-gray-500 text-center max-w-md">
-                  Try adjusting your search or filter to find what you're looking for.
-                </p>
+        {/* Orders List */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {filteredOrders.length === 0 ? (
+            <div className="col-span-full flex flex-col items-center justify-center py-12 bg-white rounded-xl shadow-md border border-[#DEB887]/30 mt-8">
+              <div className="rounded-full bg-[#E8DCCA] p-3 mb-4">
+                <Utensils className="h-6 w-6 text-[#8B5A2B]" />
               </div>
-            ) : (
-              filteredOrders.map((order) => (
-                <div 
-                  key={order.id} 
-                  className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-lg transition-all group relative transform hover:-translate-y-1 duration-300"
-                >
-                  {/* Order Header */}
-                  <div className="p-4 bg-gradient-to-r from-[#F5EFE7] to-white border-b border-gray-100">
-                    <div className="flex justify-between items-start">
-                      <span className="text-base font-semibold text-gray-900 group-hover:text-[#8B5A2B] transition-colors">#{order.orderNumber}</span>
-                      <div className="flex items-center gap-2">
-                        <div className={`px-2.5 py-1 rounded-md text-xs font-medium inline-flex items-center ${getStatusBadgeClass(order.status)}`}>
-                          {getStatusIcon(order.status)}
-                          <span className="ml-1 capitalize">{order.status}</span>
+              <h3 className="text-lg font-medium text-gray-900 mb-1">No orders found</h3>
+              <p className="text-sm text-gray-500 mb-4">There are no orders matching your current filters.</p>
+              <button
+                onClick={() => {
+                  setStatusFilter("all");
+                  setSearchTerm("");
+                }}
+                className="text-sm font-medium text-[#8B5A2B] hover:text-[#5A371F]"
+              >
+                Clear filters
+              </button>
+            </div>
+          ) : (
+            filteredOrders.map((order) => (
+              <div 
+                key={order.id} 
+                className="rounded-lg overflow-hidden border border-[#DEB887]/30 bg-gradient-to-br from-[#F5EFE7] to-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 relative"
+              >
+                <div className="absolute top-3 right-3 z-10">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOrderToDelete(order.id);
+                    }}
+                    className="h-7 w-7 flex items-center justify-center rounded-full bg-red-100/80 text-red-600 hover:bg-red-200 transition-all opacity-80 hover:opacity-100 shadow-sm"
+                    title="Delete Order"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+                <div className="p-3">
+                  <div className="flex items-center mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#A67C52] to-[#8B5A2B] shadow-md text-white font-semibold text-sm">
+                        {order.id ? `#${order.id.toString().padStart(2, '0')}` : "OR"}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="flex items-center gap-1">
+                            {order.service_type === 'table' ? (
+                              <>
+                                <Utensils className="h-3 w-3 text-[#8B5A2B]" />
+                                <span className="text-xs text-[#8B5A2B] font-medium">Table {order.table_number || 'N/A'}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Utensils className="h-3 w-3 text-[#8B5A2B]" />
+                                <span className="text-xs text-[#8B5A2B] font-medium">Room Service</span>
+                              </>
+                            )}
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium flex items-center ${
+                            order.status === "completed"
+                              ? "bg-green-100 text-green-800"
+                              : order.status === "cancelled"
+                              ? "bg-red-100 text-red-800"
+                              : order.status === "processing"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}>
+                            {getStatusIcon(order.status)}
+                            <span className="ml-1 capitalize">{order.status}</span>
+                          </span>
                         </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOrderToDelete(order.id);
-                          }}
-                          className="p-1.5 rounded-md bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-all"
-                        >
-                          <Trash2 className="h-2.5 w-2.5" />
-                        </button>
                       </div>
                     </div>
                   </div>
-                  
-                  {/* Order Content */}
-                  <div className="p-4">
-                    {/* Customer Info */}
-                    <div className="mb-3">
-                      <div className="flex items-center mb-2">
-                        <User className="h-4 w-4 text-[#8B5A2B] mr-2" />
-                        <span className="text-sm text-gray-700">{order.customerName}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <MapPin className="h-4 w-4 text-[#8B5A2B] mr-2" />
-                        <span className="text-sm text-gray-700">Room {order.roomNumber}</span>
-                      </div>
-                    </div>
-                    
-                    {/* Order Summary */}
-                    <div className="flex justify-between items-center py-2 border-t border-b border-gray-100">
-                      <div className="flex items-center">
-                        <Utensils className="h-4 w-4 text-gray-400 mr-1.5" />
-                        <span className="text-sm text-gray-600">{order.items?.length || 0} items</span>
-                      </div>
-                      <div className="flex items-center bg-[#F5EFE7] px-2.5 py-1 rounded-md">
-                        <DollarSign className="h-4 w-4 text-[#8B5A2B] mr-1" />
-                        <span className="font-medium text-[#6B4226]">${parseFloat(order.total || 0).toFixed(2)}</span>
-                      </div>
-                    </div>
-                    
-                    {/* Order Details */}
-                    <div className="mt-3 space-y-1.5">
-                      {/* Subtotal and Discount */}
-                      <div className="flex justify-between text-xs">
-                        <span className="text-gray-500">Subtotal:</span>
-                        <span className="text-gray-700">${parseFloat(order.subtotal || 0).toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between text-xs">
-                        <span className="text-gray-500">Discount:</span>
-                        <span className="text-gray-700">${parseFloat(order.discount || 0).toFixed(2)}</span>
-                      </div>
-                      {order.isSeniorCitizen && (
-                        <div className="text-xs text-[#8B5A2B] font-medium">
-                          Senior Citizen Discount Applied
+                  <div className="mt-3">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                            <User className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                          </div>
+                          <div className="flex flex-col">
+                            <p className="text-xs text-[#6B4226]/70 truncate">{order.customerName || "Guest"}</p>
+                            {order.is_senior_citizen && (
+                              <span className="text-[10px] text-amber-600 font-medium">Senior Citizen</span>
+                            )}
+                          </div>
                         </div>
-                      )}
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                            {order.service_type === 'table' ? (
+                              <Utensils className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                            ) : (
+                              <MapPin className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                            )}
+                          </div>
+                          <p className="text-xs text-[#6B4226]/70">
+                            {order.service_type === 'table' ? 
+                              `Table ${order.table_number || "N/A"}` : 
+                              `Room ${order.room_number || "N/A"}`
+                            }
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                            <PhilippinePeso className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                          </div>
+                          <div className="flex flex-col">
+                            <p className="text-xs text-[#6B4226]/70">₱{parseFloat(order.total || 0).toFixed(2)}</p>
+                            <div className="flex items-center gap-1">
+                              <span className="text-[10px] text-[#8B5A2B] capitalize">{order.payment_method || 'cash'}</span>
+                              {order.payment_status && (
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${order.payment_status === 'completed' ? 'bg-green-50 text-green-700' : order.payment_status === 'failed' ? 'bg-red-50 text-red-700' : 'bg-yellow-50 text-yellow-700'}`}>
+                                  {order.payment_status}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
                       {order.notes && (
-                        <div className="text-xs italic text-gray-500 mt-1 border-t border-gray-100 pt-1">
-                          <span className="font-medium">Notes:</span> {order.notes}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                              <AlertCircle className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                            </div>
+                            <p className="text-xs text-[#6B4226]/70 truncate">{order.notes}</p>
+                          </div>
                         </div>
                       )}
                     </div>
-                    
-                    {/* Time Info */}
-                    <div className="mt-3 flex items-center text-xs text-gray-500">
-                      <Clock className="h-3.5 w-3.5 text-gray-400 mr-1.5" />
-                      <span>
-                        {order.status === 'completed' 
-                          ? `Completed at ${formatDateTime(order.updated_at)}` 
-                          : order.status === 'cancelled'
-                          ? `Cancelled at ${formatDateTime(order.updated_at)}`
-                          : `Created at: ${formatDateTime(order.created_at)}`}
-                      </span>
-                    </div>
+                  </div>
+                  
+                  <div className="mt-3 h-1 w-full rounded-full bg-[#F5EFE7] overflow-hidden">
+                    <div className="h-full rounded-full bg-gradient-to-r from-[#A67C52] to-[#DEB887] w-full"></div>
                   </div>
                   
                   {/* Action Buttons */}
-                  <div className="p-4 bg-gray-50 border-t border-gray-200">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setShowOrderDetails(order)}
-                        className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-transparent text-xs font-medium rounded-lg shadow-sm text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] hover:from-[#6B4226] hover:to-[#513018] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
-                      >
-                        <Eye className="h-4 w-4 mr-1.5" />
-                        <span>View Details</span>
-                      </button>
-                      <button
-                        onClick={() => setOrderToUpdate(order)}
-                        className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#E5D3B3] bg-[#F5EFE7] px-3 py-2 text-xs font-medium text-[#6B4226] hover:bg-[#E5D3B3] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
-                      >
-                        <Edit className="h-4 w-4 mr-1.5" />
-                        <span>Update</span>
-                      </button>
-                    </div>
+                  <div className="flex items-center gap-2 mt-3">
+                    <button
+                      onClick={() => setShowOrderDetails(order)}
+                      className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:shadow-md transition-all duration-300"
+                    >
+                      <Eye className="h-3 w-3" />
+                      <span>View</span>
+                    </button>
+                    <button
+                      onClick={() => setOrderToUpdate(order)}
+                      className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#DEB887]/30 bg-white px-3 py-1.5 text-xs font-medium text-[#8B5A2B] hover:bg-[#DEB887]/10 transition-all duration-300"
+                    >
+                      <Edit className="h-3 w-3" />
+                      <span>Update</span>
+                    </button>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
+              </div>
+            ))
+          )}
         </div>
+      </div>
       {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal
         show={orderToDelete !== null}
@@ -373,7 +424,6 @@ const Orders = ({ auth }) => {
           setShowOrderDetails(null);
         }}
       />
-      
       <UpdateOrderModal
         show={orderToUpdate !== null}
         onClose={() => setOrderToUpdate(null)}

@@ -87,63 +87,63 @@ export default function Employee() {
       <ToastContainer position="top-right" hideProgressBar />
       <div className="mx-auto max-w-6xl">
 
-        {/* Action Bar */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-5 mb-8 mt-5">
-          <div className="relative w-full sm:w-64">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B5A2B]">
-              <Search className="h-4 w-4" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search employees..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-full border border-[#DEB887]/30 bg-white py-2.5 pl-10 pr-4 text-sm text-[#5D3A1F] placeholder-[#8B5A2B]/40 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200 relative z-10"
-            />
-          </div>
-          
-          <button
-            onClick={() => setShowNewEmployeeForm(true)}
-            className="px-6 py-2 text-sm font-medium rounded-full transition-all duration-200 bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm hover:shadow-md w-full sm:w-auto flex items-center justify-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Add New Employee</span>
-          </button>
-        </div>
-
-        {/* Status Tabs */}
-        <div className="mb-8">
-          <div className="flex flex-col items-center">
-            <div className="inline-flex bg-white shadow-sm rounded-full p-1 border border-[#DEB887]/20">
-              <button
-                className={`px-6 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${filterStatus === "all" 
-                  ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm" 
-                  : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
-                onClick={() => setFilterStatus("all")}
-              >
-                All Employees
-              </button>
-              
-              <button
-                className={`px-6 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${filterStatus === "active" 
-                  ? "bg-gradient-to-r from-[#4CAF50]/90 to-[#4CAF50]/70 text-white shadow-sm" 
-                  : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
-                onClick={() => setFilterStatus("active")}
-              >
-                Active
-              </button>
-              
-              <button
-                className={`px-6 py-1.5 text-sm font-medium rounded-full transition-all duration-200 ${filterStatus === "inactive" 
-                  ? "bg-gradient-to-r from-[#F44336]/90 to-[#F44336]/70 text-white shadow-sm" 
-                  : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
-                onClick={() => setFilterStatus("inactive")}
-              >
-                Inactive
-              </button>
+        {/* Combined Action Bar with Search, Filter, and Add Button */}
+        <div className="bg-white rounded-xl shadow-md border border-[#DEB887]/30 p-4 mb-8 mt-5">
+          <div className="flex flex-col lg:flex-row gap-4 items-center">
+            {/* Search Bar */}
+            <div className="relative w-full lg:flex-1">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B5A2B]">
+                <Search className="h-4 w-4" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search employees..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-lg border border-[#DEB887]/30 bg-white py-2.5 pl-10 pr-4 text-sm text-[#5D3A1F] placeholder-[#8B5A2B]/40 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
+              />
             </div>
             
-            <div className="mt-4 w-16 h-0.5 bg-gradient-to-r from-transparent via-[#DEB887]/30 to-transparent"></div>
+            {/* Status Filter Tabs */}
+            <div className="flex items-center justify-center w-full lg:w-auto">
+              <div className="inline-flex bg-[#F5EFE7]/50 rounded-lg p-1 border border-[#DEB887]/20">
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "all" 
+                    ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setFilterStatus("all")}
+                >
+                  All
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "active" 
+                    ? "bg-gradient-to-r from-[#4CAF50]/90 to-[#4CAF50]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setFilterStatus("active")}
+                >
+                  Active
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "inactive" 
+                    ? "bg-gradient-to-r from-[#F44336]/90 to-[#F44336]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setFilterStatus("inactive")}
+                >
+                  Inactive
+                </button>
+              </div>
+            </div>
+            
+            {/* Add Button */}
+            <button
+              onClick={() => setShowNewEmployeeForm(true)}
+              className="px-5 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm hover:shadow-md w-full lg:w-auto flex items-center justify-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Add Employee</span>
+            </button>
           </div>
         </div>
 
@@ -261,7 +261,7 @@ export default function Employee() {
         </div>
 
         {filteredEmployees.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12">
+          <div className="flex flex-col items-center justify-center py-12 bg-white rounded-xl shadow-md border border-[#DEB887]/30 mt-8">
             <div className="rounded-full bg-[#E8DCCA] p-3 mb-4">
               <Users className="h-6 w-6 text-[#8B5A2B]" />
             </div>

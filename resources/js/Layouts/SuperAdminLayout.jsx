@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import {
   Menu,
@@ -148,7 +146,6 @@ export default function SuperAdminLayout({ children }) {
         { name: "Admins", path: "/SuperAdmin/admin" },
         { name: "Employees", path: "/SuperAdmin/employee" },
         { name: "Clients", path: "/SuperAdmin/client" },
-        { name: "Suppliers", path: "/SuperAdmin/suppliers" },
       ],
     },
     {

@@ -22,6 +22,8 @@ import {
     Tag,
     Home,
     DollarSign,
+    Filter,
+    Clock,
 } from "lucide-react";
 import RoomDetailsModal from "@/Components/SuperAdmin/RoomDetailsModal";
 import AddRoomsModal from "@/Components/SuperAdmin/AddRoomsModal";
@@ -35,6 +37,7 @@ export default function Rooms() {
     const [showUpdateRoom, setShowUpdateRoom] = useState(null);
     const [filterStatus, setFilterStatus] = useState("all");
     const [searchQuery, setSearchQuery] = useState("");
+    const [showFilterDropdown, setShowFilterDropdown] = useState(false);
     const [rooms, setRooms] = useState([]);
 
     // Load rooms from API on component mount
@@ -157,183 +160,232 @@ export default function Rooms() {
         <SuperAdminLayout>
             <ToastContainer position="top-right" hideProgressBar />
             <div className="mx-auto max-w-6xl">
-                {/* Action Bar */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                    <div className="flex items-center gap-2 w-full sm:w-auto">
-                        <div className="relative flex-1 sm:flex-none sm:w-64">
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                {/* Combined Action Bar with Search, Filter, and Add Button */}
+                <div className="bg-white rounded-xl shadow-md border border-[#DEB887]/30 p-4 mb-8 mt-5">
+                    <div className="flex flex-col lg:flex-row gap-4 items-center">
+                        {/* Search Bar */}
+                        <div className="relative w-full lg:flex-1">
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B5A2B]">
+                                <Search className="h-4 w-4" />
+                            </div>
                             <input
                                 type="text"
                                 placeholder="Search rooms..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all"
+                                className="w-full rounded-lg border border-[#DEB887]/30 bg-white py-2.5 pl-10 pr-4 text-sm text-[#5D3A1F] placeholder-[#8B5A2B]/40 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
                             />
                         </div>
-                    </div>
-                    <button
-                        onClick={() => setShowNewRoomForm(true)}
-                        className="flex items-center gap-2 rounded-md bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5A3921] focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
-                    >
-                        <Plus className="h-4 w-4" />
-                        <span>Add New Room</span>
-                    </button>
-                </div>
-
-                {/* Status Tabs */}
-                <div className="flex border-b border-gray-200 mb-6">
-                    <button
-                        className={`px-4 py-2 text-sm font-medium ${
-                            filterStatus === "all"
-                                ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]"
-                                : "text-gray-500 hover:text-gray-700"
-                        }`}
-                        onClick={() => setFilterStatus("all")}
-                    >
-                        All Rooms
-                    </button>
-                    <button
-                        className={`px-4 py-2 text-sm font-medium ${
-                            filterStatus === "available"
-                                ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]"
-                                : "text-gray-500 hover:text-gray-700"
-                        }`}
-                        onClick={() => setFilterStatus("available")}
-                    >
-                        Available
-                    </button>
-                    <button
-                        className={`px-4 py-2 text-sm font-medium ${
-                            filterStatus === "occupied"
-                                ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]"
-                                : "text-gray-500 hover:text-gray-700"
-                        }`}
-                        onClick={() => setFilterStatus("occupied")}
-                    >
-                        Occupied
-                    </button>
-                    <button
-                        className={`px-4 py-2 text-sm font-medium ${
-                            filterStatus === "maintenance"
-                                ? "text-[#8B5A2B] border-b-2 border-[#8B5A2B]"
-                                : "text-gray-500 hover:text-gray-700"
-                        }`}
-                        onClick={() => setFilterStatus("maintenance")}
-                    >
-                        Maintenance
-                    </button>
-                </div>
-
-                {/* Room Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {filteredRooms.map((room) => (
-                        <div key={room.id} className="group">
-                            <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all overflow-hidden group relative transform hover:-translate-y-1 duration-300">
-                                {/* Card Header */}
-                                <div className="relative bg-gradient-to-r from-[#F5EFE7] to-white p-2.5 border-b border-[#E8DCCA]">
-                                    <div className="absolute top-0 right-0 h-16 w-16 bg-amber-100 rounded-full -mr-8 -mt-8 opacity-30"></div>
-                                    
-                                    <div className="flex items-center justify-between relative z-10">
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="p-1 bg-gradient-to-r from-[#8B5A2B] to-[#A67C52] rounded-md shadow-sm">
-                                                <Home className="h-3 w-3 text-white" />
-                                            </div>
-                                            <span className="text-xs font-medium text-[#6B4226]">
-                                                Room {room.roomNumber}
-                                            </span>
-                                        </div>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                if (confirm("Are you sure you want to delete this room?")) {
-                                                    deleteRoom(room.id);
-                                                }
-                                            }}
-                                            className="h-7 w-7 flex items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-200 focus:outline-none focus:ring-1 focus:ring-red-500 focus:ring-offset-1 transition-all opacity-80 hover:opacity-100 shadow-sm"
-                                            title="Delete Room"
-                                        >
-                                            <Trash className="h-3.5 w-3.5" />
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Room Image */}
-                                <div className="relative h-32 w-full overflow-hidden">
-                                    <img
-                                        src={
-                                            room.image
-                                                ? `/storage/${room.image}`
-                                                : "/images/placeholder-room.jpg"
-                                        }
-                                        alt={`${
-                                            room.roomNumber
-                                        } - ${getRoomTypeLabel(room.roomType)}`}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                    />
-                                    
-                                    {/* Status Badge */}
-                                    <div className="absolute top-2 right-2">
-                                        <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium flex items-center ${getStatusColor(room.status)} shadow-sm`}>
-                                            {room.status === "available" ? (
-                                                <CheckCircle className="h-2.5 w-2.5 mr-0.5" />
-                                            ) : room.status === "occupied" ? (
-                                                <Users className="h-2.5 w-2.5 mr-0.5" />
-                                            ) : room.status === "maintenance" ? (
-                                                <Bed className="h-2.5 w-2.5 mr-0.5" />
-                                            ) : null}
-                                            {room.status.charAt(0).toUpperCase() +
-                                                room.status.slice(1)}
+                        
+                        {/* Filter Dropdown */}
+                        <div className="flex items-center gap-2 w-full lg:w-auto">
+                            <div className="relative w-full lg:w-auto">
+                                <button
+                                    className="flex w-full lg:w-auto items-center justify-between gap-2 rounded-lg border border-[#DEB887]/30 bg-white px-4 py-2.5 text-sm font-medium text-[#5D3A1F] shadow-sm hover:bg-[#F5EFE7] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
+                                    onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <Filter className="h-4 w-4 text-[#8B5A2B]" />
+                                        <span>
+                                            {filterStatus === "all" && "All Rooms"}
+                                            {filterStatus === "available" && "Available"}
+                                            {filterStatus === "occupied" && "Occupied"}
+                                            {filterStatus === "maintenance" && "Maintenance"}
+                                            {filterStatus === "reserved" && "Reserved"}
                                         </span>
                                     </div>
+                                    <ChevronDown className="h-4 w-4 text-[#8B5A2B]" />
+                                </button>
+
+                                {showFilterDropdown && (
+                                    <div className="absolute right-0 mt-2 w-48 rounded-lg border border-[#DEB887]/30 bg-white py-1 shadow-lg z-10">
+                                        <button
+                                            className={`block w-full px-4 py-2 text-left text-sm ${filterStatus === "all" ? "bg-[#F5EFE7] text-[#8B5A2B] font-medium" : "text-[#5D3A1F] hover:bg-[#F5EFE7]/50"}`}
+                                            onClick={() => {
+                                                setFilterStatus("all");
+                                                setShowFilterDropdown(false);
+                                            }}
+                                        >
+                                            All Rooms
+                                        </button>
+                                        <button
+                                            className={`block w-full px-4 py-2 text-left text-sm ${filterStatus === "available" ? "bg-[#F5EFE7] text-[#8B5A2B] font-medium" : "text-[#5D3A1F] hover:bg-[#F5EFE7]/50"}`}
+                                            onClick={() => {
+                                                setFilterStatus("available");
+                                                setShowFilterDropdown(false);
+                                            }}
+                                        >
+                                            Available
+                                        </button>
+                                        <button
+                                            className={`block w-full px-4 py-2 text-left text-sm ${filterStatus === "occupied" ? "bg-[#F5EFE7] text-[#8B5A2B] font-medium" : "text-[#5D3A1F] hover:bg-[#F5EFE7]/50"}`}
+                                            onClick={() => {
+                                                setFilterStatus("occupied");
+                                                setShowFilterDropdown(false);
+                                            }}
+                                        >
+                                            Occupied
+                                        </button>
+                                        <button
+                                            className={`block w-full px-4 py-2 text-left text-sm ${filterStatus === "maintenance" ? "bg-[#F5EFE7] text-[#8B5A2B] font-medium" : "text-[#5D3A1F] hover:bg-[#F5EFE7]/50"}`}
+                                            onClick={() => {
+                                                setFilterStatus("maintenance");
+                                                setShowFilterDropdown(false);
+                                            }}
+                                        >
+                                            Maintenance
+                                        </button>
+                                        <button
+                                            className={`block w-full px-4 py-2 text-left text-sm ${filterStatus === "reserved" ? "bg-[#F5EFE7] text-[#8B5A2B] font-medium" : "text-[#5D3A1F] hover:bg-[#F5EFE7]/50"}`}
+                                            onClick={() => {
+                                                setFilterStatus("reserved");
+                                                setShowFilterDropdown(false);
+                                            }}
+                                        >
+                                            Reserved
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Add Room Button */}
+                            <button
+                                className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5A3921] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
+                                onClick={() => setShowNewRoomForm(true)}
+                            >
+                                <Plus className="h-4 w-4" />
+                                <span>Add Room</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredRooms.map((room) => (
+                        <div
+                            key={room.id}
+                            className="bg-white rounded-xl border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all overflow-hidden"
+                        >
+                            {/* Room Image */}
+                            <div className="relative h-48 bg-gradient-to-r from-[#F5EFE7] to-white">
+                                <div className="w-full h-full bg-gradient-to-r from-[#F5EFE7] to-white flex items-center justify-center">
+                                    {room.image ? (
+                                        <img
+                                            src={`/storage/${room.image}`}
+                                            alt={`Room ${room.roomNumber}`}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.style.display = 'none';
+                                                e.target.parentNode.classList.add('flex', 'items-center', 'justify-center');
+                                            }}
+                                        />
+                                    ) : (
+                                        <div className="text-center p-4">
+                                            <Bed className="h-12 w-12 text-[#8B5A2B]/30 mx-auto mb-2" />
+                                            <p className="text-sm text-[#8B5A2B]/50">Room Image</p>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="absolute top-3 right-3">
+                                    <span
+                                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium shadow-sm ${getStatusColor(room.status)}`}
+                                    >
+                                        {room.status === "available" && (
+                                            <CheckCircle className="h-3 w-3" />
+                                        )}
+                                        {room.status === "occupied" && (
+                                            <Users className="h-3 w-3" />
+                                        )}
+                                        {room.status === "maintenance" && (
+                                            <X className="h-3 w-3" />
+                                        )}
+                                        {room.status === "reserved" && (
+                                            <Clock className="h-3 w-3" />
+                                        )}
+                                        {room.status.charAt(0).toUpperCase() +
+                                            room.status.slice(1)}
+                                    </span>
+                                </div>
+                                
+                                {/* Price Badge */}
+                                <div className="absolute bottom-3 left-3 z-10">
+                                    <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm px-2.5 py-1 rounded-full text-[#8B5A2B] text-xs font-medium shadow-sm border border-[#DEB887]/20">
+                                        <DollarSign className="h-3 w-3" />
+                                        <span>{room.price}/night</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Room Details */}
+                            <div className="p-4">
+                                <div className="flex justify-between items-start mb-3">
+                                    <div>
+                                        <h3 className="text-base font-semibold text-[#5D3A1F]">
+                                            Room {room.roomNumber}
+                                        </h3>
+                                        <p className="text-sm text-[#8B5A2B]">
+                                            {getRoomTypeLabel(room.roomType)}
+                                        </p>
+                                    </div>
                                 </div>
 
-                                <div className="p-3 relative">
-                                    {/* Room Information */}
-                                    <div className="mb-3 bg-gray-50 rounded-md border border-gray-200 shadow-sm overflow-hidden">
-                                        {/* Room Type Header */}
-                                        <div className="flex items-center gap-2 p-2 border-b border-gray-200 bg-white">
-                                            <h3 className="text-sm font-semibold text-gray-800 truncate group-hover:text-[#8B5A2B] transition-colors">
-                                                {getRoomTypeLabel(room.roomType)}
-                                            </h3>
-                                        </div>
-                                        
-                                        {/* Price and Capacity */}
-                                        <div className="p-2 flex items-center justify-between">
-                                            <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md text-gray-800 text-xs font-medium shadow-sm">
-                                                <span className="font-medium">₱{room.price}</span>
-                                                <span className="text-gray-800 text-xs">/night</span>
-                                            </div>
-                                            <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md text-gray-800 text-xs font-medium shadow-sm">
-                                                <Users className="h-3 w-3 text-gray-800" />
-                                                <span>
-                                                    {room.capacity} {room.capacity === 1 ? 'Pax' : 'Pax'}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                                    {room.description}
+                                </p>
 
-                                    {/* Action Buttons */}
-                                    <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-                                        <button
-                                            onClick={() => {
-                                                setSelectedRoom(room);
-                                                setShowRoomDetails(true);
-                                            }}
-                                            className="flex-1 flex items-center justify-center gap-1 rounded-md bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] px-2 py-1.5 text-xs font-medium text-white shadow-sm hover:from-[#6B4226] hover:to-[#5A3921] focus:outline-none focus:ring-1 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
-                                        >
-                                            <Eye className="h-3 w-3" />
-                                            <span>View</span>
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                setShowUpdateRoom(room);
-                                            }}
-                                            className="flex-1 flex items-center justify-center gap-1 rounded-md border border-[#E8DCCA] bg-[#F5EFE7] px-2 py-1.5 text-xs font-medium text-[#8B5A2B] hover:bg-[#E8DCCA] focus:outline-none focus:ring-1 focus:ring-[#A67C52] focus:ring-offset-1 transition-all"
-                                        >
-                                            <Edit className="h-3 w-3" />
-                                            <span>Update</span>
-                                        </button>
-                                    </div>
+                                <div className="flex flex-wrap gap-1.5 mb-4">
+                                    {room.amenities?.includes("wifi") && (
+                                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 border border-blue-100">
+                                            <Wifi className="h-3 w-3" />
+                                            WiFi
+                                        </span>
+                                    )}
+                                    {room.amenities?.includes("tv") && (
+                                        <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2 py-0.5 text-xs font-medium text-purple-700 border border-purple-100">
+                                            <Tv className="h-3 w-3" />
+                                            TV
+                                        </span>
+                                    )}
+                                    {room.amenities?.includes("coffee") && (
+                                        <span className="inline-flex items-center gap-1 rounded-full bg-[#F5EFE7] px-2 py-0.5 text-xs font-medium text-[#8B5A2B] border border-[#DEB887]/30">
+                                            <Coffee className="h-3 w-3" />
+                                            Coffee
+                                        </span>
+                                    )}
+                                    {room.amenities?.includes("bath") && (
+                                        <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 border border-green-100">
+                                            <Bath className="h-3 w-3" />
+                                            Bath
+                                        </span>
+                                    )}
+                                </div>
+                                
+                                <div className="mt-3 h-1 w-full rounded-full bg-[#F5EFE7] overflow-hidden">
+                                    <div className="h-full rounded-full bg-gradient-to-r from-[#A67C52] to-[#DEB887] w-full"></div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex items-center gap-2 mt-3">
+                                    <button
+                                        onClick={() => {
+                                            setSelectedRoom(room);
+                                            setShowRoomDetails(true);
+                                        }}
+                                        className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:shadow-md transition-all duration-300"
+                                    >
+                                        <Eye className="h-3 w-3" />
+                                        <span>View</span>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setShowUpdateRoom(room);
+                                        }}
+                                        className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#DEB887]/30 bg-white px-3 py-1.5 text-xs font-medium text-[#8B5A2B] hover:bg-[#DEB887]/10 transition-all duration-300"
+                                    >
+                                        <Edit className="h-3 w-3" />
+                                        <span>Update</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -341,8 +393,8 @@ export default function Rooms() {
                 </div>
 
                 {filteredRooms.length === 0 && (
-                    <div className="flex flex-col items-center justify-center py-12">
-                        <div className="rounded-full bg-[#F5EFE7] p-3 mb-4">
+                    <div className="flex flex-col items-center justify-center py-12 bg-white rounded-xl shadow-md border border-[#DEB887]/30 mt-8">
+                        <div className="rounded-full bg-[#E8DCCA] p-3 mb-4">
                             <Bed className="h-6 w-6 text-[#8B5A2B]" />
                         </div>
                         <h3 className="text-lg font-medium text-gray-900 mb-1">
@@ -356,7 +408,7 @@ export default function Rooms() {
                                 setFilterStatus("all");
                                 setSearchQuery("");
                             }}
-                            className="text-sm font-medium text-[#8B5A2B] hover:text-[#6B4226]"
+                            className="text-sm font-medium text-[#8B5A2B] hover:text-[#5A371F]"
                         >
                             Clear filters
                         </button>

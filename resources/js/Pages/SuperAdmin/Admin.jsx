@@ -1,11 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Head } from "@inertiajs/react"
 import SuperAdminLayout from "@/Layouts/SuperAdminLayout"
-import AddAdminModal from "@/Components/SuperAdmin/AddAdminModal"
-import UpdateAdminModal from "@/Components/SuperAdmin/UpdateAdminModal"
-import AdminDetailsModal from "@/Components/SuperAdmin/AdminDetailsModal"
 import {
   Users,
   User,
@@ -16,14 +12,15 @@ import {
   X,
   Plus,
   Search,
-  Filter,
-  ChevronDown,
   Edit,
   Trash
 } from "lucide-react"
+import AddAdminModal from "@/Components/SuperAdmin/AddAdminModal"
+import UpdateAdminModal from "@/Components/SuperAdmin/UpdateAdminModal"
+import AdminDetailsModal from "@/Components/SuperAdmin/AdminDetailsModal"
 import axios from "axios"
 import { toast, ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
+import { Head } from "@inertiajs/react"
 
 export default function Admin() {
   const [showNewAdminForm, setShowNewAdminForm] = useState(false)
@@ -87,232 +84,208 @@ export default function Admin() {
   return (
     <SuperAdminLayout>
       <Head title="Admin Management" />
-      <ToastContainer position="top-right" autoClose={3000} />
-      
-      {/* Hero Section */}
-      <div className="relative z-10 p-4 sm:p-6">
-        <div className="relative overflow-hidden rounded-xl shadow-lg bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B]">
-          <div className="absolute inset-0 opacity-10">
-            <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
-          </div>
-          <div className="relative z-10 p-5 sm:p-6 md:p-8">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-              <div className="w-full md:w-auto">
-                <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#A67C52]/30 backdrop-blur-sm mb-3">
-                  <div className="w-2 h-2 rounded-full bg-[#DEB887] mr-2"></div>
-                  <span className="text-xs font-medium text-[#DEB887]">
-                    CROWN OF THE ORIENT
-                  </span>
-                </div>
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2">
-                  Admin <span className="text-[#DEB887]">Management</span>
-                </h1>
-                <p className="text-sm sm:text-base text-white/80 max-w-xl">
-                  Create and manage system administrators with different access levels. <span className="hidden sm:inline">Control who has access to critical hotel management features.</span>
-                </p>
+      <ToastContainer position="top-right" hideProgressBar />
+      <div className="mx-auto max-w-6xl">
 
-                <div className="flex flex-wrap gap-2 sm:gap-3 mt-4">
-                  <button 
-                    onClick={() => setShowNewAdminForm(true)}
-                    className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white shadow-md hover:shadow-lg transition-all duration-300 flex items-center"
-                  >
-                    <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />{" "}
-                    <span className="whitespace-nowrap">Add Admin</span>
-                  </button>
-                </div>
+        {/* Combined Action Bar with Search, Filter, and Add Button */}
+        <div className="bg-white rounded-xl shadow-md border border-[#DEB887]/30 p-4 mb-8 mt-5">
+          <div className="flex flex-col lg:flex-row gap-4 items-center">
+            {/* Search Bar */}
+            <div className="relative w-full lg:flex-1">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B5A2B]">
+                <Search className="h-4 w-4" />
               </div>
-            </div>
-          </div>
-          {/* Decorative Elements */}
-          <div className="absolute top-0 right-0 w-24 sm:w-32 md:w-40 h-24 sm:h-32 md:h-40 bg-[#DEB887] opacity-20 rounded-full -mt-12 sm:-mt-16 md:-mt-20 -mr-12 sm:-mr-16 md:-mr-20 blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 bg-[#A67C52] opacity-20 rounded-full -mb-8 sm:-mb-10 -ml-8 sm:-ml-10 blur-3xl"></div>
-        </div>
-      </div>
-      
-      {/* Filters Section */}
-      <div className="p-4 sm:p-6">
-        <div className="bg-white rounded-xl shadow-md overflow-hidden border border-[#DEB887]/30 mb-6">
-          <div className="p-4 sm:p-6">
-            <div className="flex items-center mb-4">
-              <Filter className="h-5 w-5 text-[#A67C52] mr-2" />
-              <h2 className="text-lg font-semibold text-[#5D3A1F]">Filter Admins</h2>
+              <input
+                type="text"
+                placeholder="Search admins..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-lg border border-[#DEB887]/30 bg-white py-2.5 pl-10 pr-4 text-sm text-[#5D3A1F] placeholder-[#8B5A2B]/40 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
+              />
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="status" className="block text-sm font-medium text-[#5D3A1F] mb-1">
-                  Status
-                </label>
-                <select
-                  id="status"
-                  name="status"
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                  className="block w-full pl-3 pr-10 py-2 text-base border-[#DEB887]/30 focus:outline-none focus:ring-[#A67C52] focus:border-[#A67C52] sm:text-sm rounded-md"
+            {/* Status Filter Tabs */}
+            <div className="flex items-center justify-center w-full lg:w-auto">
+              <div className="inline-flex bg-[#F5EFE7]/50 rounded-lg p-1 border border-[#DEB887]/20">
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "all" 
+                    ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setFilterStatus("all")}
                 >
-                  <option value="all">All Statuses</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
+                  All
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "active" 
+                    ? "bg-gradient-to-r from-[#4CAF50]/90 to-[#4CAF50]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setFilterStatus("active")}
+                >
+                  Active
+                </button>
+                
+                <button
+                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "inactive" 
+                    ? "bg-gradient-to-r from-[#F44336]/90 to-[#F44336]/70 text-white shadow-sm" 
+                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
+                  onClick={() => setFilterStatus("inactive")}
+                >
+                  Inactive
+                </button>
               </div>
-              <div>
-                <label htmlFor="search" className="block text-sm font-medium text-[#5D3A1F] mb-1">
-                  Search
-                </label>
-                <div className="relative rounded-md shadow-sm">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <Search className="h-4 w-4 text-[#8B5A2B]" />
+            </div>
+            
+            {/* Add Button */}
+            <button
+              onClick={() => setShowNewAdminForm(true)}
+              className="px-5 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm hover:shadow-md w-full lg:w-auto flex items-center justify-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Add Admin</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Admin Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {filteredAdmins.map((admin) => (
+            <div
+              key={admin.id}
+              className="rounded-lg overflow-hidden border border-[#DEB887]/30 bg-gradient-to-br from-[#F5EFE7] to-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 relative"
+            >
+              <div className="absolute top-3 right-3 z-10">
+                <button
+                  onClick={() => deleteAdmin(admin.id)}
+                  className="h-7 w-7 flex items-center justify-center rounded-full bg-red-100/80 text-red-600 hover:bg-red-200 transition-all opacity-80 hover:opacity-100 shadow-sm"
+                  title="Delete Admin"
+                >
+                  <Trash className="h-3.5 w-3.5" />
+                </button>
+              </div>
+              <div className="p-3">
+                <div className="flex items-center mb-3">
+                  <div className="flex items-center gap-2">
+                    {admin.image ? (
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full overflow-hidden border-2 border-[#DEB887]/30 shadow-md">
+                        <img 
+                          src={admin.image ? (admin.image.startsWith('http') ? admin.image : `/${admin.image}`) : ''}
+                          alt={admin.name}
+                          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            e.target.onerror = null
+                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(admin.name)}&background=A67C52&color=fff`
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#A67C52] to-[#8B5A2B] shadow-md text-white font-semibold text-sm">
+                        {admin.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="text-sm font-semibold text-[#5D3A1F] truncate">
+                        {admin.name}
+                      </h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className="flex items-center gap-1">
+                          <Shield className="h-3 w-3 text-[#8B5A2B]" />
+                          <span className="text-xs text-[#8B5A2B] font-medium">{admin.role || "Admin"}</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium flex items-center ${
+                          admin.status === "active"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}>
+                          {admin.status === "active" ? (
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                          ) : (
+                            <X className="h-3 w-3 mr-1" />
+                          )}
+                          {admin.status ? admin.status.charAt(0).toUpperCase() + admin.status.slice(1) : "Inactive"}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <input
-                    type="text"
-                    id="search"
-                    placeholder="Search by name, email or phone..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="block w-full rounded-md border border-[#DEB887]/30 pl-10 py-2 text-[#5D3A1F] placeholder-[#8B5A2B]/40 focus:border-[#A67C52] focus:outline-none focus:ring-[#A67C52] sm:text-sm"
-                  />
+                </div>
+                <div className="mt-3">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                          <Mail className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                        </div>
+                        <p className="text-xs text-[#6B4226]/70 truncate">{admin.email || "No email provided"}</p>
+                      </div>
+                    </div>
+                    
+                    {admin.phonenumber && (
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                            <Phone className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                          </div>
+                          <p className="text-xs text-[#6B4226]/70">{admin.phonenumber}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="mt-3 h-1 w-full rounded-full bg-[#F5EFE7] overflow-hidden">
+                    <div className="h-full rounded-full bg-gradient-to-r from-[#A67C52] to-[#DEB887] w-full"></div>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-2 mt-3">
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedAdmin(admin);
+                        setShowAdminDetails(true);
+                      }}
+                      className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:shadow-md transition-all duration-300"
+                    >
+                      <User className="h-3 w-3" />
+                      <span>View</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedAdmin(admin);
+                        setShowUpdateAdminForm(true);
+                      }}
+                      className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#DEB887]/30 bg-white px-3 py-1.5 text-xs font-medium text-[#8B5A2B] hover:bg-[#DEB887]/10 transition-all duration-300"
+                    >
+                      <Edit className="h-3 w-3" />
+                      <span>Update</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
-      </div>
-      
-      {/* Admin Table Section */}
-      <div className="p-4 sm:p-6">
-        <div className="bg-white rounded-xl shadow-md overflow-hidden border border-[#DEB887]/30">
-          <div className="p-4 sm:p-6 border-b border-[#DEB887]/30">
-            <div className="flex items-center">
-              <Users className="h-5 w-5 text-[#A67C52] mr-2" />
-              <h2 className="text-lg font-semibold text-[#5D3A1F]">System Administrators</h2>
+
+        {filteredAdmins.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-12 bg-white rounded-xl shadow-md border border-[#DEB887]/30 mt-8">
+            <div className="rounded-full bg-[#E8DCCA] p-3 mb-4">
+              <Users className="h-6 w-6 text-[#8B5A2B]" />
             </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-1">No admins found</h3>
+            <p className="text-sm text-gray-500 mb-4">There are no admins matching your current filters.</p>
+            <button
+              onClick={() => {
+                setFilterStatus("all")
+                setSearchQuery("")
+              }}
+              className="text-sm font-medium text-[#8B5A2B] hover:text-[#5A371F]"
+            >
+              Clear filters
+            </button>
           </div>
-          
-          {filteredAdmins.length === 0 ? (
-            <div className="p-8 text-center">
-              <div className="mx-auto w-16 h-16 rounded-full bg-[#F5EFE7] flex items-center justify-center mb-4">
-                <User className="h-8 w-8 text-[#A67C52]" />
-              </div>
-              <h3 className="text-lg font-medium text-[#5D3A1F] mb-1">No Admins Found</h3>
-              <p className="text-sm text-[#6B4226]/70 max-w-md mx-auto">
-                There are no administrators matching your current filters. Try changing your search criteria or add a new admin.
-              </p>
-              <button
-                onClick={() => {
-                  setFilterStatus("all")
-                  setSearchQuery("")
-                }}
-                className="mt-4 px-4 py-2 text-sm font-medium rounded-lg border border-[#DEB887]/30 text-[#8B5A2B] hover:bg-[#DEB887]/10 transition-all duration-300"
-              >
-                Clear Filters
-              </button>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-[#DEB887]/30">
-                <thead className="bg-[#F5EFE7]">
-                  <tr>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-[#5D3A1F] uppercase tracking-wider">
-                      Admin
-                    </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-[#5D3A1F] uppercase tracking-wider">
-                      Contact
-                    </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-[#5D3A1F] uppercase tracking-wider">
-                      Role
-                    </th>
-                    <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-[#5D3A1F] uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th scope="col" className="px-4 py-3 text-right text-xs font-medium text-[#5D3A1F] uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-[#DEB887]/30">
-                  {filteredAdmins.map((admin) => (
-                    <tr key={admin.id} className="hover:bg-[#F5EFE7]/50 transition-colors">
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-8 w-8 rounded-full overflow-hidden border border-[#DEB887]/30">
-                            {admin.image ? (
-                              <img
-                                src={`/storage/${admin.image}`}
-                                alt={admin.name}
-                                className="h-full w-full object-cover"
-                                onError={(e) => {
-                                  e.target.onerror = null
-                                  e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(admin.name)}&background=A67C52&color=fff`
-                                }}
-                              />
-                            ) : (
-                              <div className="h-full w-full bg-[#A67C52] flex items-center justify-center text-white text-xs font-medium">
-                                {admin.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                              </div>
-                            )}
-                          </div>
-                          <div className="ml-3">
-                            <div className="text-sm font-medium text-[#5D3A1F]">{admin.name}</div>
-                            <div className="text-xs text-[#6B4226]/70">{admin.created_at ? new Date(admin.created_at).toLocaleDateString() : 'N/A'}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="text-sm text-[#5D3A1F]">{admin.email}</div>
-                        <div className="text-xs text-[#6B4226]/70">{admin.phonenumber || 'No phone'}</div>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#A67C52]/10 text-[#8B5A2B]">
-                          <Shield className="h-3 w-3 mr-1" />
-                          {admin.role || 'Admin'}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${admin.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                          {admin.status === 'active' ? (
-                            <>
-                              <CheckCircle className="h-3 w-3 mr-1" />
-                              Active
-                            </>
-                          ) : (
-                            <>
-                              <X className="h-3 w-3 mr-1" />
-                              Inactive
-                            </>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-right text-sm font-medium whitespace-nowrap">
-                        <div className="flex items-center justify-end space-x-2">
-                          <button
-                            onClick={() => {
-                              setSelectedAdmin(admin)
-                              setShowAdminDetails(true)
-                            }}
-                            className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] hover:shadow-md transition-all duration-200 cursor-pointer"
-                          >
-                            <User className="h-3 w-3 mr-1" />
-                            View
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedAdmin(admin)
-                              setShowUpdateAdminForm(true)
-                            }}
-                            className="inline-flex items-center px-2.5 py-1.5 border border-[#DEB887]/30 text-xs font-medium rounded-md text-[#8B5A2B] bg-white hover:bg-[#F5EFE7] transition-all duration-200 cursor-pointer"
-                          >
-                            <Edit className="h-3 w-3 mr-1" />
-                            Edit
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+        )}
       </div>
 
       {/* Modals */}

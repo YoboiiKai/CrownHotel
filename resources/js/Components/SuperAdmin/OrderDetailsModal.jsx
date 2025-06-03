@@ -13,7 +13,10 @@ import {
   CheckCircle,
   XCircle,
   AlertTriangle,
-  Utensils
+  Utensils,
+  Coffee,
+  PhilippinePeso,
+  CreditCard
 } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -175,117 +178,116 @@ export default function OrderDetailsModal({ order, show, onClose, onStatusChange
   const statusInfo = getStatusInfo(order.status);
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-xl overflow-tr border border-[#DEB887]/30 shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto">
         {/* Header */}
-        <div className="bg-[#F5EFE7] px-4 py-4">
+        <div className="bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <h3 className="text-lg font-bold text-gray-900">Order Details</h3>
+              <div className="p-2 bg-white/20 backdrop-blur-sm rounded-full shadow-md">
+                <Utensils className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white">Order Details</h3>
+                <p className="text-xs text-white/80">View order information and status</p>
+              </div>
             </div>
             <button 
               onClick={onClose} 
-              className="text-gray-400 hover:text-gray-600 transition-colors bg-white rounded-full p-1 hover:bg-gray-100"
+              className="text-white/80 hover:text-white transition-colors bg-white/10 backdrop-blur-sm rounded-full p-1.5 hover:bg-white/20 shadow-md"
             >
               <X className="h-5 w-5" />
             </button>
           </div>
         </div>
           
-        <div className="p-4">
-          <div className="grid grid-cols-1 gap-6">
+        <div className="p-6">
             {/* Order Information */}
-            <div className="space-y-5">
-              {/* Order Type and Overview */}
-              <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#E5D3B3] shadow-sm p-4 relative overflow-hidden">
-                {/* Decorative elements */}
-                <div className="absolute top-0 right-0 w-24 h-24 bg-[#F5EFE7] rounded-full -mr-12 -mt-12 opacity-40"></div>
-                <div className="absolute bottom-0 left-0 w-16 h-16 bg-[#F5EFE7] rounded-full -ml-8 -mb-8 opacity-30"></div>
+          <div className="space-y-4 mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+              <h4 className="text-sm font-medium text-[#5D3A1F]">Order Information</h4>
+            </div>
                 
-                {/* Order Header with Number and Status */}
-                <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 pb-3 border-b border-[#E5D3B3]">
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 bg-gradient-to-br from-[#8B5A2B] to-[#6B4226] rounded-lg shadow-md">
-                      <Utensils className="h-5 w-5 text-white" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex items-center p-3 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/20 shadow-sm mr-3">
+                  <Calendar className="h-5 w-5 text-[#8B5A2B]" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-gray-900">Order #{order.orderNumber || 'N/A'}</h4>
-                      <p className="text-sm text-gray-600 mt-0.5">Ordered by <span className="font-medium text-[#6B4226]">{order.customerName}</span></p>
-                    </div>
-                  </div>
-                  <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium shadow-sm ${statusInfo.color} transition-all duration-200 hover:shadow-md`}>
-                    {statusInfo.label}
-                  </span>
+                  <p className="text-xs text-[#6B4226]/70 mb-0.5">Order Date</p>
+                  <p className="text-sm font-medium text-[#5D3A1F]">{formatDateTime(order.created_at)}</p>
                 </div>
-                
-                {/* Order Details - Compact */}
-                <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs">
-                  <div className="grid grid-cols-2 gap-1.5">
-                    <div className="flex items-center">
-                      <Calendar className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                      <span className="text-gray-500">Date:</span>
-                      <span className="text-gray-700 font-medium ml-1.5">{formatDateTime(order.created_at).split(',')[0]}</span>
                     </div>
                     
-                    <div className="flex items-center">
-                      <Clock className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                      <span className="text-gray-500">Time:</span>
-                      <span className="text-gray-700 font-medium ml-1.5">{new Date(order.created_at).toLocaleTimeString()}</span>
+              <div className="flex items-center p-3 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/20 shadow-sm mr-3">
+                  <CreditCard className="h-5 w-5 text-[#8B5A2B]" />
                     </div>
-                    
-                    <div className="flex items-center">
-                      <MapPin className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                      <span className="text-gray-500">Room:</span>
-                      <span className="text-gray-700 font-medium ml-1.5 truncate">{order.roomNumber}</span>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <Users className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                      <span className="text-gray-500">Senior Citizen:</span>
-                      <span className="text-gray-700 font-medium ml-1.5">{order.isSeniorCitizen ? 'Yes' : 'No'}</span>
+                <div>
+                  <p className="text-xs text-[#6B4226]/70 mb-0.5">Order ID</p>
+                  <p className="text-sm font-medium text-[#5D3A1F]">#{order.id}</p>
                     </div>
                   </div>
                 </div>
               </div>
           
-              {/* Contact Information - Compact */}
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2">
-                <div className="flex items-center mb-2">
-                  <User className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                  <h5 className="text-xs font-semibold text-gray-900">Customer Information</h5>
+          {/* Customer Information */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+              <h4 className="text-sm font-medium text-[#5D3A1F]">Customer Information</h4>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex items-center p-3 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/20 shadow-sm mr-3">
+                  <User className="h-5 w-5 text-[#8B5A2B]" />
                 </div>
-                
-                <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs grid grid-cols-2 gap-2">
-                  <div className="flex items-center">
-                    <User className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                    <span className="text-gray-500">Name:</span>
-                    <span className="text-gray-700 font-medium ml-1.5 truncate">{order.customerName}</span>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <MapPin className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                    <span className="text-gray-500">Room:</span>
-                    <span className="text-gray-700 font-medium ml-1.5 truncate">{order.roomNumber}</span>
-                  </div>
+                <div>
+                  <p className="text-xs text-[#6B4226]/70 mb-0.5">Customer Name</p>
+                  <p className="text-sm font-medium text-[#5D3A1F] truncate">{order.customerName}</p>
                 </div>
               </div>
               
-              {/* Order Items */}
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2">
-                <div className="flex items-center mb-2">
-                  <Utensils className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                  <h5 className="text-xs font-semibold text-gray-900">Order Items</h5>
+              <div className="flex items-center p-3 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#A67C52]/20 shadow-sm mr-3">
+                  {order.service_type === 'table' ? (
+                    <Coffee className="h-5 w-5 text-[#8B5A2B]" />
+                  ) : (
+                  <MapPin className="h-5 w-5 text-[#8B5A2B]" />
+                  )}
+                </div>
+                <div>
+                  <p className="text-xs text-[#6B4226]/70 mb-0.5">
+                    {order.service_type === 'table' ? 'Table' : 'Room'}
+                  </p>
+                  <p className="text-sm font-medium text-[#5D3A1F]">
+                    {order.service_type === 'table' ? 
+                      (order.table_number || "N/A") : 
+                      (order.room_number || "N/A")
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Order Items */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-3 mt-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+              <h4 className="text-sm font-medium text-[#5D3A1F]">Order Items</h4>
                 </div>
                 
-                <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs">
                   <div className="space-y-2">
                     {order.items && order.items.map((item, index) => (
-                      <div key={index} className="flex justify-between items-center p-2 bg-white rounded border border-gray-100 hover:shadow-sm transition-shadow">
+                  <div key={index} className="flex justify-between items-center p-3 bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all duration-300">
                         <div className="flex items-center">
                           {/* Food Image */}
-                          <div className="w-10 h-10 rounded-lg overflow-hidden mr-3 shadow-sm group relative">
+                    <div className="w-12 h-12 rounded-m overflow-hidden mr-3 shadow-md group relative">
                             {/* Base gradient background with utensils icon as fallback */}
-                            <div className="w-full h-full bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] flex items-center justify-center">
+                        <div className="w-full h-full bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] flex items-center justify-center">
                               <Utensils className="h-4 w-4 text-white" />
                             </div>
                             
@@ -325,47 +327,45 @@ export default function OrderDetailsModal({ order, show, onClose, onStatusChange
                           
                           <div className="flex flex-col">
                             <div className="flex items-center">
-                              <span className="inline-flex items-center justify-center bg-[#F5EFE7] text-[#6B4226] font-medium rounded w-5 h-5 mr-2">{item.quantity}</span>
+                          <span className="inline-flex items-center justify-center bg-[#A67C52]/20 text-[#6B4226] font-medium rounded-full w-6 h-6 mr-2">{item.quantity}</span>
                               <span className="text-gray-700 font-medium">{item.name}</span>
                             </div>
-                            <span className="text-gray-500 text-[10px] mt-0.5">Unit price: ${parseFloat(item.price/item.quantity).toFixed(2)}</span>
                           </div>
                         </div>
-                        <span className="font-medium text-[#8B5A2B]">${parseFloat(item.price).toFixed(2)}</span>
+                    <span className="font-medium text-[#8B5A2B]">₱{parseFloat(item.price).toFixed(2)}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-              </div>
               
               {/* Payment Details - Compact */}
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2">
-                <div className="flex items-center mb-2">
-                  <DollarSign className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                  <h5 className="text-xs font-semibold text-gray-900">Payment Details</h5>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+              <h4 className="text-sm font-medium text-[#5D3A1F]">Payment Details</h4>
                 </div>
                 
-                <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs">
+            <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg p-4 border border-[#DEB887]/30 shadow-sm text-xs">
                   <div className="grid grid-cols-2 gap-2 mb-2">
                     <div className="flex items-center">
-                      <span className="text-gray-500">Subtotal:</span>
-                      <span className="text-gray-700 font-medium ml-1.5">
-                        ${parseFloat(order.subtotal || 0).toFixed(2)}
+                  <span className="text-[#6B4226]/60">Subtotal:</span>
+                  <span className="text-[#5D3A1F] font-medium ml-1.5">
+                    ₱{parseFloat(order.subtotal || 0).toFixed(2)}
                       </span>
                     </div>
                     
                     <div className="flex items-center justify-end">
-                      <span className="text-gray-500">Discount:</span>
-                      <span className="text-gray-700 font-medium ml-1.5">
-                        ${parseFloat(order.discount || 0).toFixed(2)}
+                  <span className="text-[#6B4226]/60">Discount:</span>
+                  <span className="text-[#5D3A1F] font-medium ml-1.5">
+                    ₱{parseFloat(order.discount || 0).toFixed(2)}
                       </span>
                     </div>
                   </div>
                   
-                  <div className="flex flex-col border-t border-gray-200 pt-2">
+              <div className="flex flex-col border-t border-[#DEB887]/30 pt-2">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center">
-                        <span className="text-gray-500">Senior Citizen:</span>
+                    <span className="text-[#6B4226]/60">Senior Citizen:</span>
                         <span className={`font-medium ml-1.5 flex items-center ${order.isSeniorCitizen ? 'text-green-600' : 'text-gray-600'}`}>
                           {order.isSeniorCitizen ? (
                             <>
@@ -379,10 +379,10 @@ export default function OrderDetailsModal({ order, show, onClose, onStatusChange
                       </div>
                     </div>
                     
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                      <span className="text-gray-500">Total:</span>
-                      <span className="text-[#6B4226] font-bold ml-1.5">
-                        ${parseFloat(order.total || 0).toFixed(2)}
+                <div className="flex items-center justify-between pt-2 border-t border-[#DEB887]/30">
+                  <span className="text-[#6B4226]/60">Total:</span>
+                  <span className="text-[#5D3A1F] font-bold ml-1.5 text-base">
+                    ₱{parseFloat(order.total || 0).toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -390,13 +390,13 @@ export default function OrderDetailsModal({ order, show, onClose, onStatusChange
               </div>
               
               {/* Status Information */}
-              <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2">
-                <div className="flex items-center mb-2">
-                  <AlertTriangle className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                  <h5 className="text-xs font-semibold text-gray-900">Status Information</h5>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-3 mt-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+              <h4 className="text-sm font-medium text-[#5D3A1F]">Status Information</h4>
                 </div>
                 
-                <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs">
+            <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg p-4 border border-[#DEB887]/30 shadow-sm text-xs">
                   <div className={`flex items-center p-2 rounded ${statusInfo.color}`}>
                     <div className="mr-2">
                       {statusInfo.icon}
@@ -411,42 +411,45 @@ export default function OrderDetailsModal({ order, show, onClose, onStatusChange
               
               {/* Notes (if any) */}
               {order.notes && (
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-2">
-                  <div className="flex items-center mb-2">
-                    <Edit className="h-3.5 w-3.5 text-[#8B5A2B] mr-1.5" />
-                    <h5 className="text-xs font-semibold text-gray-900">Notes</h5>
+            <div className="space-y-4 mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+                <h4 className="text-sm font-medium text-[#5D3A1F]">Notes</h4>
                   </div>
                   
-                  <div className="bg-gray-50 rounded-lg p-2 border border-gray-100 text-xs">
-                    <p className="text-gray-700">{order.notes}</p>
+              <div className="bg-gradient-to-br from-[#F5EFE7] to-white rounded-lg p-4 border border-[#DEB887]/30 shadow-sm text-xs">
+                <p className="text-[#5D3A1F]">{order.notes}</p>
                   </div>
                 </div>
               )}
             </div>
-          </div>
-        </div>
         
-        {/* Action Buttons */}
-        <div className="bg-gray-50 px-4 py-3 border-t border-gray-200 flex flex-col sm:flex-row-reverse gap-2">
+        {/* Account Actions */}
+        <div className="space-y-4 pt-6 border-t border-[#DEB887]/30 px-6 pb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#DEB887]"></div>
+            <h4 className="text-sm font-medium text-[#5D3A1F]">Order Actions</h4>
+          </div>
+          <div className="flex flex-wrap gap-3">
           {/* Status Change Buttons */}
           {order.status === 'pending' && (
             <div className="flex flex-col sm:flex-row gap-2">
               <button
                 type="button"
-                className="inline-flex justify-center items-center rounded-md border border-transparent px-4 py-2 bg-[#8B5A2B] text-sm font-medium text-white hover:bg-[#6B4226] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A67C52] transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[#8B5A2B] to-[#6B4226] rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#A67C52] focus:ring-offset-1 transition-all duration-300 disabled:opacity-70"
                 onClick={() => handleStatusChange('processing')}
                 disabled={isChangingStatus}
               >
-                <Utensils className="h-4 w-4 mr-1.5" />
+                <Utensils className="h-4 w-4" />
                 Start Processing
               </button>
               <button
                 type="button"
-                className="inline-flex justify-center items-center rounded-md border border-transparent px-4 py-2 bg-red-600 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[#F44336] to-[#C62828] rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-all duration-300 disabled:opacity-70"
                 onClick={() => handleStatusChange('cancelled')}
                 disabled={isChangingStatus}
               >
-                <XCircle className="h-4 w-4 mr-1.5" />
+                <XCircle className="h-4 w-4" />
                 Cancel Order
               </button>
             </div>
@@ -455,24 +458,25 @@ export default function OrderDetailsModal({ order, show, onClose, onStatusChange
           {order.status === 'processing' && (
             <button
               type="button"
-              className="inline-flex justify-center items-center rounded-md border border-transparent px-4 py-2 bg-green-600 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-[#4CAF50] to-[#2E7D32] rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-all duration-300 disabled:opacity-70"
               onClick={() => handleStatusChange('completed')}
               disabled={isChangingStatus}
             >
-              <CheckCircle className="h-4 w-4 mr-1.5" />
+              <CheckCircle className="h-4 w-4" />
               Mark as Completed
             </button>
           )}
           
           <button
             type="button"
-            className="inline-flex justify-center items-center rounded-md border border-gray-300 px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A67C52] transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#5D3A1F] bg-white border border-[#DEB887]/40 rounded-lg shadow-sm hover:bg-[#F5EFE7]/50 focus:outline-none focus:ring-2 focus:ring-[#DEB887] focus:ring-offset-1 transition-all duration-300"
             onClick={onClose}
           >
             Close
           </button>
         </div>
       </div>
+    </div>
     </div>
   );
 }
