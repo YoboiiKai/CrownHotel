@@ -312,9 +312,9 @@ export default function PosMenu() {
       
 
       {/* Main Content with Side-by-Side Layout */}
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-6 p-4 min-h-screen">
         {/* Menu Section - Left Side */}
-        <div className="lg:w-3/4">
+        <div className="lg:w-3/4 flex-1">
           <div className="mb-6">
             <div className="flex items-center gap-2 w-full">
               <div className="relative flex-1">
@@ -364,19 +364,19 @@ export default function PosMenu() {
             </button>
           </div>
 
-          {/* Menu Items Container with Fixed Height and Scrolling */}
-          <div className="h-[calc(100vh-220px)] overflow-y-auto pr-2 custom-scrollbar">
+          {/* Menu Items Container */}
+          <div className="pr-2 pb-4">
             {/* Menu Item Cards - Landscape Layout with Square Image and Information */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 pb-6">
               {filteredItems.map((item) => (
                 <div
                   key={item.id}
                   className="rounded-lg overflow-hidden border border-[#DEB887]/30 bg-gradient-to-br from-[#F5EFE7] to-white shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1 duration-300"
                 >
                   {/* Card Content - Landscape Layout */}
-                  <div className="flex flex-row h-[150px]">
+                  <div className="flex flex-row h-[120px]">
                     {/* Square Image Container - Left Side */}
-                    <div className="w-[150px] h-[150px] relative flex-shrink-0 bg-gradient-to-r from-[#A67C52]/10 to-[#8B5A2B]/10">
+                    <div className="w-[120px] h-[120px] relative flex-shrink-0 bg-gradient-to-r from-[#A67C52]/10 to-[#8B5A2B]/10">
                       {/* Image */}
                       <div className="absolute inset-0 overflow-hidden">
                         <img
@@ -392,13 +392,13 @@ export default function PosMenu() {
                         {/* Status Badge */}
                         <div className="absolute top-2 left-2 z-10">
                           {item.status === 'sold_out' ? (
-                            <div className="px-2 py-1 rounded-full text-[9px] font-medium bg-red-100 text-red-800 flex items-center shadow-sm">
-                              <X className="h-2.5 w-2.5 mr-0.5" />
+                            <div className="px-1.5 py-0.5 rounded-full text-[8px] font-medium bg-red-100 text-red-800 flex items-center shadow-sm">
+                              <X className="h-2 w-2 mr-0.5" />
                               Sold Out
                             </div>
                           ) : (
-                            <div className="px-2 py-1 rounded-full text-[9px] font-medium bg-green-100 text-green-800 flex items-center shadow-sm">
-                              <Check className="h-2.5 w-2.5 mr-0.5" />
+                            <div className="px-1.5 py-0.5 rounded-full text-[8px] font-medium bg-green-100 text-green-800 flex items-center shadow-sm">
+                              <Check className="h-2 w-2 mr-0.5" />
                               Available
                             </div>
                           )}
@@ -409,8 +409,8 @@ export default function PosMenu() {
                         
                         {/* Price Badge */}
                         <div className="absolute bottom-2 left-2 z-10">
-                          <div className="flex items-center gap-0.5 bg-white/30 backdrop-blur-sm px-2 py-1 rounded-full text-white text-[10px] shadow-sm border border-white/10">
-                            <PhilippinePeso className="h-3 w-3" />
+                          <div className="flex items-center gap-0.5 bg-white/30 backdrop-blur-sm px-1.5 py-0.5 rounded-full text-white text-[8px] shadow-sm border border-white/10">
+                            <PhilippinePeso className="h-2.5 w-2.5" />
                             <span className="font-bold">{item.price}</span>
                           </div>
                         </div>
@@ -418,28 +418,28 @@ export default function PosMenu() {
                     </div>
                     
                     {/* Information Section - Square Right Side */}
-                    <div className="p-3 relative bg-gradient-to-br from-white to-[#F5EFE7]/20 w-[150px] h-[150px] flex flex-col">
+                    <div className="p-2 relative bg-gradient-to-br from-white to-[#F5EFE7]/20 w-[120px] h-[120px] flex flex-col">
                       {/* Menu Name */}
-                      <div className="mb-1">
-                        <h3 className="text-sm font-semibold text-[#5D3A1F] truncate">{item.menuname}</h3>
+                      <div className="mb-0.5">
+                        <h3 className="text-xs font-semibold text-[#5D3A1F] truncate">{item.menuname}</h3>
                       </div>
                       
                       {/* Category Tag and Prep Time */}
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-1 text-[10px] text-[#8B5A2B]">
-                          <span className="truncate max-w-[80px]">{getCategoryLabel(item.category)}</span>
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-0.5 text-[8px] text-[#8B5A2B]">
+                          <span className="truncate max-w-[60px]">{getCategoryLabel(item.category)}</span>
                         </div>
-                        <div className="flex items-center gap-1 text-[10px] text-gray-500">
-                          <Clock className="h-3 w-3" />
+                        <div className="flex items-center gap-0.5 text-[8px] text-gray-500">
+                          <Clock className="h-2.5 w-2.5" />
                           <span>{item.preperationtime || "15 min"}</span>
                         </div>
                       </div>
                       
                       {/* Description */}
-                      <p className="text-[11px] text-gray-600 line-clamp-2 mb-auto">{item.description}</p>
+                      <p className="text-[9px] text-gray-600 line-clamp-2 mb-auto">{item.description}</p>
                       
                       {/* Footer Effect */}
-                      <div className="mt-2 mb-2">
+                      <div className="mt-1 mb-1">
                         <div className="h-px w-full bg-gradient-to-r from-[#DEB887]/30 to-transparent"></div>
                       </div>
                       
@@ -447,17 +447,17 @@ export default function PosMenu() {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => setShowMenuItemDetails(item)}
-                          className="flex-1 flex items-center justify-center gap-0.5 rounded-md bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] px-1.5 py-1 h-7 text-[10px] font-medium text-white shadow-sm hover:from-[#8B5A2B] hover:to-[#6B4226] focus:outline-none focus:ring-1 focus:ring-[#A67C52] transition-all"
+                          className="flex-1 flex items-center justify-center gap-0.5 rounded-md bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] px-1 py-0.5 h-6 text-[8px] font-medium text-white shadow-sm hover:from-[#8B5A2B] hover:to-[#6B4226] focus:outline-none focus:ring-1 focus:ring-[#A67C52] transition-all"
                         >
-                          <Eye className="h-2.5 w-2.5" />
+                          <Eye className="h-2 w-2" />
                           <span>View</span>
                         </button>
                         <button
                           onClick={() => addToCart(item)}
                           disabled={item.status === 'sold_out'}
-                          className={`h-7 w-7 flex items-center justify-center rounded-md ${item.status === 'sold_out' ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'border border-[#A67C52] bg-white text-[#8B5A2B] hover:bg-[#A67C52]/10'} transition-all duration-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-[#A67C52]`}
+                          className={`h-6 w-6 flex items-center justify-center rounded-md ${item.status === 'sold_out' ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'border border-[#A67C52] bg-white text-[#8B5A2B] hover:bg-[#A67C52]/10'} transition-all duration-300 shadow-sm focus:outline-none focus:ring-1 focus:ring-[#A67C52]`}
                         >
-                          <ShoppingCart className="h-2.5 w-2.5" />
+                          <ShoppingCart className="h-2 w-2" />
                         </button>
                       </div>
                     </div>
@@ -481,18 +481,21 @@ export default function PosMenu() {
         </div>
 
         {/* Cart Section - Right Side */}
-        <div className="lg:w-1/4">
-          <div className="rounded-lg border border-[#DEB887]/30 bg-gradient-to-br from-[#F5EFE7]/50 to-white shadow-md sticky top-4 h-[calc(100vh-40px)] flex flex-col overflow-hidden">
+        <div className="lg:w-1/4 max-w-md">
+          <div className="rounded-lg border border-[#DEB887]/30 bg-white shadow-md sticky top-4 h-[calc(100vh-100px)] flex flex-col">
             {/* Cart Header */}
-            <div className="p-3 border-b border-[#DEB887]/30 bg-gradient-to-r from-[#F5EFE7] to-white">
+            <div className="p-3 border-b border-[#DEB887]/30 bg-gradient-to-r from-[#A67C52]/10 to-[#F5EFE7]/50">
               <h2 className="text-base font-semibold text-[#5D3A1F] flex items-center gap-2">
                 <div className="h-6 w-6 rounded-full bg-gradient-to-br from-[#A67C52] to-[#8B5A2B] flex items-center justify-center shadow-sm">
                   <ShoppingCart className="h-3 w-3 text-white" />
                 </div>
                 Your Order
                 {cart.length > 0 && (
-                  <span className="ml-auto bg-white text-[#6B4226] text-[10px] font-medium rounded-full px-2 py-0.5 border border-[#DEB887]/30 shadow-sm">
-                    {cart.reduce((total, item) => total + item.quantity, 0)} items
+                  <span className="ml-auto bg-white text-[#6B4226] text-[10px] font-medium rounded-full px-2 py-0.5 border border-[#DEB887]/30 shadow-sm flex items-center">
+                    <span className="h-3 w-3 rounded-full bg-[#8B5A2B]/10 flex items-center justify-center mr-1">
+                      <span className="text-[8px] text-[#8B5A2B] font-bold">{cart.reduce((total, item) => total + item.quantity, 0)}</span>
+                    </span>
+                    <span>items</span>
                   </span>
                 )}
               </h2>
@@ -500,21 +503,21 @@ export default function PosMenu() {
             
             <div className="flex-1 overflow-hidden flex flex-col">
               {/* Cart Items Section - Scrollable */}
-              <div className="p-3 flex-1 overflow-y-auto custom-scrollbar">
+              <div className="p-3 flex-1 overflow-y-auto custom-scrollbar mb-2">
                 {cart.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-[180px] text-center">
-                    <div className="rounded-full bg-[#F5EFE7] p-3 mb-3 shadow-sm">
-                      <ShoppingCart className="h-5 w-5 text-[#8B5A2B]/60" />
+                    <div className="rounded-full bg-gradient-to-r from-[#A67C52]/10 to-[#F5EFE7] p-3 mb-3 shadow-sm">
+                      <ShoppingCart className="h-5 w-5 text-[#8B5A2B]" />
                     </div>
                     <p className="text-[#5D3A1F] text-sm mb-1 font-medium">Your cart is empty</p>
-                    <p className="text-xs text-[#8B5A2B]/60">Add items from the menu to get started</p>
+                    <p className="text-xs text-[#8B5A2B]/70">Add items from the menu to get started</p>
                   </div>
                 ) : (
                   <div className="space-y-2">
                     {cart.map((item) => (
-                      <div key={item.id} className="flex items-center gap-2 pb-2 border-b border-[#DEB887]/20 group hover:bg-[#F5EFE7]/30 p-1 rounded-md transition-all">
+                      <div key={item.id} className="flex items-center gap-2 pb-2 border-b border-[#DEB887]/20 group hover:bg-[#F5EFE7]/30 p-1.5 rounded-md transition-all">
                         {/* Item Image */}
-                        <div className="h-12 w-12 rounded-md overflow-hidden flex-shrink-0 shadow-sm border border-[#DEB887]/20">
+                        <div className="h-14 w-14 rounded-md overflow-hidden flex-shrink-0 shadow-sm border border-[#DEB887]/20 relative">
                           <img 
                             src={item.image ? item.image.startsWith('/') ? item.image : `/${item.image}` : "https://via.placeholder.com/300x200?text=No+Image"} 
                             alt={item.menuname} 
@@ -524,45 +527,51 @@ export default function PosMenu() {
                               e.target.src = "https://via.placeholder.com/300x200?text=No+Image";
                             }}
                           />
+                          {/* Quantity Badge */}
+                          <div className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-[#8B5A2B] text-white text-[8px] font-bold flex items-center justify-center shadow-md border border-white">
+                            {item.quantity}
+                          </div>
                         </div>
                         
                         {/* Item Details */}
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-xs font-medium text-[#5D3A1F] truncate">{item.menuname}</h3>
-                          <div className="flex items-center justify-between mt-1">
+                          <div className="flex justify-between items-start">
+                            <h3 className="text-xs font-medium text-[#5D3A1F] truncate pr-1">{item.menuname}</h3>
+                            {/* Remove Button - Always visible but subtle */}
+                            <button
+                              onClick={() => removeFromCart(item.id, true)}
+                              className="h-4 w-4 flex items-center justify-center rounded-full bg-white/80 text-red-400 border border-red-100/50 shadow-sm hover:bg-red-50 hover:text-red-500 transition-all"
+                              title="Remove from cart"
+                            >
+                              <X className="h-2 w-2" />
+                            </button>
+                          </div>
+                          
+                          <div className="flex items-center justify-between mt-1.5">
                             {/* Price */}
-                            <div className="flex items-center gap-0.5 bg-white/80 px-1.5 py-0.5 rounded-full shadow-sm border border-[#DEB887]/10">
+                            <div className="flex items-center gap-0.5 bg-[#F5EFE7]/80 px-1.5 py-0.5 rounded-md shadow-sm">
                               <PhilippinePeso className="h-2.5 w-2.5 text-[#8B5A2B]" />
                               <span className="text-[10px] font-bold text-[#8B5A2B]">{item.price}</span>
+                              <span className="text-[8px] text-[#8B5A2B]/70 ml-0.5">× {item.quantity}</span>
                             </div>
                             
                             {/* Quantity Controls */}
-                            <div className="flex items-center gap-1 bg-white rounded-full shadow-sm border border-[#DEB887]/20 px-1 py-0.5">
+                            <div className="flex items-center gap-1 bg-white rounded-md shadow-sm border border-[#DEB887]/20 px-1 py-0.5">
                               <button 
                                 onClick={() => removeFromCart(item.id)}
-                                className="h-4 w-4 flex items-center justify-center rounded-full bg-gradient-to-r from-[#A67C52]/10 to-[#8B5A2B]/10 text-[#8B5A2B] hover:from-[#A67C52]/20 hover:to-[#8B5A2B]/20 transition-all"
+                                className="h-5 w-5 flex items-center justify-center rounded-sm bg-gradient-to-r from-[#A67C52]/10 to-[#8B5A2B]/10 text-[#8B5A2B] hover:from-[#A67C52]/20 hover:to-[#8B5A2B]/20 transition-all"
                               >
-                                <Minus className="h-2 w-2" />
+                                <Minus className="h-2.5 w-2.5" />
                               </button>
-                              <span className="text-[10px] font-medium w-4 text-center text-[#5D3A1F]">{item.quantity}</span>
                               <button 
                                 onClick={() => addToCart(item)}
-                                className="h-4 w-4 flex items-center justify-center rounded-full bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white hover:from-[#8B5A2B] hover:to-[#6B4226] transition-all"
+                                className="h-5 w-5 flex items-center justify-center rounded-sm bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white hover:from-[#8B5A2B] hover:to-[#6B4226] transition-all"
                               >
-                                <Plus className="h-2 w-2" />
+                                <Plus className="h-2.5 w-2.5" />
                               </button>
                             </div>
                           </div>
                         </div>
-                        
-                        {/* Remove Button - Only visible on hover */}
-                        <button
-                          onClick={() => removeFromCart(item.id, true)}
-                          className="h-5 w-5 flex items-center justify-center rounded-full bg-white text-red-500 border border-red-100 shadow-sm opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50"
-                          title="Remove from cart"
-                        >
-                          <Trash2 className="h-2.5 w-2.5" />
-                        </button>
                       </div>
                     ))}
                   </div>
@@ -570,11 +579,14 @@ export default function PosMenu() {
               </div>
               
               {/* Order Details Section - Always Visible */}
-              <div className="border-t border-[#DEB887]/30 p-3 bg-gradient-to-b from-white to-[#F5EFE7]/30">
+              <div className="border-t border-[#DEB887]/30 p-3 bg-gradient-to-b from-white to-[#F5EFE7]/50 flex-1 overflow-y-auto custom-scrollbar">
                 <div className="space-y-3">
                   {/* Service Type Selection */}
                   <div className="bg-white rounded-md p-2 shadow-sm border border-[#DEB887]/20">
-                    <label className="block text-xs font-medium text-[#5D3A1F] mb-2">
+                    <label className="block text-xs font-medium text-[#5D3A1F] mb-2 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-[#8B5A2B]">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                      </svg>
                       Service Type
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -609,8 +621,23 @@ export default function PosMenu() {
                   
                   {/* Room or Table Number based on service type */}
                   <div className="bg-white rounded-md p-2 shadow-sm border border-[#DEB887]/20">
-                    <label htmlFor={serviceType === 'room' ? "roomNumber" : "tableNumber"} className="block text-xs font-medium text-[#5D3A1F] mb-1">
-                      {serviceType === 'room' ? 'Room Number' : 'Table Number'}
+                    <label htmlFor={serviceType === 'room' ? "roomNumber" : "tableNumber"} className="block text-xs font-medium text-[#5D3A1F] mb-1 flex items-center">
+                      {serviceType === 'room' ? (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-[#8B5A2B]">
+                            <rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect>
+                            <path d="M2 10h20"></path>
+                          </svg>
+                          Room Number
+                        </>
+                      ) : (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-[#8B5A2B]">
+                            <circle cx="12" cy="12" r="10"></circle>
+                          </svg>
+                          Table Number
+                        </>
+                      )}
                     </label>
                     {serviceType === 'room' ? (
                       <input 
@@ -664,7 +691,11 @@ export default function PosMenu() {
                   
                   {/* Payment Method Selection */}
                   <div className="bg-white rounded-md p-2 shadow-sm border border-[#DEB887]/20">
-                    <label className="block text-xs font-medium text-[#5D3A1F] mb-2">
+                    <label className="block text-xs font-medium text-[#5D3A1F] mb-2 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 text-[#8B5A2B]">
+                        <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+                        <line x1="2" x2="22" y1="10" y2="10"></line>
+                      </svg>
                       Payment Method
                     </label>
                     <div className="grid grid-cols-3 gap-2">
@@ -707,7 +738,7 @@ export default function PosMenu() {
                   </div>
                   
                   {/* Order Summary */}
-                  <div className="bg-white rounded-md p-2 shadow-sm border border-[#DEB887]/20 space-y-1">
+                  <div className="bg-gradient-to-r from-[#F5EFE7]/70 to-white rounded-md p-2 shadow-sm border border-[#DEB887]/30 space-y-1">
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-[#5D3A1F]/70">Subtotal</span>
                       <span className="font-medium text-[#5D3A1F]">₱{calculateSubtotal()}</span>
@@ -733,30 +764,29 @@ export default function PosMenu() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={clearCart}
-                      className="flex-1 py-1.5 px-3 border border-[#DEB887]/30 rounded-md text-[#5D3A1F] text-xs font-medium bg-white hover:bg-[#F5EFE7]/50 transition-all shadow-sm flex items-center justify-center gap-1"
+                      className="flex-none h-10 px-3 rounded-lg border border-[#DEB887]/30 bg-white text-[#5D3A1F] text-xs font-medium hover:bg-gradient-to-r hover:from-[#F5EFE7] hover:via-[#DEB887]/20 hover:to-[#F5EFE7]/10 hover:text-[#8B5A2B] transition-all duration-200 shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center"
                       disabled={cart.length === 0}
                     >
-                      <X className="h-3 w-3" />
-                      <span>Clear</span>
+                      <X className="h-4 w-4 transition-transform group-hover:rotate-45" />
                     </button>
                     <button
                       onClick={handleOrderSubmit}
-                      className={`flex-1 py-1.5 px-3 rounded-md text-white text-xs font-medium shadow-sm flex items-center justify-center gap-1 ${
+                      className={`flex-1 h-10 px-4 rounded-lg text-white text-xs font-medium shadow-sm flex items-center justify-center gap-2 ${
                         cart.length === 0 || isSubmitting
                           ? "bg-gray-400 cursor-not-allowed"
-                          : "bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] hover:from-[#8B5A2B] hover:to-[#6B4226]"
+                          : "bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] hover:from-[#8B5A2B] hover:to-[#6B4226]/90 active:scale-95 transition-all duration-200"
                       }`}
                       disabled={cart.length === 0 || isSubmitting}
                     >
                       {isSubmitting ? (
                         <>
-                          <div className="h-3 w-3 border-2 border-white/30 border-t-white/80 rounded-full animate-spin"></div>
+                          <div className="h-3.5 w-3.5 border-2 border-white/30 border-t-white/80 rounded-full animate-spin"></div>
                           <span>Processing...</span>
                         </>
                       ) : (
                         <>
-                          <Check className="h-3 w-3" />
-                          <span>Save Order</span>
+                          <Check className="h-3.5 w-3.5" />
+                          <span className="font-semibold">Complete Order</span>
                         </>
                       )}
                     </button>

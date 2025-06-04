@@ -26,7 +26,7 @@ import UpdateEventModal from '@/Components/SuperAdmin/UpdateEventModal';
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
-export default function EventRes() {
+function EventRes() {
   const [events, setEvents] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -128,13 +128,12 @@ export default function EventRes() {
     });
   };
 
-
-
   // Filter events based on status and search query
   const filteredEvents = events.filter((event) => {
     const matchesStatus = filterStatus === "all" || event.status === filterStatus;
     const matchesSearch =
-      event.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      searchQuery === "" ||
+      (event.client_name || event.clientName).toLowerCase().includes(searchQuery.toLowerCase()) ||
       getEventTypeLabel(event.eventType).toLowerCase().includes(searchQuery.toLowerCase()) ||
       event.venue.toLowerCase().includes(searchQuery.toLowerCase());
     
@@ -152,7 +151,8 @@ export default function EventRes() {
       <ToastContainer position="top-right" hideProgressBar />
       <Head title="Event Reservations" />
       
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8">
+        <div className="space-y-8">
         {/* Combined Action Bar with Search, Filter, and Add Button */}
         <div className="bg-white rounded-xl shadow-md border border-[#DEB887]/30 p-4 mb-8 mt-5">
           <div className="flex flex-col lg:flex-row gap-4 items-center">
@@ -169,64 +169,32 @@ export default function EventRes() {
                 className="w-full rounded-lg border border-[#DEB887]/30 bg-white py-2.5 pl-10 pr-4 text-sm text-[#5D3A1F] placeholder-[#8B5A2B]/40 focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
               />
             </div>
-            
-            {/* Status Filter Tabs */}
-            <div className="flex items-center justify-center w-full lg:w-auto">
-              <div className="inline-flex bg-[#F5EFE7]/50 rounded-lg p-1 border border-[#DEB887]/20">
-                <button
-                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "all" 
-                    ? "bg-gradient-to-r from-[#8B5A2B]/90 to-[#A67C52]/90 text-white shadow-sm" 
-                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
-                  onClick={() => setFilterStatus("all")}
-                >
-                  All
-                </button>
-                
-                <button
-                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "pending" 
-                    ? "bg-gradient-to-r from-[#F59E0B]/90 to-[#F59E0B]/70 text-white shadow-sm" 
-                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
-                  onClick={() => setFilterStatus("pending")}
-                >
-                  Pending
-                </button>
-                
-                <button
-                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "confirmed" 
-                    ? "bg-gradient-to-r from-[#4CAF50]/90 to-[#4CAF50]/70 text-white shadow-sm" 
-                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
-                  onClick={() => setFilterStatus("confirmed")}
-                >
-                  Confirmed
-                </button>
-                
-                <button
-                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "completed" 
-                    ? "bg-gradient-to-r from-[#3B82F6]/90 to-[#3B82F6]/70 text-white shadow-sm" 
-                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
-                  onClick={() => setFilterStatus("completed")}
-                >
-                  Completed
-                </button>
-                
-                <button
-                  className={`px-4 py-1.5 text-xs sm:text-sm font-medium rounded-md transition-all duration-200 ${filterStatus === "cancelled" 
-                    ? "bg-gradient-to-r from-[#EF4444]/90 to-[#EF4444]/70 text-white shadow-sm" 
-                    : "text-[#5D3A1F]/70 hover:bg-[#F5EFE7]"}`}
-                  onClick={() => setFilterStatus("cancelled")}
-                >
-                  Cancelled
-                </button>
+
+            {/* Status Filter */}
+            <div className="flex items-center gap-2 w-full lg:w-auto">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                <Filter className="h-4 w-4 text-[#8B5A2B]" />
               </div>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="rounded-lg border border-[#DEB887]/30 bg-white py-2 pl-4 pr-10 text-sm text-[#5D3A1F] focus:border-[#8B5A2B] focus:outline-none focus:ring-2 focus:ring-[#A67C52]/20 transition-all duration-200"
+              >
+                <option value="all">All Status</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="pending">Pending</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="completed">Completed</option>
+              </select>
             </div>
-            
-            {/* Add Button */}
+
+            {/* Add Event Button */}
             <button
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:shadow-md transition-all duration-200 w-full lg:w-auto justify-center"
+              className="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:shadow-md transition-all duration-300 w-full lg:w-auto"
             >
               <Plus className="h-4 w-4" />
-              <span>Add New Event</span>
+              <span>Add Event</span>
             </button>
           </div>
         </div>
@@ -237,119 +205,134 @@ export default function EventRes() {
           {filteredEvents.map((event) => (
             <div
               key={event.id}
-              className="bg-white rounded-xl border border-[#DEB887]/30 shadow-sm hover:shadow-md transition-all overflow-hidden group relative transform hover:-translate-y-1 duration-300"
+              className="rounded-lg overflow-hidden border border-[#DEB887]/30 bg-gradient-to-br from-[#F5EFE7] to-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 relative"
             >
-              {/* Card Header with Status Badge */}
-              <div className="relative bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] p-4">
-                <div className="absolute top-0 right-0 h-20 w-20 bg-white/10 rounded-full -mr-10 -mt-10 opacity-20"></div>
-                
-                <div className="flex items-center justify-between relative z-10">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1.5 bg-white/20 rounded-lg shadow-sm">
-                      <Calendar className="h-4 w-4 text-white" />
-                    </div>
-                    <span className="text-sm font-medium text-white">
-                      {getEventTypeLabel(event.event_type || event.eventType)}
-                    </span>
-                  </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center 
-                    ${event.status === 'confirmed' ? 'bg-green-500/90 text-white' : 
-                      event.status === 'cancelled' ? 'bg-red-500/90 text-white' : 
-                      event.status === 'completed' ? 'bg-blue-500/90 text-white' : 
-                      'bg-amber-500/90 text-white'}`}>
-                    {event.status === "confirmed" ? (
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                    ) : event.status === "cancelled" ? (
-                      <X className="h-3 w-3 mr-1" />
-                    ) : (
-                      <AlertCircle className="h-3 w-3 mr-1" />
-                    )}
-                    {getStatusInfo(event.status).label}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="p-4 relative">
-                {/* Delete Button */}
+              <div className="absolute top-3 right-3 z-10">
                 <button
                   onClick={() => deleteEvent(event.id)}
-                  className="absolute top-3 right-3 h-7 w-7 flex items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-200 focus:outline-none focus:ring-1 focus:ring-red-500 focus:ring-offset-1 transition-all z-10 opacity-80 hover:opacity-100 shadow-sm"
+                  className="h-7 w-7 flex items-center justify-center rounded-full bg-red-100/80 text-red-600 hover:bg-red-200 transition-all opacity-80 hover:opacity-100 shadow-sm"
                   title="Delete Event"
                 >
                   <Trash className="h-3.5 w-3.5" />
                 </button>
-
+              </div>
+              <div className="p-3">
                 {/* Client Information */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="h-12 w-12 rounded-full bg-gradient-to-r from-[#F5EFE7] to-[#E5D3B3] flex items-center justify-center text-[#5D3A1F] font-semibold text-sm flex-shrink-0 border border-[#DEB887]/30 group-hover:border-[#A67C52] transition-all shadow-sm">
-                    {(event.client_name || event.clientName).split(' ').map(n => n[0]).join('').toUpperCase()}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-semibold text-[#5D3A1F] truncate group-hover:text-[#8B5A2B] transition-colors">
-                      {event.client_name || event.clientName}
-                    </h3>
-                    <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                      <div className="flex items-center gap-1 bg-[#F5EFE7]/70 px-2 py-1 rounded-full text-xs">
-                        <DollarSign className="h-3 w-3 text-[#8B5A2B]" />
-                        <span className="text-xs text-[#8B5A2B] font-medium">₱{(event.total_amount || event.totalAmount).toLocaleString()}</span>
-                      </div>
-                      <div className="flex items-center gap-1 bg-[#F5EFE7]/50 px-2 py-1 rounded-full text-xs">
-                        <Users className="h-3 w-3 text-[#8B5A2B]" />
-                        <span className="text-xs text-[#8B5A2B] font-medium">{event.guest_count || event.guestCount}</span>
+                <div className="flex items-center mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#A67C52] to-[#8B5A2B] shadow-md text-white font-semibold text-sm">
+                      {(event.client_name || event.clientName).split(' ').map(n => n[0]).join('').toUpperCase()}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-[#5D3A1F] truncate">
+                        {event.client_name || event.clientName}
+                      </h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3 text-[#8B5A2B]" />
+                          <span className="text-xs text-[#8B5A2B] font-medium">{getEventTypeLabel(event.eventType)}</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium flex items-center ${
+                          event.status === "confirmed"
+                            ? "bg-green-100 text-green-800"
+                            : event.status === "cancelled"
+                            ? "bg-red-100 text-red-800"
+                            : event.status === "completed"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-amber-100 text-amber-800"
+                        }`}>
+                          {event.status === "confirmed" || event.status === "completed" ? (
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                          ) : event.status === "cancelled" ? (
+                            <X className="h-3 w-3 mr-1" />
+                          ) : (
+                            <AlertCircle className="h-3 w-3 mr-1" />
+                          )}
+                          {getStatusInfo(event.status).label}
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Event Details */}
-                <div className="space-y-2 mb-4 bg-[#F5EFE7]/20 p-3 rounded-lg border border-[#DEB887]/20 text-xs">
-                  <div className="flex items-center gap-2 text-[#5D3A1F]/80">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#F5EFE7]">
-                      <Calendar className="h-3 w-3 text-[#8B5A2B]" />
+                <div className="mt-3">
+                  <div className="flex flex-col gap-2">
+                    {/* Event Details */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                          <Calendar className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                        </div>
+                        <p className="text-xs text-[#6B4226]/70 truncate">{formatDate(event.date)}</p>
+                      </div>
                     </div>
-                    <p className="truncate">{formatDate(event.date)}</p>
-                  </div>
-                  <div className="flex items-center gap-2 text-[#5D3A1F]/80">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#F5EFE7]">
-                      <Clock className="h-3 w-3 text-[#8B5A2B]" />
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                          <Clock className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                        </div>
+                        <p className="text-xs text-[#6B4226]/70">{event.start_time || event.startTime} - {event.end_time || event.endTime}</p>
+                      </div>
                     </div>
-                    <p className="">{event.start_time || event.startTime} - {event.end_time || event.endTime}</p>
-                  </div>
-                  <div className="flex items-center gap-2 text-[#5D3A1F]/80">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#F5EFE7]">
-                      <MapPin className="h-3 w-3 text-[#8B5A2B]" />
-                    </div>
-                    <p className="truncate">{event.venue}</p>
-                  </div>
-                </div>
 
-                {/* Action Buttons */}
-                <div className="flex items-center gap-2 pt-3 border-t border-[#DEB887]/20">
-                  <button
-                    onClick={() => {
-                      setSelectedEvent(event);
-                      setShowEventDetails(true);
-                    }}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:shadow-md transition-all duration-300"
-                  >
-                    <Eye className="h-3 w-3" />
-                    <span>View</span>
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent event bubbling
-                      // Ensure we're setting the complete event object with all properties
-                      setSelectedEvent(event);
-                      // Make sure event details modal is closed
-                      setShowEventDetails(false);
-                      // Set update modal to true
-                      setShowUpdateModal(true);
-                    }}
-                    className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#DEB887]/30 bg-white px-3 py-1.5 text-xs font-medium text-[#8B5A2B] hover:bg-[#F5EFE7]/50 transition-all duration-300"
-                  >
-                    <Edit className="h-3 w-3" />
-                    <span>Update</span>
-                  </button>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                          <MapPin className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                        </div>
+                        <p className="text-xs text-[#6B4226]/70 truncate">{event.venue}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                          <Users className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                        </div>
+                        <p className="text-xs text-[#6B4226]/70">{event.guest_count || event.guestCount} Guests</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#A67C52]/10 shadow-sm">
+                          <DollarSign className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                        </div>
+                        <p className="text-xs text-[#6B4226]/70">₱{(event.total_amount || event.totalAmount).toLocaleString()}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-3 h-1 w-full rounded-full bg-[#F5EFE7] overflow-hidden">
+                    <div className="h-full rounded-full bg-gradient-to-r from-[#A67C52] to-[#DEB887] w-full"></div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-2 mt-3">
+                    <button
+                      onClick={() => {
+                        setSelectedEvent(event);
+                        setShowEventDetails(true);
+                      }}
+                      className="flex-1 flex items-center justify-center gap-1 rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:shadow-md transition-all duration-300"
+                    >
+                      <Eye className="h-3 w-3" />
+                      <span>View</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedEvent(event);
+                        setShowEventDetails(false);
+                        setShowUpdateModal(true);
+                      }}
+                      className="flex-1 flex items-center justify-center gap-1 rounded-lg border border-[#DEB887]/30 bg-white px-3 py-1.5 text-xs font-medium text-[#8B5A2B] hover:bg-[#DEB887]/10 transition-all duration-300"
+                    >
+                      <Edit className="h-3 w-3" />
+                      <span>Update</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -374,7 +357,6 @@ export default function EventRes() {
             </button>
           </div>
         )}
-      </div>
       
       {/* Modals */}
       <AddEventModal
@@ -419,6 +401,10 @@ export default function EventRes() {
           getStatusInfo={getStatusInfo}
         />
       )}
+        </div>
+      </div>
     </SuperAdminLayout>
   );
 }
+
+export default EventRes;

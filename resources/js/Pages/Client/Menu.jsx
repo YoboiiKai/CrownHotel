@@ -51,7 +51,7 @@ const scrollbarStyles = `
   }
 `;
 
-export default function Menu() {
+export default function Menu({ auth }) {
   // Menu items data
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -194,19 +194,26 @@ export default function Menu() {
     }
     
     // Prepare order data with multiple items
+    const customerName = auth?.user?.name || 'Guest';
     const orderData = {
-      roomNumber: roomNumber,
+      service_type: 'room', // Default to room service
+      room_number: roomNumber,
+      customerName: customerName,
       items: cart.map(item => ({
-        menuItemId: item.id,
+        menu_id: item.id,
         name: item.menuname,
         quantity: item.quantity,
-        price: item.price
+        price: item.price,
+        subtotal: (item.price * item.quantity).toFixed(2)
       })),
       subtotal: parseFloat(calculateSubtotal()),
-      discount: parseFloat(calculateDiscount()),
+      discount: parseFloat(calculateDiscount() || 0),
       total: parseFloat(calculateTotal()),
       notes: orderNotes,
-      isSeniorCitizen: isSeniorCitizen
+      is_senior_citizen: isSeniorCitizen,
+      payment_method: 'cash', // Default to cash payment
+      payment_status: 'pending',
+      user_id: auth?.user?.id || null // Include user ID if available
     };
     
     setIsSubmitting(true);

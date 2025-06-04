@@ -438,18 +438,6 @@ export default function Bookings() {
             </div>
           </div>
         </div>
-
-
-
-        {/* Page Title and Summary */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-[#5D3A1F] mb-1">Bookings Management</h1>
-            <p className="text-sm text-[#8B5A2B]/70">
-              {filteredBookings.length} {filteredBookings.length === 1 ? 'booking' : 'bookings'} found
-            </p>
-          </div>
-        </div>
         
         {/* Empty State */}
         {filteredBookings.length === 0 ? (

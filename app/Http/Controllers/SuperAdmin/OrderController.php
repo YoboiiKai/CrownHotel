@@ -33,6 +33,11 @@ class OrderController extends Controller
                 $query->where('roomNumber', 'like', '%' . $request->room . '%');
             }
             
+            // Filter by user_id if provided
+            if ($request->has('user_id') && $request->user_id) {
+                $query->where('user_id', $request->user_id);
+            }
+            
             if ($request->has('date_from') && $request->date_from) {
                 $query->whereDate('created_at', '>=', $request->date_from);
             }
