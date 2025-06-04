@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, Fragment } from "react"
-import { Eye, EyeOff, Mail, Lock, Crown, Hotel, ChevronRight, Moon, Sun, Star, Phone, Calendar, MapPin, Briefcase, User } from "lucide-react"
+import { Eye, EyeOff, Mail, Lock, Crown, Hotel, ChevronRight, Moon, Sun, Star, Phone, MapPin, User } from "lucide-react"
 import { Head, Link, useForm } from "@inertiajs/react"
 import { Transition } from "@headlessui/react"
 
@@ -27,8 +27,6 @@ export default function Register() {
         isEmailFocused: false,
         isPhoneFocused: false,
         isAddressFocused: false,
-        isDateOfBirthFocused: false,
-        isOccupationFocused: false,
         isPasswordFocused: false,
         isPasswordConfirmationFocused: false,
         isLoading: false,
@@ -48,8 +46,6 @@ export default function Register() {
         email: '',
         phone: '',
         address: '',
-        date_of_birth: '',
-        occupation: '',
         password: '',
         password_confirmation: '',
     });
@@ -62,8 +58,6 @@ export default function Register() {
         isEmailFocused,
         isPhoneFocused,
         isAddressFocused,
-        isDateOfBirthFocused,
-        isOccupationFocused,
         isPasswordFocused,
         isPasswordConfirmationFocused,
         isLoading,
@@ -216,7 +210,7 @@ export default function Register() {
         <>
             <Head title="Crown of the Orient | Register" />
             
-            <div className={`relative min-h-screen w-full overflow-hidden ${isDarkMode ? 'bg-gradient-to-br from-[#1A0F00] via-[#3D2914] to-[#1A0F00]' : 'bg-gradient-to-br from-[#5D3A1F] via-[#8B5A2B] to-[#3D2914]'}`}>
+            <div className={`relative min-h-screen w-full overflow-hidden ${isDarkMode ? 'bg-gradient-to-br from-[#1A0F00] via-[#3D2914] to-[#1A0F00]' : 'bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B]'}`}>
                 {/* Theme toggle */}
                 <button 
                     onClick={toggleTheme} 
@@ -229,11 +223,11 @@ export default function Register() {
                 {/* Stars container */}
                 <div ref={starsRef} className="absolute inset-0 z-0 overflow-hidden"></div>
                 
-                {/* Parallax background elements */}
+                {/* Parallax background elements - matching Login decorative elements */}
                 <div ref={parallaxRef} className="absolute inset-0 z-0 overflow-hidden">
-                    <div className="parallax-layer absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-[#DEB887] opacity-10 blur-[120px] rounded-full"></div>
-                    <div className="parallax-layer absolute bottom-0 left-1/4 w-[400px] h-[200px] bg-[#A67C52] opacity-5 blur-[80px] rounded-full"></div>
-                    <div className="parallax-layer absolute top-1/4 right-1/4 w-[300px] h-[300px] bg-[#DEB887] opacity-5 blur-[80px] rounded-full"></div>
+                    <div className="parallax-layer absolute top-0 right-0 w-24 sm:w-32 md:w-40 h-24 sm:h-32 md:h-40 bg-[#DEB887] opacity-20 rounded-full -mt-12 sm:-mt-16 md:-mt-20 -mr-12 sm:-mr-16 md:-mr-20 blur-3xl"></div>
+                    <div className="parallax-layer absolute bottom-0 left-0 w-20 sm:w-24 md:w-32 h-20 sm:h-24 md:h-32 bg-[#A67C52] opacity-20 rounded-full -mb-8 sm:-mb-10 -ml-8 sm:-ml-10 blur-3xl"></div>
+                    <div className="parallax-layer absolute top-1/3 left-1/3 w-[300px] h-[300px] bg-[#DEB887] opacity-5 blur-[80px] rounded-full"></div>
                 </div>
                 
                 {/* Background image slideshow */}
@@ -278,59 +272,76 @@ export default function Register() {
                             {/* Registration form - landscape layout */}
                             <div className="flex flex-col md:flex-row">
                                 {/* Left side - Brand and welcome */}
-                                <div className="w-full md:w-1/2 p-8 sm:p-12 bg-gradient-to-br from-[#8B5A2B] to-[#5D3A1F] text-white flex flex-col justify-between relative overflow-hidden">
+                                <div className="w-full md:w-1/2 p-8 sm:p-12 bg-gradient-to-r from-[#5D3A1F] to-[#8B5A2B] text-white flex flex-col justify-between relative overflow-hidden">
+                                    {/* Background image overlay - matching Login */}
+                                    <div className="absolute inset-0 opacity-10">
+                                        <div className="w-full h-full bg-[url('https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center"></div>
+                                    </div>
                                     
                                     <div className="relative">
-                                        <div className="flex items-center space-x-4 mb-12">
+                                        <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#A67C52]/30 backdrop-blur-sm mb-6">
+                                            <div className="w-2 h-2 rounded-full bg-[#DEB887] mr-2"></div>
+                                            <span className="text-xs font-medium text-[#DEB887]">
+                                                CROWN OF THE ORIENT
+                                            </span>
+                                        </div>
+                                        
+                                        <div className="flex items-center space-x-4 mb-8">
                                             <div className="relative">
-                                            <div className="absolute inset-0 rounded-xl bg-[#DEB887] blur-[15px] opacity-40"></div>
+                                                <div className="absolute inset-0 rounded-xl bg-[#DEB887] blur-[15px] opacity-40"></div>
                                                 <div className="relative flex h-24 w-24 items-center justify-center rounded-xl bg-gradient-to-br from-[#A67C52] to-[#6B4226] text-white shadow-lg">
-                                                    <Crown size={48} className="animate-float" />
+                                                    <Hotel size={48} className="animate-float" />
                                                     <div className="absolute inset-0 rounded-xl border border-[#DEB887]/30 animate-pulse-slow"></div>
                                                 </div>
                                             </div>
                                             <div>
-                                                <h1 className="text-3xl font-bold text-white font-serif">CROWN of the ORIENT</h1>
-                                                <p className="text-sm text-[#DEB887]">BEACH RESORT</p>
+                                                <h1 className="text-2xl sm:text-3xl font-bold text-white">Join our community</h1>
+                                                <p className="text-sm text-[#DEB887]/80">Create an account to start your luxury journey with us</p>
                                             </div>
                                         </div>
                                         
-                                        <h2 className="text-4xl font-bold tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-[#DEB887] to-[#E6CCB2]">Join our community</h2>
-                                        <p className="text-[#DEB887] text-lg">Create an account to start your luxury journey with us.</p>
-                                        
-                                        <div className="mt-10 space-y-6">
-                                            {/* Luxury Experience */}
-                                            <div className="border border-[#A67C52]/20 rounded-lg p-6 bg-gradient-to-br from-[#8B5A2B]/30 to-[#5D3A1F]/30 backdrop-blur-sm">
-                                                <h3 className="text-xl font-semibold text-[#DEB887] mb-4">The Luxury Experience</h3>
-                                                <p className="text-[#E6CCB2] text-sm mb-4">
-                                                    At Crown of the Orient, we believe luxury is in the details. From personalized check-in to curated room amenities, every moment of your stay is designed to exceed expectations.
-                                                </p>
-                                                <div className="grid grid-cols-2 gap-3 mt-4">
-                                                    <div className="flex flex-col items-center p-3 bg-[#6B4226]/30 rounded-lg">
-                                                        <div className="h-8 w-8 rounded-full bg-[#A67C52]/20 flex items-center justify-center mb-2">
-                                                            <Star size={16} className="text-[#DEB887]" />
+                                        <div className="mt-8 space-y-6">
+                                            {/* Feature cards - matching Login style */}
+                                            <div className="flex flex-wrap gap-2 sm:gap-3 mb-6">
+                                                <button className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white shadow-md hover:shadow-lg transition-all duration-300 flex items-center">
+                                                    <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />{" "}
+                                                    <span className="whitespace-nowrap">Premium Services</span>
+                                                </button>
+                                                <button className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg border border-[#DEB887]/30 text-[#DEB887] hover:bg-white/10 transition-all duration-300 flex items-center">
+                                                    <Hotel className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />{" "}
+                                                    <span className="whitespace-nowrap">Luxury Rooms</span>
+                                                </button>
+                                            </div>
+                                            
+                                            {/* Luxury Experience Card */}
+                                            <div className="rounded-lg overflow-hidden border border-[#DEB887]/30 bg-[#A67C52]/20 backdrop-blur-sm shadow-md">
+                                                <div className="p-5">
+                                                    <div className="flex items-center justify-between mb-3">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white shadow-sm">
+                                                                <Star className="w-4 h-4" />
+                                                            </div>
+                                                            <h3 className="font-semibold text-white">The Luxury Experience</h3>
                                                         </div>
-                                                        <span className="text-xs text-center text-[#E6CCB2]">5-Star Service</span>
+                                                        <div className="flex items-center gap-1">
+                                                            <Star className="w-3.5 h-3.5 text-amber-500 fill-current" />
+                                                            <span className="text-xs font-medium text-[#DEB887]">5.0</span>
+                                                        </div>
                                                     </div>
-                                                    <div className="flex flex-col items-center p-3 bg-[#6B4226]/30 rounded-lg">
-                                                        <div className="h-8 w-8 rounded-full bg-[#A67C52]/20 flex items-center justify-center mb-2">
-                                                            <Hotel size={16} className="text-[#DEB887]" />
+                                                    
+                                                    <p className="text-[#E6CCB2] text-sm mb-4">
+                                                        At Crown of the Orient, we believe luxury is in the details. Every moment of your stay is designed to exceed expectations.
+                                                    </p>
+                                                    
+                                                    <div className="flex flex-wrap gap-2 mt-3">
+                                                        <div className="flex items-center px-2 py-1 rounded-full bg-[#DEB887]/20 text-xs text-[#DEB887]">
+                                                            <Star className="w-3 h-3 mr-1" />
+                                                            <span>High-speed WiFi</span>
                                                         </div>
-                                                        <span className="text-xs text-center text-[#E6CCB2]">Luxury Rooms</span>
-                                                    </div>
-                                                    <div className="flex flex-col items-center p-3 bg-[#6B4226]/30 rounded-lg">
-                                                        <div className="h-8 w-8 rounded-full bg-[#A67C52]/20 flex items-center justify-center mb-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#DEB887]" viewBox="0 0 20 20" fill="currentColor">
-                                                                <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-                                                            </svg>
+                                                        <div className="flex items-center px-2 py-1 rounded-full bg-[#DEB887]/20 text-xs text-[#DEB887]">
+                                                            <Star className="w-3 h-3 mr-1" />
+                                                            <span>Fine Dining</span>
                                                         </div>
-                                                        <span className="text-xs text-center text-[#E6CCB2]">Fine Dining</span>
-                                                    </div>
-                                                    <div className="flex flex-col items-center p-3 bg-[#6B4226]/30 rounded-lg">
-                                                        <div className="h-8 w-8 rounded-full bg-[#A67C52]/20 flex items-center justify-center mb-2">
-                                                            <ChevronRight size={16} className="text-[#DEB887]" />
-                                                        </div>
-                                                        <span className="text-xs text-center text-[#E6CCB2]">Exclusive Access</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -348,64 +359,20 @@ export default function Register() {
                                     <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-[#A67C52] opacity-20 blur-3xl rounded-full animate-pulse-slow delay-700"></div>
                                 </div>
                                 
-                                {/* Right side - Registration form */}
-                                <div className="w-full md:w-1/2 p-8 sm:p-12 bg-gradient-to-r from-white to-[#F5EFE6] relative">
-                                    {/* Decorative corner accents */}
-                                    <div className="absolute top-0 right-0 w-[120px] h-[120px] border-t-2 border-r-2 border-[#DEB887]/40 rounded-tl-2xl"></div>
-                                    <div className="absolute bottom-0 left-0 w-[120px] h-[120px] border-b-2 border-l-2 border-[#DEB887]/40 rounded-tr-2xl"></div>
+                                {/* Right side - Form */}
+                                <div className="w-full md:w-1/2 p-8 sm:p-12 bg-gradient-to-r from-white to-[#F5EFE6] flex items-center justify-center relative"> 
                                     
                                     {/* Enhanced decorative elements */}
                                     <div className="absolute top-1/4 right-1/4 w-[250px] h-[250px] bg-[#DEB887] opacity-10 blur-[80px] rounded-full"></div>
                                     <div className="absolute bottom-1/3 right-1/3 w-[200px] h-[200px] bg-[#A67C52] opacity-10 blur-[60px] rounded-full"></div>
                                     <div className="absolute top-1/2 left-1/4 w-[150px] h-[150px] bg-[#8B5A2B] opacity-5 blur-[50px] rounded-full"></div>
                                     
-                                    
-                                    <div className="relative z-10 max-w-md mx-auto">
+                                    <div className={`relative z-10 max-w-lg mx-auto w-full transition-all duration-1000 ease-out ${mounted ? 'opacity-100' : 'opacity-0'} ${formTransformed ? 'translate-y-0' : 'translate-y-8'}`}>
                                         <div className="mb-8">
                                             <h2 className="text-3xl font-bold tracking-tight text-gray-900 text-transparent bg-clip-text bg-gradient-to-r from-[#8B5A2B] to-[#5D3A1F]">Create an account</h2>
                                             <p className="mt-2 text-sm text-gray-600">Fill in your details to join our luxury experience</p>
                                         </div>
 
-                                        {/* Registration Form */}
-                                        <form className="space-y-6" onSubmit={submit}>
-                                            {/* Two columns for personal info */}
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                {/* Name Field */}
-                                                <div>
-                                                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                                                        Full Name
-                                                    </label>
-                                                    <div
-                                                        className={`mt-1 relative rounded-md shadow-sm transition-all duration-200 ${
-                                                            isNameFocused ? "ring-2 ring-[#A67C52]" : ""
-                                                        } ${errors.name ? "border-red-500" : "border-gray-300"}`}
-                                                    >
-                                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                            <User className={`h-5 w-5 ${isNameFocused ? "text-[#A67C52]" : "text-gray-400"}`} />
-                                                        </div>
-                                                        <input
-                                                            id="name"
-                                                            name="name"
-                                                            type="text"
-                                                            autoComplete="name"
-                                                            required
-                                                            value={data.name}
-                                                            onChange={(e) => setData("name", e.target.value)}
-                                                            onFocus={() => setIsNameFocused(true)}
-                                                            onBlur={() => setIsNameFocused(false)}
-                                                            className={`block w-full rounded-md border pl-10 py-3 text-gray-900 placeholder-gray-400 focus:outline-none sm:text-sm ${
-                                                                errors.name ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#A67C52]"
-                                                            }`}
-                                                            placeholder="John Doe"
-                                                        />
-                                                    </div>
-                                                    {errors.name && <InputError message={errors.name} className="mt-2" />}
-                                                </div>
-
-                                                {/* Email Field */}
-                                                <div>
-                                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                                        Email Address
                                                     </label>
                                                     <div
                                                         className={`mt-1 relative rounded-md shadow-sm transition-all duration-200 ${
@@ -465,38 +432,6 @@ export default function Register() {
                                                     </div>
                                                     {errors.phone && <InputError message={errors.phone} className="mt-2" />}
                                                 </div>
-
-                                                {/* Date of Birth Field */}
-                                                <div>
-                                                    <label htmlFor="date_of_birth" className="block text-sm font-medium text-gray-700">
-                                                        Date of Birth
-                                                    </label>
-                                                    <div
-                                                        className={`mt-1 relative rounded-md shadow-sm transition-all duration-200 ${
-                                                            isDateOfBirthFocused ? "ring-2 ring-[#A67C52]" : ""
-                                                        } ${errors.date_of_birth ? "border-red-500" : "border-gray-300"}`}
-                                                    >
-                                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                            <Calendar className={`h-5 w-5 ${isDateOfBirthFocused ? "text-[#A67C52]" : "text-gray-400"}`} />
-                                                        </div>
-                                                        <input
-                                                            id="date_of_birth"
-                                                            name="date_of_birth"
-                                                            type="date"
-                                                            autoComplete="date_of_birth"
-                                                            required
-                                                            value={data.date_of_birth}
-                                                            onChange={(e) => setData("date_of_birth", e.target.value)}
-                                                            onFocus={() => setIsDateOfBirthFocused(true)}
-                                                            onBlur={() => setIsDateOfBirthFocused(false)}
-                                                            className={`block w-full rounded-md border pl-10 py-3 text-gray-900 placeholder-gray-400 focus:outline-none sm:text-sm ${
-                                                                errors.date_of_birth ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#A67C52]"
-                                                            }`}
-                                                            placeholder="YYYY-MM-DD"
-                                                        />
-                                                    </div>
-                                                    {errors.date_of_birth && <InputError message={errors.date_of_birth} className="mt-2" />}
-                                                </div>
                                             </div>
                                             
                                             {/* Two columns for additional info */}
@@ -533,37 +468,7 @@ export default function Register() {
                                                     {errors.address && <InputError message={errors.address} className="mt-2" />}
                                                 </div>
 
-                                                {/* Occupation Field */}
-                                                <div>
-                                                    <label htmlFor="occupation" className="block text-sm font-medium text-gray-700">
-                                                        Occupation
-                                                    </label>
-                                                    <div
-                                                        className={`mt-1 relative rounded-md shadow-sm transition-all duration-200 ${
-                                                            isOccupationFocused ? "ring-2 ring-[#A67C52]" : ""
-                                                        } ${errors.occupation ? "border-red-500" : "border-gray-300"}`}
-                                                    >
-                                                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                            <Briefcase className={`h-5 w-5 ${isOccupationFocused ? "text-[#A67C52]" : "text-gray-400"}`} />
-                                                        </div>
-                                                        <input
-                                                            id="occupation"
-                                                            name="occupation"
-                                                            type="text"
-                                                            autoComplete="occupation"
-                                                            required
-                                                            value={data.occupation}
-                                                            onChange={(e) => setData("occupation", e.target.value)}
-                                                            onFocus={() => setIsOccupationFocused(true)}
-                                                            onBlur={() => setIsOccupationFocused(false)}
-                                                            className={`block w-full rounded-md border pl-10 py-3 text-gray-900 placeholder-gray-400 focus:outline-none sm:text-sm ${
-                                                                errors.occupation ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-[#A67C52]"
-                                                            }`}
-                                                            placeholder="Software Engineer"
-                                                        />
-                                                    </div>
-                                                    {errors.occupation && <InputError message={errors.occupation} className="mt-2" />}
-                                                </div>
+
                                             </div>
                                             
                                             {/* Two columns for password fields */}

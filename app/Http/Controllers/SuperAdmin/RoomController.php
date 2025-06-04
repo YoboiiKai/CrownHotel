@@ -146,16 +146,30 @@ class RoomController extends Controller
             $additionalImages = json_decode($room->additionalImages ?? '[]', true);
             
             // Handle existing images
-            if ($request->has('existingImages')) {
-                // Check if existingImages is already an array (from FormData with array notation)
-                if (is_array($request->existingImages)) {
+            if ($request->has('existingImages') || $request->has('existingImagesJson')) {
+                // First try to get from array notation
+                if ($request->has('existingImages') && is_array($request->existingImages)) {
                     $existingImagePaths = $request->existingImages;
-                } else {
-                    // Try to decode it as JSON
+                    Log::info('Using existingImages array directly', ['count' => count($existingImagePaths)]);
+                } 
+                // Then try JSON fallback
+                elseif ($request->has('existingImagesJson')) {
+                    $existingImagePaths = json_decode($request->existingImagesJson, true);
+                    Log::info('Using existingImagesJson', ['decoded' => $existingImagePaths]);
+                    
+                    if ($existingImagePaths === null) {
+                        Log::warning('Failed to decode existingImagesJson', ['raw' => $request->existingImagesJson]);
+                        $existingImagePaths = [];
+                    }
+                }
+                // Last resort - try to decode the existingImages as JSON
+                else {
                     $existingImagePaths = json_decode($request->existingImages, true);
+                    Log::info('Trying to decode existingImages as JSON', ['result' => $existingImagePaths]);
                     
                     // If decoding failed, treat it as a single item array
                     if ($existingImagePaths === null) {
+                        Log::warning('Using existingImages as single item', ['value' => $request->existingImages]);
                         $existingImagePaths = [$request->existingImages];
                     }
                 }
@@ -220,15 +234,25 @@ class RoomController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Room updated successfully',
+                'message' => 'Room updated successfully', 
                 'data' => $room
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation error updating room: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             Log::error('Error updating room: ' . $e->getMessage());
+            Log::error('Error trace: ' . $e->getTraceAsString());
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update room',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
             ], 500);
         }
     }

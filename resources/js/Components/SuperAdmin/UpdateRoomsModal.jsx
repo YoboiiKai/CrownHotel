@@ -355,13 +355,14 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
         }
       }
 
-      // Handle existing images - now that we've updated the controller to handle different formats
-      // Let's use the array notation which is the most reliable approach
+      // Handle existing images if any
       if (existingImages.length > 0) {
         // Use Laravel's array notation for form data
         existingImages.forEach((imagePath, index) => {
           formDataToSend.append(`existingImages[]`, imagePath);
         });
+        // Also append as JSON string as fallback
+        formDataToSend.append('existingImagesJson', JSON.stringify(existingImages));
         console.log('Existing images array:', existingImages);
       }
       
@@ -409,11 +410,23 @@ export default function UpdateRoomsModal({ show, onClose, onUpdateRoom, room }) 
           
           if (error.response) {
             console.error('Error response:', error.response.data);
+            
+            // Check for specific error information
+            if (error.response.data.file) {
+              console.error(`Error in file: ${error.response.data.file} at line ${error.response.data.line}`);
+            }
           }
           
           if (error.response && error.response.data) {
+            // Handle validation errors
             if (error.response.data.errors) {
-              setErrors(error.response.data.errors)
+              setErrors(error.response.data.errors);
+              alert('Validation error: Please check the form for errors.');
+            } 
+            // Handle other errors
+            else if (error.response.data.error) {
+              alert(`Error: ${error.response.data.error}`);
+              setErrors({ general: error.response.data.error })
             } else if (error.response.data.message) {
               setErrors({ general: error.response.data.message })
             } else {
