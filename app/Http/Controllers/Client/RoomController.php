@@ -18,7 +18,10 @@ class RoomController extends Controller
     {
         try {
             // Get all rooms for clients, regardless of status
-            $rooms = Room::with('bookings')->get();
+            $rooms = Room::all();
+            
+            // Log the number of rooms found
+            Log::info('Fetched ' . $rooms->count() . ' rooms for client');
             
             // Return the rooms as JSON
             return response()->json($rooms);

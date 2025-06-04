@@ -24,6 +24,21 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Public API routes for Welcome page
+Route::prefix('api')->group(function () {
+    // Public routes that don't require authentication
+    Route::get('rooms', [\App\Http\Controllers\PublicController::class, 'rooms']);
+});
+
+// Debug route to check rooms in database
+Route::get('/debug/rooms', function() {
+    $rooms = \App\Models\SuperAdmin\Room::all();
+    return response()->json([
+        'count' => $rooms->count(),
+        'rooms' => $rooms
+    ]);
+});
+
 Route::middleware(['auth', 'verified'])->group(function () {
     // User Management Routes
     // Admin Routes

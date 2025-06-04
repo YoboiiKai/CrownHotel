@@ -523,8 +523,8 @@ export default function AddBookingModal({
       const bookingReference = `BK-${timestamp}-${randomNum}`;
       formDataToSend.append("booking_reference", bookingReference);
       
-      // Set status to confirmed by default
-      formDataToSend.append("status", "confirmed");
+      // Set status to pending by default
+      formDataToSend.append("status", "pending");
       
       // Add image if selected
       if (fileInputRef.current && fileInputRef.current.files[0]) {

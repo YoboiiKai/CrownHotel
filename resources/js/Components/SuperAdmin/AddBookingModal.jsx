@@ -21,8 +21,7 @@ export default function AddBookingModal({
     clientId: "",
     paymentMethod: "credit_card", // Default payment method
     amount: "",
-    paymentStatus: "pending", // Default payment status
-    termsAccepted: false, // Terms and conditions acceptance
+    paymentStatus: "pending" // Default payment status
   });
   
   const [errors, setErrors] = useState({});
@@ -33,11 +32,8 @@ export default function AddBookingModal({
   const [clientSearch, setClientSearch] = useState("");
   const [showClientDropdown, setShowClientDropdown] = useState(false);
   const [showExtraBedNotice, setShowExtraBedNotice] = useState(false);
-  const [showTermsModal, setShowTermsModal] = useState(false);
-  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+
   const clientDropdownRef = useRef(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const fileInputRef = useRef(null);
 
   // Room initialization and form pre-population for SuperAdmin
   useEffect(() => {
@@ -300,17 +296,6 @@ export default function AddBookingModal({
     }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Create a preview URL
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -427,10 +412,7 @@ export default function AddBookingModal({
       newErrors.occupancy = `Maximum occupancy exceeded. Maximum is ${maxOccupantsWithExtraBeds} people with ${formData.extraBeds} extra bed(s).`;
     }
     
-    // Terms and conditions
-    if (!formData.termsAccepted) {
-      newErrors.termsAccepted = "You must accept the terms and conditions";
-    }
+    // Terms and conditions check removed for admin
     
     return newErrors;
   };
@@ -451,14 +433,9 @@ export default function AddBookingModal({
       clientId: "",
       amount: "",
       paymentMethod: "credit_card",
-      termsAccepted: false,
       paymentStatus: "pending"
     });
     setClientSearch("");
-    setImagePreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
     setErrors({});
     setShowExtraBedNotice(false);
   };
@@ -504,11 +481,6 @@ export default function AddBookingModal({
       
       // Set status to confirmed by default
       formDataToSend.append("status", "confirmed");
-      
-      // Add image if selected
-      if (fileInputRef.current && fileInputRef.current.files[0]) {
-        formDataToSend.append("image", fileInputRef.current.files[0]);
-      }
       
       // Submit form to backend using axios
       axios.post('/api/bookings', formDataToSend, {
@@ -1106,158 +1078,6 @@ export default function AddBookingModal({
               </div>
             </div>
             
-            {/* Terms and Conditions */}
-            <div className="mt-6 p-4 bg-gradient-to-br from-[#8B5A2B]/5 to-[#A67C52]/10 rounded-xl border border-[#8B5A2B]/20 shadow-sm">
-              <div className="flex items-start mb-4">
-                <div className="flex items-center h-5">
-                  <input
-                    id="termsAccepted"
-                    name="termsAccepted"
-                    type="checkbox"
-                    checked={formData.termsAccepted}
-                    onChange={(e) => setFormData({...formData, termsAccepted: e.target.checked})}
-                    className="h-4 w-4 text-[#8B5A2B] border-gray-300 rounded focus:ring-[#A67C52]/20"
-                  />
-                </div>
-                <div className="ml-3">
-                  <label htmlFor="termsAccepted" className="text-sm text-gray-700">
-                    I agree to the <button 
-                      type="button" 
-                      onClick={() => setShowTermsModal(true)}
-                      className="text-[#8B5A2B] font-medium hover:underline"
-                    >Terms and Conditions</button> and <button 
-                      type="button" 
-                      onClick={() => setShowPrivacyModal(true)}
-                      className="text-[#8B5A2B] font-medium hover:underline"
-                    >Privacy Policy</button>
-                  </label>
-                  <p className="text-xs text-gray-500 mt-1">By confirming this booking, you agree to our hotel policies, including cancellation policy, check-in/check-out times, and payment terms.</p>
-                  {errors.termsAccepted && <p className={errorClasses}>{errors.termsAccepted}</p>}
-                </div>
-              </div>
-            </div>
-            
-            {/* Terms and Conditions Modal */}
-            {showTermsModal && (
-              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
-                <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-xl max-w-2xl w-full max-h-[80vh] flex flex-col">
-                  <div className="bg-gradient-to-r from-[#8B5A2B] to-[#A67C52] px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-white/10 rounded-md">
-                        <FileText className="h-5 w-5 text-white" />
-                      </div>
-                      <h3 className="text-lg font-bold text-white">Terms and Conditions</h3>
-                    </div>
-                    <button 
-                      onClick={() => setShowTermsModal(false)} 
-                      className="text-white/80 hover:text-white transition-colors rounded-full p-1 hover:bg-white/10"
-                    >
-                      <X className="h-5 w-5" />
-                    </button>
-                  </div>
-                  
-                  <div className="p-6 overflow-y-auto flex-1">
-                    <div className="prose prose-sm max-w-none">
-                      <h4 className="text-[#8B5A2B] font-medium">1. Booking and Reservation</h4>
-                      <p className="text-sm text-gray-700 mb-4">All reservations are subject to availability and confirmation by the hotel. A valid credit card is required to secure your booking. The hotel reserves the right to pre-authorize your credit card prior to arrival.</p>
-                      
-                      <h4 className="text-[#8B5A2B] font-medium">2. Check-in and Check-out</h4>
-                      <p className="text-sm text-gray-700 mb-4">Check-in time is 2:00 PM and check-out time is 12:00 PM. Early check-in and late check-out may be available upon request, subject to availability and additional charges.</p>
-                      
-                      <h4 className="text-[#8B5A2B] font-medium">3. Cancellation Policy</h4>
-                      <p className="text-sm text-gray-700 mb-4">Cancellations made less than 24 hours before the scheduled check-in time will incur a charge equivalent to one night's stay. No-shows will be charged the full amount of the reservation.</p>
-                      
-                      <h4 className="text-[#8B5A2B] font-medium">4. Payment</h4>
-                      <p className="text-sm text-gray-700 mb-4">Full payment is required at check-in. We accept major credit cards, debit cards, and cash. All rates are quoted in Philippine Pesos and include applicable taxes and service charges.</p>
-                      
-                      <h4 className="text-[#8B5A2B] font-medium">5. Room Occupancy</h4>
-                      <p className="text-sm text-gray-700 mb-4">Standard room occupancy is for a maximum of 2 adults and 2 children under 12 years old. Extra beds are available at an additional cost of ₱500 per night. Extra beds are automatically added when total guests exceeds 4 people.</p>
-                      
-                      <h4 className="text-[#8B5A2B] font-medium">6. Hotel Policies</h4>
-                      <ul className="text-sm text-gray-700 mb-4 list-disc pl-5 space-y-1">
-                        <li>No smoking in rooms (₱5,000 cleaning fee for violations)</li>
-                        <li>Pets are not allowed (service animals excepted)</li>
-                        <li>Damage to hotel property will be charged to the guest's account</li>
-                        <li>The hotel is not responsible for any loss or damage to personal belongings</li>
-                        <li>Quiet hours are from 10:00 PM to 7:00 AM</li>
-                      </ul>
-                      
-                      <h4 className="text-[#8B5A2B] font-medium">7. Modifications and Amendments</h4>
-                      <p className="text-sm text-gray-700 mb-4">The hotel reserves the right to modify or amend these terms and conditions at any time. Any changes will be effective immediately upon posting on our website.</p>
-                    </div>
-                  </div>
-                  
-                  <div className="p-4 border-t border-gray-200 flex justify-end">
-                    <button 
-                      onClick={() => setShowTermsModal(false)}
-                      className="px-4 py-2 bg-gradient-to-r from-[#8B5A2B] to-[#A67C52] text-white rounded-lg font-medium hover:shadow-md transition-all"
-                    >
-                      Close
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {/* Privacy Policy Modal */}
-            {showPrivacyModal && (
-              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
-                <div className="bg-white rounded-xl overflow-hidden border border-gray-200 shadow-xl max-w-2xl w-full max-h-[80vh] flex flex-col">
-                  <div className="bg-gradient-to-r from-[#8B5A2B] to-[#A67C52] px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-white/10 rounded-md">
-                        <FileText className="h-5 w-5 text-white" />
-                      </div>
-                      <h3 className="text-lg font-bold text-white">Privacy Policy</h3>
-                    </div>
-                    <button 
-                      onClick={() => setShowPrivacyModal(false)} 
-                      className="text-white/80 hover:text-white transition-colors rounded-full p-1 hover:bg-white/10"
-                    >
-                      <X className="h-5 w-5" />
-                    </button>
-                  </div>
-                  
-                  <div className="p-6 overflow-y-auto flex-1">
-                    <div className="prose prose-sm max-w-none">
-                      <h4 className="text-[#8B5A2B] font-medium">1. Information We Collect</h4>
-                      <p className="text-sm text-gray-700 mb-4">We collect personal information such as your name, contact details, payment information, and stay preferences when you make a reservation. We may also collect information about your stay, including dates, room preferences, and special requests.</p>
-                      
-                      <h4 className="text-[#8B5A2B] font-medium">2. How We Use Your Information</h4>
-                      <p className="text-sm text-gray-700 mb-4">We use your personal information to process your reservation, provide you with the services you request, and communicate with you about your stay. We may also use your information to improve our services, send you promotional offers, and comply with legal obligations.</p>
-                      
-                      <h4 className="text-[#8B5A2B] font-medium">3. Information Sharing</h4>
-                      <p className="text-sm text-gray-700 mb-4">We may share your information with third-party service providers who help us process payments, manage reservations, and provide other services. We do not sell or rent your personal information to third parties for marketing purposes.</p>
-                      
-                      <h4 className="text-[#8B5A2B] font-medium">4. Data Security</h4>
-                      <p className="text-sm text-gray-700 mb-4">We implement appropriate security measures to protect your personal information from unauthorized access, disclosure, alteration, or destruction. However, no method of transmission over the Internet or electronic storage is 100% secure.</p>
-                      
-                      <h4 className="text-[#8B5A2B] font-medium">5. Your Rights</h4>
-                      <p className="text-sm text-gray-700 mb-4">You have the right to access, correct, or delete your personal information. You may also object to or restrict the processing of your personal information. To exercise these rights, please contact us using the information provided below.</p>
-                      
-                      <h4 className="text-[#8B5A2B] font-medium">6. Cookies and Tracking Technologies</h4>
-                      <p className="text-sm text-gray-700 mb-4">We use cookies and similar tracking technologies to enhance your experience on our website, analyze usage patterns, and deliver personalized content. You can control cookies through your browser settings.</p>
-                      
-                      <h4 className="text-[#8B5A2B] font-medium">7. Changes to This Privacy Policy</h4>
-                      <p className="text-sm text-gray-700 mb-4">We may update this Privacy Policy from time to time. Any changes will be effective immediately upon posting on our website. We encourage you to review this Privacy Policy periodically.</p>
-                      
-                      <h4 className="text-[#8B5A2B] font-medium">8. Contact Us</h4>
-                      <p className="text-sm text-gray-700 mb-4">If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at privacy@luxuryhotel.com or call us at +63 2 8888 8888.</p>
-                    </div>
-                  </div>
-                  
-                  <div className="p-4 border-t border-gray-200 flex justify-end">
-                    <button 
-                      onClick={() => setShowPrivacyModal(false)}
-                      className="px-4 py-2 bg-gradient-to-r from-[#8B5A2B] to-[#A67C52] text-white rounded-lg font-medium hover:shadow-md transition-all"
-                    >
-                      Close
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            
             {/* Action Buttons */}
             <div className="mt-6 flex justify-end gap-4">
               <button 
@@ -1270,9 +1090,8 @@ export default function AddBookingModal({
               
               <button 
                 type="submit" 
-                disabled={isSubmitting || !formData.termsAccepted}
-                className={`px-4 py-2.5 text-white rounded-lg transition-all duration-200 shadow-sm font-medium text-sm ${formData.termsAccepted ? 'bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] hover:from-[#8B5A2B] hover:to-[#6B4226]' : 'bg-gray-400 cursor-not-allowed'}`}
-                title={!formData.termsAccepted ? "You must accept the terms and conditions to proceed" : ""}
+                disabled={isSubmitting}
+                className="px-4 py-2.5 text-white rounded-lg transition-all duration-200 shadow-sm font-medium text-sm bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] hover:from-[#8B5A2B] hover:to-[#6B4226]"
               >
                 {isSubmitting ? "Creating..." : "Confirm Booking"}
               </button>

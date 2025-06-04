@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Head, Link } from "@inertiajs/react";
-import { Building2, ChevronRight, Users, BarChart3, Calendar, Utensils, Shield, Star, X, ChevronLeft, Hotel, Crown, ChevronUp } from "lucide-react";
+import { Building2, ChevronRight, Users, BarChart3, Calendar, Utensils, Shield, Star, X, ChevronLeft, Hotel, Crown, ChevronUp, Bed, Bath, Users2, Coffee, Wifi, MapPin, Check } from "lucide-react";
+import axios from "axios";
 
 // Custom styles for the scrollbar
 const scrollbarStyles = `
@@ -72,9 +73,93 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [currentSlide, setCurrentSlide] = useState(0);
     const [showScrollTop, setShowScrollTop] = useState(false);
+    const [rooms, setRooms] = useState([]);
+    const [loading, setLoading] = useState(true);
     const carouselRef = useRef(null);
     const autoPlayRef = useRef(null);
     
+    // Fetch room data from the API
+    const fetchRooms = async () => {
+        try {
+            setLoading(true);
+            console.log('Fetching rooms from API...');
+            const response = await axios.get(`/api/rooms?_t=${new Date().getTime()}`);
+            console.log('API response:', response.data);
+            
+            if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+                console.log('Using real data from database');
+                // Log image paths for debugging
+                response.data.forEach(room => {
+                    console.log(`Room ${room.id} image path:`, room.image);
+                });
+                setRooms(response.data);
+            } else {
+                console.log('API returned empty array, using sample data');
+                // If API returns empty array, use sample data
+                useSampleRoomData();
+            }
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching rooms:', error);
+            setLoading(false);
+            console.log('API call failed, using sample data');
+            // Use sample data when API call fails
+            useSampleRoomData();
+        }
+    };
+
+    // Modal functions are defined below in the main component
+
+    // Function to use sample room data when API fails
+    const useSampleRoomData = () => {
+        setRooms([
+            {
+                id: 1,
+                roomNumber: '101',
+                roomType: 'standard',
+                price: 150.00,
+                capacity: 2,
+                status: 'available',
+                amenities: JSON.stringify(['TV', 'WiFi', 'Air Conditioning', 'Mini Bar']),
+                description: 'Comfortable standard room with modern amenities and a beautiful view.',
+                image: '/CROWN/CROWN/FACILITIES/IMG_0645.psd.jpg'
+            },
+            {
+                id: 2,
+                roomNumber: '201',
+                roomType: 'deluxe',
+                price: 250.00,
+                capacity: 2,
+                status: 'available',
+                amenities: JSON.stringify(['TV', 'WiFi', 'Air Conditioning', 'Mini Bar', 'Jacuzzi']),
+                description: 'Spacious deluxe room with premium amenities and a panoramic view of the surroundings.',
+                image: '/CROWN/CROWN/FACILITIES/IMG_0631.psd.jpeg'
+            },
+            {
+                id: 3,
+                roomNumber: '301',
+                roomType: 'suite',
+                price: 350.00,
+                capacity: 3,
+                status: 'available',
+                amenities: JSON.stringify(['TV', 'WiFi', 'Air Conditioning', 'Mini Bar', 'Jacuzzi', 'Kitchenette']),
+                description: 'Luxurious suite with separate living area, premium amenities, and stunning views.',
+                image: '/CROWN/CROWN/FACILITIES/IMG_0639.psd.png'
+            },
+            {
+                id: 4,
+                roomNumber: '401',
+                roomType: 'presidential',
+                price: 550.00,
+                capacity: 4,
+                status: 'available',
+                amenities: JSON.stringify(['TV', 'WiFi', 'Air Conditioning', 'Mini Bar', 'Jacuzzi', 'Kitchenette', 'Private Pool']),
+                description: 'Our finest presidential suite with unparalleled luxury, privacy, and personalized service.',
+                image: '/CROWN/CROWN/FACILITIES/IMG_0637.psd.png'
+            }
+        ]);
+    };
+
     // Apply scrollbar styles when component mounts
     useEffect(() => {
         // Create a style element
@@ -114,6 +199,11 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
         return () => {
             document.head.removeChild(styleElement);
         };
+    }, []);
+    
+    // Fetch rooms data when component mounts
+    useEffect(() => {
+        fetchRooms();
     }, []);
     
     // Sample room data
@@ -320,6 +410,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
     const closeModal = () => {
         setIsModalOpen(false);
         document.body.style.overflow = 'auto'; // Re-enable scrolling
+        setTimeout(() => setSelectedRoom(null), 300); // Clear after animation
     };
 
     return (
@@ -511,7 +602,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         {/* Carousel slides */}
                         <div className="absolute inset-0 transition-opacity duration-1000 ease-in-out bg-cover bg-center" 
                             style={{
-                                backgroundImage: `url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80')`,
+                                backgroundImage: `url('/CROWN/CROWN/FACILITIES/IMG_0645.psd.jpg')`,
                                 opacity: currentSlide === 0 ? '1' : '0',
                                 zIndex: currentSlide === 0 ? '1' : '0'
                             }}>
@@ -520,7 +611,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         
                         <div className="absolute inset-0 transition-opacity duration-1000 ease-in-out bg-cover bg-center" 
                             style={{
-                                backgroundImage: `url('https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80')`,
+                                backgroundImage: `url('/CROWN/CROWN/FACILITIES/IMG_0631.psd.jpeg')`,
                                 opacity: currentSlide === 1 ? '1' : '0',
                                 zIndex: currentSlide === 1 ? '1' : '0'
                             }}>
@@ -529,7 +620,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         
                         <div className="absolute inset-0 transition-opacity duration-1000 ease-in-out bg-cover bg-center" 
                             style={{
-                                backgroundImage: `url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1080&q=80')`,
+                                backgroundImage: `url('/CROWN/CROWN/FACILITIES/IMG_0639.psd.png')`,
                                 opacity: currentSlide === 2 ? '1' : '0',
                                 zIndex: currentSlide === 2 ? '1' : '0'
                             }}>
@@ -538,7 +629,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         
                         <div className="absolute inset-0 transition-opacity duration-1000 ease-in-out bg-cover bg-center" 
                             style={{
-                                backgroundImage: `url('https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80')`,
+                                backgroundImage: `url('/CROWN/CROWN/FACILITIES/IMG_0637.psd.png')`,
                                 opacity: currentSlide === 3 ? '1' : '0',
                                 zIndex: currentSlide === 3 ? '1' : '0'
                             }}>
@@ -1097,61 +1188,144 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                         </div>
                         
                         {/* Room Cards Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                            {roomsData.map((room) => (
-                                <div key={room.id} className="bg-white rounded-xl shadow-lg overflow-hidden border border-[#DEB887]/30 group hover:shadow-xl transition-all duration-300">
-                                    <div className="relative h-64 overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-t from-[#5D3A1F]/70 to-transparent z-10"></div>
-                                        <img 
-                                            src={room.mainImage} 
-                                            alt={room.name} 
-                                            className="object-cover h-full w-full transition-transform duration-700 group-hover:scale-110"
-                                        />
-                                        <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
-                                            <div className="flex items-center">
-                                                {[...Array(5)].map((_, i) => (
-                                                    <Star 
-                                                        key={i} 
-                                                        className={`h-4 w-4 ${i < Math.floor(room.rating) ? "text-[#DEB887] fill-[#DEB887]" : "text-[#DEB887]/50 fill-[#DEB887]/50"}`} 
-                                                    />
-                                                ))}
-                                                <span className="ml-2 text-white text-xs">{room.rating} ({room.reviews})</span>
+                        {loading ? (
+                            // Loading skeleton
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                                {Array.from({ length: 8 }).map((_, index) => (
+                                    <div key={index} className="group overflow-hidden rounded-2xl bg-white shadow-xl transition-all duration-300 animate-pulse">
+                                        <div className="relative h-40 bg-gray-200">
+                                            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-gray-300 to-transparent"></div>
+                                        </div>
+                                        <div className="p-3 space-y-2">
+                                            <div className="h-5 bg-gray-200 rounded-full w-3/4"></div>
+                                            <div className="h-3 bg-gray-200 rounded-full w-full"></div>
+                                            <div className="h-3 bg-gray-200 rounded-full w-5/6"></div>
+                                            <div className="grid grid-cols-2 gap-1 pt-1">
+                                                <div className="flex items-center space-x-1">
+                                                    <div className="h-4 w-4 rounded-full bg-gray-200"></div>
+                                                    <div className="h-3 bg-gray-200 rounded-full w-12"></div>
+                                                </div>
+                                                <div className="flex items-center space-x-1">
+                                                    <div className="h-4 w-4 rounded-full bg-gray-200"></div>
+                                                    <div className="h-3 bg-gray-200 rounded-full w-12"></div>
+                                                </div>
+                                            </div>
+                                            <div className="flex justify-between pt-2">
+                                                <div className="h-6 bg-gray-200 rounded-full w-16"></div>
+                                                <div className="h-6 bg-gray-200 rounded-full w-16"></div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="p-5">
-                                        <h3 className="text-lg font-bold text-[#5D3A1F] mb-2">{room.name}</h3>
-                                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{room.description}</p>
-                                        <div className="flex justify-between items-center">
-                                            <div className="text-[#8B5A2B] font-bold">
-                                                {room.price}<span className="text-gray-500 text-xs font-normal"> / night</span>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mb-12">
+                                {rooms.map((room) => {
+                                    // Safely parse amenities if it's a JSON string
+                                    let amenities = [];
+                                    try {
+                                        if (typeof room.amenities === 'string') {
+                                            amenities = JSON.parse(room.amenities);
+                                        } else if (Array.isArray(room.amenities)) {
+                                            amenities = room.amenities;
+                                        } else if (room.amenities === null) {
+                                            amenities = [];
+                                        }
+                                    } catch (error) {
+                                        console.error('Error parsing amenities:', error);
+                                        amenities = [];
+                                    }
+                                    
+                                    // Calculate rating based on amenities count (for demo purposes)
+                                    const amenitiesCount = Array.isArray(amenities) ? amenities.length : 0;
+                                    const rating = Math.min(5, Math.max(3, Math.floor(amenitiesCount / 2)));
+                                    
+                                    return (
+                                        <div key={room.id} className="group relative overflow-hidden rounded-xl bg-white shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                                            {/* Room Image */}
+                                            <div className="relative h-40 overflow-hidden">
+                                                <img
+                                                    src={room.image ? `/storage/rooms/${room.image.split('/').pop()}` : `/CROWN/CROWN/FACILITIES/IMG_0645.psd.jpg`}
+                                                    alt={room.roomType}
+                                                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                    onError={(e) => {
+                                                        console.log('Image failed to load:', e.target.src);
+                                                        e.target.src = `/CROWN/CROWN/FACILITIES/IMG_0645.psd.jpg`;
+                                                    }}
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-80"></div>
+                                                
+                                                {/* Price tag */}
+                                                <div className="absolute right-2 top-2">
+                                                    <div className="overflow-hidden rounded-full bg-white/90 shadow-sm">
+                                                        <div className="bg-gradient-to-r from-[#A67C52]/10 to-[#8B5A2B]/10 px-2 py-1">
+                                                            <span className="block text-center text-[10px] font-medium uppercase tracking-wide text-[#8B5A2B]"></span>
+                                                            <span className="block text-center text-sm font-bold text-[#6B4226]">&#x20B1;{parseFloat(room.price).toFixed(2)}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                {/* Room Type Badge */}
+                                                <div className="absolute left-2 top-2">
+                                                    <span className="rounded-full bg-[#A67C52]/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white backdrop-blur-sm">
+                                                        {room.roomType.charAt(0).toUpperCase() + room.roomType.slice(1)}
+                                                    </span>
+                                                </div>
+                                                
+                                                {/* Room Status Badge */}
+                                                <div className="absolute left-2 bottom-2">
+                                                    <span className="rounded-full bg-green-500/80 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white backdrop-blur-sm flex items-center">
+                                                        <Check className="h-3 w-3 mr-0.5" /> Available
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <button 
-                                                onClick={() => openRoomModal(room)} 
-                                                className="px-4 py-2 bg-[#F5EFE6] hover:bg-[#DEB887]/20 text-[#5D3A1F] rounded-md text-sm font-medium transition-colors duration-300 flex items-center"
-                                            >
-                                                View Details
-                                                <ChevronRight className="ml-1 h-4 w-4" />
-                                            </button>
+                                            
+                                            {/* Room Details */}
+                                            <div className="p-3">                                                
+                                                <div className="mb-1 flex items-center text-xs text-gray-500">
+                                                    <MapPin className="mr-1 h-3 w-3 text-[#8B5A2B]" />
+                                                    <span>Room {room.roomNumber}</span>
+                                                </div>
+                                                
+                                                <p className="mb-2 text-xs text-gray-600 line-clamp-1">{room.description}</p>
+                                                
+                                                {/* Room Features */}
+                                                <div className="mb-3 grid grid-cols-2 gap-1 text-xs text-gray-600">
+                                                    <div className="flex items-center">
+                                                        <div className="mr-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#A67C52]/10">
+                                                            <Bed className="h-2.5 w-2.5 text-[#8B5A2B]" />
+                                                        </div>
+                                                        <span>2 Bed{room.beds !== 1 ? 's' : ''}</span>
+                                                    </div>
+                                                    <div className="flex items-center">
+                                                        <div className="mr-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#A67C52]/10">
+                                                            <Users className="h-2.5 w-2.5 text-[#8B5A2B]" />
+                                                        </div>
+                                                        <span>{room.capacity} guest{room.capacity !== 1 ? 's' : ''}</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                {/* Action Buttons */}
+                                                <div className="flex items-center gap-2">
+                                                    <button
+                                                        className="flex-1 rounded-full border border-[#A67C52]/30 bg-white px-2 py-1.5 text-xs font-medium text-[#8B5A2B] transition-all duration-300 hover:bg-[#A67C52]/10 hover:border-[#A67C52]/50"
+                                                        onClick={() => setSelectedRoom(room)}
+                                                    >
+                                                        Details
+                                                    </button>
+                                                    <button
+                                                        className="flex-1 rounded-full bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] px-2 py-1.5 text-xs font-medium text-white shadow-sm transition-all duration-300 hover:from-[#8B5A2B] hover:to-[#6B4226]"
+                                                        onClick={() => openRoomModal(room)}
+                                                    >
+                                                        Book Now
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        
-                        {/* View All Rooms Button */}
-                        <div className="text-center">
-                            <Link
-                                href="#"
-                                className="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden rounded-md bg-gradient-to-r from-[#8B5A2B] to-[#5D3A1F] text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-                            >
-                                <span className="absolute inset-0 w-full h-full transition duration-300 ease-out opacity-0 bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] group-hover:opacity-100"></span>
-                                <span className="relative group-hover:text-white flex items-center">
-                                    View All Rooms
-                                    <ChevronRight className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
-                                </span>
-                            </Link>
-                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
                 </section>
 
@@ -1179,37 +1353,30 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                     <div className="relative">
                                         <div className="h-96 md:h-full">
                                             <img 
-                                                src={selectedRoom.mainImage} 
-                                                alt={selectedRoom.name} 
+                                                src={selectedRoom.image ? `/storage/rooms/${selectedRoom.image.split('/').pop()}` : `/CROWN/CROWN/FACILITIES/IMG_0645.psd.jpg`}
+                                                alt={selectedRoom.roomType}
                                                 className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    e.target.src = `/CROWN/CROWN/FACILITIES/IMG_0645.psd.jpg`;
+                                                }}
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-[#5D3A1F]/70 to-transparent"></div>
                                             <div className="absolute bottom-0 left-0 right-0 p-6">
-                                                <h2 className="text-2xl font-bold text-white mb-2">{selectedRoom.name}</h2>
+                                                <h2 className="text-2xl font-bold text-white mb-2">{selectedRoom.roomType.charAt(0).toUpperCase() + selectedRoom.roomType.slice(1)} Room</h2>
                                                 <div className="flex items-center mb-2">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <Star 
-                                                            key={i} 
-                                                            className={`h-5 w-5 ${i < Math.floor(selectedRoom.rating) ? "text-[#DEB887] fill-[#DEB887]" : "text-[#DEB887]/50 fill-[#DEB887]/50"}`} 
-                                                        />
-                                                    ))}
-                                                    <span className="ml-2 text-white">{selectedRoom.rating} ({selectedRoom.reviews} reviews)</span>
+                                                    <div className="flex items-center">
+                                                        <MapPin className="mr-1 h-5 w-5 text-white" />
+                                                        <span className="text-white">Room {selectedRoom.roomNumber}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                         
-                                        {/* Thumbnail Gallery */}
-                                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#5D3A1F]/80 to-transparent p-4">
-                                            <div className="flex space-x-2 overflow-x-auto pb-2">
-                                                {selectedRoom.images.map((image, index) => (
-                                                    <div key={index} className="flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 border-white">
-                                                        <img 
-                                                            src={image.url} 
-                                                            alt={image.title} 
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    </div>
-                                                ))}
+                                        {/* Price Badge */}
+                                        <div className="absolute top-4 right-4">
+                                            <div className="bg-white/90 rounded-full shadow-lg px-4 py-2">
+                                                <span className="text-[#8B5A2B] font-bold">&#x20B1;{parseFloat(selectedRoom.price).toFixed(2)}</span>
+                                                <span className="text-gray-600 text-xs"> / night</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1223,25 +1390,21 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                             <div className="grid grid-cols-2 gap-4 mb-6">
                                                 <div className="flex items-start space-x-3">
                                                     <div className="bg-[#F5EFE6] text-[#8B5A2B] rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                                        </svg>
+                                                        <Bed className="h-4 w-4" />
                                                     </div>
                                                     <div>
-                                                        <h4 className="text-sm font-semibold text-[#5D3A1F]">Room Size</h4>
-                                                        <p className="text-gray-600 text-sm">{selectedRoom.size}</p>
+                                                        <h4 className="text-sm font-semibold text-[#5D3A1F]">Room Type</h4>
+                                                        <p className="text-gray-600 text-sm capitalize">{selectedRoom.roomType}</p>
                                                     </div>
                                                 </div>
                                                 
                                                 <div className="flex items-start space-x-3">
                                                     <div className="bg-[#F5EFE6] text-[#8B5A2B] rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                        </svg>
+                                                        <Users className="h-4 w-4" />
                                                     </div>
                                                     <div>
-                                                        <h4 className="text-sm font-semibold text-[#5D3A1F]">Occupancy</h4>
-                                                        <p className="text-gray-600 text-sm">{selectedRoom.occupancy}</p>
+                                                        <h4 className="text-sm font-semibold text-[#5D3A1F]">Capacity</h4>
+                                                        <p className="text-gray-600 text-sm">{selectedRoom.capacity} guest{selectedRoom.capacity !== 1 ? 's' : ''}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1250,12 +1413,26 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         <div className="mb-6">
                                             <h3 className="text-lg font-bold text-[#5D3A1F] mb-3">Amenities</h3>
                                             <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                                {selectedRoom.amenities.map((amenity, index) => (
-                                                    <li key={index} className="flex items-center text-gray-600 text-sm">
-                                                        <div className="mr-2 text-[#A67C52]">•</div>
-                                                        {amenity}
-                                                    </li>
-                                                ))}
+                                                {(() => {
+                                                    let amenitiesList = [];
+                                                    try {
+                                                        if (typeof selectedRoom.amenities === 'string') {
+                                                            amenitiesList = JSON.parse(selectedRoom.amenities);
+                                                        } else if (Array.isArray(selectedRoom.amenities)) {
+                                                            amenitiesList = selectedRoom.amenities;
+                                                        }
+                                                    } catch (error) {
+                                                        console.error('Error parsing amenities in modal:', error);
+                                                        amenitiesList = [];
+                                                    }
+                                                    
+                                                    return amenitiesList.map((amenity, index) => (
+                                                        <li key={index} className="flex items-center text-gray-600 text-sm">
+                                                            <div className="mr-2 text-[#A67C52]">•</div>
+                                                            {amenity}
+                                                        </li>
+                                                    ));
+                                                })()} 
                                             </ul>
                                         </div>
                                         
@@ -1263,9 +1440,16 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                             <div className="flex justify-between items-center mb-6">
                                                 <div>
                                                     <span className="text-gray-600 text-sm">Price per night</span>
-                                                    <p className="text-2xl font-bold text-[#8B5A2B]">{selectedRoom.price}</p>
+                                                    <p className="text-2xl font-bold text-[#8B5A2B]">&#x20B1;{parseFloat(selectedRoom.price).toFixed(2)}</p>
                                                 </div>
-                                                <button className="px-6 py-3 bg-gradient-to-r from-[#8B5A2B] to-[#5D3A1F] text-white rounded-md font-medium hover:shadow-lg transition-all duration-300">
+                                                <button 
+                                                    className="bg-gradient-to-r from-[#A67C52] to-[#8B5A2B] text-white px-6 py-3 rounded-md hover:from-[#8B5A2B] hover:to-[#6B4226] transition-all duration-300 shadow-md"
+                                                    onClick={() => {
+                                                        closeModal();
+                                                        // If you have authentication, you can redirect to login
+                                                        // window.location.href = route('login');
+                                                    }}
+                                                >
                                                     Book Now
                                                 </button>
                                             </div>
@@ -1273,6 +1457,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                             <p className="text-xs text-gray-500">
                                                 *Rates are subject to change based on season and availability. Additional taxes and fees may apply.
                                             </p>
+                                        </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1551,7 +1736,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                 </footer>
 
                 {/* CSS for animations */}
-                <style>{`
+                <style dangerouslySetInnerHTML={{ __html: `
                     @keyframes float {
                         0% { transform: translateY(0px) rotate(0deg); }
                         50% { transform: translateY(-10px) rotate(2deg); }
@@ -1620,7 +1805,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                     .bg-grid-pattern {
                         background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a16207' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2H6zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
                     }
-                `}</style>
+                ` }} />
                 
                 {/* Scroll to top button */}
                 <button 

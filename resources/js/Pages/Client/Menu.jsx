@@ -12,13 +12,118 @@ import {
   Coffee,
   Check,
   Trash2,
-  Filter
+  Filter,
+  CreditCard,
+  DollarSign
 } from "lucide-react";
 import MenuItemDetailsModal from "@/Components/SuperAdmin/MenuItemDetailsModal";
 import OrderConfirmationModal from "@/Components/SuperAdmin/OrderConfirmationModal";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+
+// Initialize Stripe with your publishable key
+const stripePromise = loadStripe('pk_test_51OoTpbHXWXXXXXXXXXXXXXXX'); // Replace with your actual publishable key
+
+// Stripe Card Element styles
+const cardElementStyle = {
+  style: {
+    base: {
+      color: '#32325d',
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+      fontSmoothing: 'antialiased',
+      fontSize: '14px',
+      '::placeholder': {
+        color: '#aab7c4'
+      }
+    },
+    invalid: {
+      color: '#fa755a',
+      iconColor: '#fa755a'
+    }
+  }
+};
+
+// CheckoutForm component for Stripe payment
+const CheckoutForm = ({ amount, onPaymentSuccess, onPaymentError, onCancel }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    
+    if (!stripe || !elements) {
+      // Stripe.js has not loaded yet
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Create a payment intent on the server
+      const { data: clientSecret } = await axios.post('/api/create-payment-intent', {
+        amount: amount * 100, // Convert to cents for Stripe
+      });
+
+      // Confirm the payment with the card element
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+          billing_details: {
+            name: 'Hotel Guest',
+          },
+        },
+      });
+
+      if (result.error) {
+        setError(result.error.message);
+        onPaymentError(result.error.message);
+      } else if (result.paymentIntent.status === 'succeeded') {
+        onPaymentSuccess(result.paymentIntent.id);
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+      onPaymentError('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="p-3 border border-gray-200 rounded-md bg-white">
+        <CardElement options={cardElementStyle} />
+      </div>
+      {error && <div className="text-red-500 text-xs">{error}</div>}
+      <div className="flex items-center gap-3">
+        <button 
+          type="button" 
+          onClick={onCancel}
+          className="flex-1 py-2 px-4 border border-gray-300 rounded-lg text-gray-700 text-xs font-medium hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          disabled={!stripe || loading}
+          className={`flex-1 py-2 px-4 rounded-lg text-white text-xs font-medium flex items-center justify-center gap-2 ${
+            !stripe || loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-gradient-to-r from-[#A67C52] via-[#8B5A2B] to-[#6B4226] hover:from-[#8B5A2B] hover:to-[#5D3A1F]"
+          }`}
+        >
+          {loading ? "Processing..." : "Pay Now"}
+          <CreditCard className="h-3 w-3" />
+        </button>
+      </div>
+    </form>
+  );
+};
 
 // Custom styles for the scrollbar
 const scrollbarStyles = `
